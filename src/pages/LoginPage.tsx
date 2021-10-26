@@ -15,6 +15,7 @@ import { MobileLoginForm, SMSHelper } from '../components/forms/MobileLoginForm'
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import ProgressButton from '../components/buttons/ProgressButton';
+import Alert from 'react-bootstrap/Alert';
 
 function EmailLogin() {
   const { setLoggedIn } = useAuthContext();
@@ -65,7 +66,7 @@ function AlertMobileNotFound(
 ) {
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSigUp = () => {
+  const handleSignUp = () => {
 
   }
 
@@ -92,7 +93,7 @@ function AlertMobileNotFound(
           isSubmitting={submitting}
           inline={true}
           asButton={true}
-          onClick={handleSigUp}
+          onClick={handleSignUp}
         />
         <Button
           variant="secondary"
@@ -117,12 +118,14 @@ function MobileLogin() {
         mobile,
       })
       .then(ok => {
+        // Stop progressing after SMS sent no matter what happened.
+        helper.setProgress(false);
+
         if (ok) {
           helper.setShowCounter(true);
           toast.info('验证码已发送');
         } else {
-          helper.setProgress(false);
-          toast.error('发送失败，请重试');
+          setErrMsg('发送失败，请重试');
         }
       })
       .catch((err: ResponseError) => {
@@ -147,9 +150,10 @@ function MobileLogin() {
       .catch((err: ResponseError) => {
         helper.setSubmitting(false);
         if (err.notFound) {
-          toast.error('验证码无效！');
+          setErrMsg('验证码无效！');
           return;
         }
+
         if (err.invalid) {
 
           // Show dialog to ask user to signup or link email account.
@@ -166,9 +170,16 @@ function MobileLogin() {
 
   return (
     <>
+      <Alert
+        variant="danger"
+        show={!!errMsg}
+        dismissible
+        onClose={() => setErrMsg('')}
+      >
+        {errMsg}
+      </Alert>
       <MobileLoginForm
         onSubmit={handleSubmit}
-        errMsg={errMsg}
         onRequestSMS={handleSMSRqeust}
       />
       {
