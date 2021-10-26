@@ -1,0 +1,4 @@
+.counter {
+  box-sizing: content-box;
+  min-width: 3em;
+}

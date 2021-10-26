@@ -1,0 +1,15 @@
+.sidebar .nav-link {
+  display: block;
+  padding: .5rem 2rem;
+  border-left: 4px solid transparent;
+}
+
+.sidebar a:hover {
+  color: var(--color-claret);
+
+}
+
+.sidebar a.active {
+  color: var(--color-claret);
+  border-left: 4px solid var(--color-claret);
+}

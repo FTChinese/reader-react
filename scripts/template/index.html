@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/corporate">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+{% for size in icon.sizes -%}
+    <link rel="apple-touch-icon" sizes="{{size}}" href="{{icon.baseUrl}}/apple-touch-icon-{{size}}.png">
+{%- endfor %}
+    <link href="{{icon.baseUrl}}/favicon.ico" type="image/x-icon" rel="shortcut icon" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/{{bootstrapVersion}}/css/bootstrap.min.css" rel="stylesheet">
+    <title>用户中心 - FT中文网</title>
+    <style>#root { min-height: 100vh;}</style>
+</head>
+
+<body>
+  <div id="root"></div>
+  {% include "footer.html" %}
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<footer class="o-footer o-footer--theme-dark">
+  <div class="container">
+    <div class="row" id="footer">
+      {% for column in footer.matrix -%}
+        <div class="col-6 col-md-3 col-lg-2">
+          <h6 class="o-footer__matrix-title">{{column.title}}</h6>
+          <div class="o-footer__matrix-content">
+            {% for item in column.items -%}
+            <a class="o-footer__matrix-link" href="{{item.href}}" target="_blank">{{item.name}}</a>
+            {%- endfor%}	
+          </div>
+        </div>
+      {%- endfor %}
+    </div>
+    <div class="o-footer__copyright">
+      <small>
+        © FT中文网 {{footer.year}}.
+        <abbr title="Financial Times" aria-label="F T">FT</abbr> and ‘Financial Times’ are trademarks of The Financial Times Ltd.
+      </small>
+    </div>
+    <div class="text-muted pb-3">
+      <small>v{{footer.version}}</small>
+    </div>
+  </div>
+</footer>
