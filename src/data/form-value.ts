@@ -35,19 +35,30 @@ export interface Credentials {
 
 export type SignupFormVal = Credentials & {
   confirmPassword: string;
+};
+
+export type EmailSignUpReq = Credentials & {
+  sourceUrl: string;
 }
 
 export type EmailFormVal = {
   email: string;
-}
+};
 
+// Used to send sms, or create new mobile-only account.
 export type MobileFormVal = {
   mobile: string;
-}
+};
 
 export type VerifySMSFormVal = MobileFormVal & {
   code: string;
-}
+};
+
+export type MobileLinkExistingEmailReq = Credentials & MobileFormVal;
+
+export type MobileLinkNewEmailReq = Credentials & MobileFormVal & {
+  sourceUrl: string;
+};
 
 export interface PasswordResetFormVal {
   password: string;

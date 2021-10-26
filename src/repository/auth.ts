@@ -1,15 +1,18 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { endpoint } from './endpoint';
-import { Credentials, EmailFormVal, MobileFormVal, VerifySMSFormVal } from '../data/form-value';
+import { Credentials, EmailFormVal, MobileFormVal, MobileLinkExistingEmailReq, MobileLinkNewEmailReq, VerifySMSFormVal } from '../data/form-value';
 import { ApiErrorPayload, ResponseError } from './response-error';
-import { ReaderPassport, SearchResult } from '../data/account';
+import { ReaderPassport } from '../data/account';
 import { PasswordResetReqParams, PasswordResetVerified } from '../data/password-reset';
 
 const CancelToken = axios.CancelToken;
 export const cancelSource = CancelToken.source();
 
 export function emailLogin(c: Credentials): Promise<ReaderPassport> {
-  return axios.post<Credentials, AxiosResponse<ReaderPassport>>(endpoint.emailLogin, c)
+  return axios.post<Credentials, AxiosResponse<ReaderPassport>>(
+      endpoint.emailLogin,
+      c
+    )
     .then(resp => {
       return resp.data;
     })
@@ -54,6 +57,34 @@ export function verifyMobileLoginSMS(v: VerifySMSFormVal): Promise<ReaderPasspor
         ResponseError.newInstance(err),
       );
     });
+}
+
+// Create mobile-only account
+export function mobileSignUp(v: MobileFormVal): Promise<ReaderPassport> {
+  return axios.post<MobileFormVal, AxiosResponse<ReaderPassport>>(endpoint.mobileSignUp, v)
+    .then(resp => resp.data)
+    .catch(err => {
+      return Promise.reject(ResponseError.newInstance(err));
+    });
+}
+
+// A mobile number wants to link to an existing email account.
+export function mobileLinkExistingEmail(req: MobileLinkExistingEmailReq): Promise<ReaderPassport> {
+  return axios.post<MobileLinkExistingEmailReq, AxiosResponse<ReaderPassport>>(
+      endpoint.mobileLinkEmail,
+      req
+    )
+    .then(resp => resp.data)
+    .catch(err => Promise.reject(ResponseError.newInstance(err)));
+}
+
+export function mobileLinkNewEmail(req: MobileLinkNewEmailReq): Promise<ReaderPassport> {
+  return axios.post<MobileLinkNewEmailReq, AxiosResponse<ReaderPassport>>(
+      endpoint.emailSignUp,
+      req,
+    )
+    .then(resp => resp.data)
+    .catch(err => Promise.reject(ResponseError.newInstance(err)));
 }
 
 export function verifyEmail(token: string): Promise<boolean> {

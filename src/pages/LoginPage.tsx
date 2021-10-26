@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { useAuthContext } from '../store/AuthContext';
 import { AuthLayout } from '../components/Layout'
 import { sitemap } from '../data/sitemap';
-import { emailLogin, requestMobileLoginSMS, verifyMobileLoginSMS } from '../repository/auth';
+import { emailLogin, mobileSignUp, requestMobileLoginSMS, verifyMobileLoginSMS } from '../repository/auth';
 import { isCodeMissing, ResponseError } from '../repository/response-error';
 import { useState } from 'react';
 import Tabs from 'react-bootstrap/Tabs';
@@ -64,10 +64,19 @@ function AlertMobileNotFound(
     onClose: () => void;
   }
 ) {
+  const { setLoggedIn } = useAuthContext();
   const [submitting, setSubmitting] = useState(false);
 
   const handleSignUp = () => {
-
+    setSubmitting(true);
+    mobileSignUp({ mobile: props.mobile })
+      .then(passport => {
+        setSubmitting(false);
+        setLoggedIn(passport);
+      })
+      .catch((err: ResponseError) => {
+        toast.error(err.message);
+      });
   }
 
   const showEmailAuth = () => {
@@ -78,30 +87,34 @@ function AlertMobileNotFound(
     <Modal
       show={!!props.mobile}
       onHide={props.onClose}
+      backdrop="static"
     >
       <Modal.Header closeButton>
         <Modal.Title>手机首次登录</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p>这是您首次使用手机号码登录。如果您已经拥有邮箱注册的账号并且购买了FT订阅服务，建议您选择"关联邮箱账号"。</p>
+        <p>这是您首次使用手机号码 {props.mobile} 登录。如果您已经拥有邮箱注册的账号并且购买了FT订阅服务，建议您选择"关联邮箱账号"。</p>
         <p>请注意，选择"手机号新建账号"后，该手机号将无法关联您已有的邮箱账号。</p>
+
+        <div className="d-flex justify-content-between">
+          <ProgressButton
+            text="手机号新建账号"
+            disabled={submitting}
+            isSubmitting={submitting}
+            inline={true}
+            asButton={true}
+            onClick={handleSignUp}
+          />
+          <Button
+            variant="secondary"
+            disabled={submitting}
+            onClick={showEmailAuth}
+          >
+            关联邮箱账号
+          </Button>
+        </div>
+
       </Modal.Body>
-      <Modal.Footer>
-        <ProgressButton
-          text="手机号新建账号"
-          disabled={submitting}
-          isSubmitting={submitting}
-          inline={true}
-          asButton={true}
-          onClick={handleSignUp}
-        />
-        <Button
-          variant="secondary"
-          onClick={showEmailAuth}
-        >
-          关联邮箱账号
-        </Button>
-      </Modal.Footer>
     </Modal>
   );
 }
@@ -109,7 +122,7 @@ function AlertMobileNotFound(
 function MobileLogin() {
   const { setLoggedIn } = useAuthContext();
   const [ errMsg, setErrMsg ] = useState('');
-  const [ mobile, setMobile ] = useState('');
+  const [ mobile, setMobile ] = useState('1234567890');
 
   const handleSMSRqeust = (mobile: string, helper: SMSHelper) => {
     console.log(mobile);
