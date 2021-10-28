@@ -128,7 +128,7 @@ function VerifyToken(props: {
 
   if (notFound) {
     return <div className="text-center">
-      无法重置密码。您似乎使用了无效的重置密码链接，请重新<Link to={sitemap.forgotPassword}>获取重置密码邮件</Link>或直接<Link to={sitemap.login}>登录</Link>
+      无法重置密码。您似乎使用了无效的重置密码链接，请重新<Link to={sitemap.passwordReset}>获取重置密码邮件</Link>或直接<Link to={sitemap.login}>登录</Link>
     </div>;
   }
 
