@@ -2,8 +2,8 @@ import { Cycle, PaymentMethod, Tier } from './enum';
 import { Edition } from './paywall';
 
 const tiers: Record<Tier, string> = {
-  standard: '标准版',
-  premium: '高端版'
+  standard: '标准会员',
+  premium: '高端会员'
 };
 
 export function localizedTier(tier: Tier): string {
