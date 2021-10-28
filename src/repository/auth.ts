@@ -88,7 +88,7 @@ export function mobileLinkNewEmail(req: MobileLinkNewEmailReq): Promise<ReaderPa
 }
 
 export function verifyEmail(token: string): Promise<boolean> {
-  return axios.get(endpoint.verifyEmail(token))
+  return axios.post(endpoint.verifyEmail(token))
     .then(resp => {
       return resp.status === 204;
     })
