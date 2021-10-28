@@ -17,12 +17,16 @@ export interface BaseAccount {
   campaignCode: string | null;
 }
 
-export function isEmailVerified(a: BaseAccount): boolean {
-  if (a.email.endsWith('@ftchinese.user')) {
+export function isMobileDerivedEmail(email: string): boolean {
+  return email.endsWith('@ftchinese.user')
+}
+
+export function isEmailMissing(a: string): boolean {
+  if (a === '') {
     return true;
   }
 
-  return a.isVerified;
+  return isMobileDerivedEmail(a);
 }
 
 export function isTestAccount(a: BaseAccount): boolean {
