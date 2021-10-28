@@ -21,7 +21,7 @@ import { ChevronDown, ChevronUp } from '../components/icons';
 function LinkPwResetOrSignUp() {
   return (
     <div className="d-flex justify-content-between mt-3">
-      <Link to={sitemap.passwordReset}>忘记密码?</Link>
+      <Link to={sitemap.forgotPassword}>忘记密码?</Link>
       <Link to={sitemap.signUp}>新建账号</Link>
     </div>
   );

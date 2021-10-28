@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { endpoint } from './endpoint';
-import { Credentials, EmailFormVal, MobileFormVal, MobileLinkExistingEmailReq, MobileLinkNewEmailReq, VerifySMSFormVal } from '../data/form-value';
+import { Credentials, MobileFormVal, MobileLinkExistingEmailReq, MobileLinkNewEmailReq, PwResetLetterReq, VerifySMSFormVal } from '../data/form-value';
 import { ApiErrorPayload, ResponseError } from './response-error';
 import { ReaderPassport } from '../data/account';
 import { PasswordResetReqParams, PasswordResetVerified } from '../data/password-reset';
@@ -99,8 +99,8 @@ export function verifyEmail(token: string): Promise<boolean> {
     });
 }
 
-export function requestPasswordReset(v: EmailFormVal): Promise<boolean> {
-  return axios.post(endpoint.requestPasswordReset, v)
+export function requestPasswordReset(req: PwResetLetterReq): Promise<boolean> {
+  return axios.post(endpoint.requestPasswordReset, req)
     .then(resp => {
       return resp.status === 204;
     })
