@@ -9,7 +9,7 @@ export interface Config {
 
 function buildConfig(): Config {
 
-  const clientName = 'b2b';
+  const clientName = 'reader';
   const backendName = 'ftacademy';
 
   return {
