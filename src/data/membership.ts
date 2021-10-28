@@ -3,33 +3,25 @@ import { OrderKind, PaymentMethod, SubStatus } from './enum';
 import { Edition } from './paywall';
 
 
-export interface Membership extends Edition {
-  compoundId: string;
+export type Membership =  Partial<Edition> & {
   ftcId: string | null;
   unionId: string | null;
-  expireDate: string;
-  payMethod: PaymentMethod;
+  expireDate: string | null;
+  payMethod: PaymentMethod | null;
   ftcPlanId: string | null;
   stripeSubsId: string | null;
-  autoRenewal: boolean;
-  status: SubStatus;
+  autoRenew: boolean;
+  status: SubStatus | null;
   appleSubsId: string | null;
   b2bLicenceId: string | null;
   standardAddOn: number;
   premiumAddOn: number;
-  vip: boolean
+  vip: boolean;
 }
 
-export function isMembershipZero(m: Membership): boolean {
-  return m.tier == null;
-}
-
-export function isAutoRenewSubs(m: Membership): boolean {
-  if (m.autoRenewal) {
-    return true;
-  }
-
-  return !isMemberExpired(m);
+export function isExpired(date: Date): boolean {
+  const today = startOfDay(new Date());
+  return isBefore(date, today);
 }
 
 export function isMemberExpired(m: Membership): boolean {
@@ -38,9 +30,12 @@ export function isMemberExpired(m: Membership): boolean {
   }
 
   const expireOn = parseISO(m.expireDate);
-  const today = startOfDay(new Date());
 
-  return isBefore(expireOn, today) && !m.autoRenewal;
+  return isExpired(expireOn) && !m.autoRenew;
+}
+
+export function isMembershipZero(m: Membership): boolean {
+  return m.tier == null;
 }
 
 export function isOneTimePurchase(m: Membership): boolean {
