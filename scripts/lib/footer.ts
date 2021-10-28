@@ -11,7 +11,8 @@ interface FooterColumn {
 export interface Footer {
   matrix: FooterColumn[];
   year: string;
-  version: string;
+  clientVersion: string;
+  serverVersion: string;
 }
 
 const footerMatrix: FooterColumn[] = [
@@ -139,10 +140,11 @@ const footerMatrix: FooterColumn[] = [
 /**
  * @description Nunjucks context to render footer section.
  */
-export function buildFooter(version: string): Footer {
+export function buildFooter(): Footer {
   return {
     matrix: footerMatrix,
     year: '{{footer.Year}}',
-    version,
+    clientVersion: '{{footer.ClientVersion}}',
+    serverVersion: '{{footer.ServerVersion}}',
   }
 }

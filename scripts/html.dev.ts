@@ -18,7 +18,7 @@ async function renderIndex(): Promise<string> {
   const ctx: CtxIndex = {
     icon: defaultIcon,
     bootstrapVersion: pkg.devDependencies.bootstrap.replace('^', ''),
-    footer: buildFooter(pkg.version),
+    footer: buildFooter(),
   };
 
   return await render('index.html', ctx);

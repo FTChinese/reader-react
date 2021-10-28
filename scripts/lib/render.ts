@@ -2,7 +2,7 @@ import { resolve as resolvePath } from 'path';
 import { configure, render } from 'nunjucks';
 
 configure(
-  [resolvePath(process.cwd(), 'bin/template')],
+  [resolvePath(process.cwd(), 'scripts/template')],
   {
     autoescape: false,
     noCache: true,

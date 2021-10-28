@@ -7,7 +7,7 @@
           <div class="o-footer__matrix-content">
             {% for item in column.items -%}
             <a class="o-footer__matrix-link" href="{{item.href}}" target="_blank">{{item.name}}</a>
-            {%- endfor%}	
+            {%- endfor%}
           </div>
         </div>
       {%- endfor %}
@@ -19,7 +19,7 @@
       </small>
     </div>
     <div class="text-muted pb-3">
-      <small>v{{footer.version}}</small>
+      <small>Client v{{footer.clientVersion}}. Server v{{footer.serverVersion}}</small>
     </div>
   </div>
 </footer>

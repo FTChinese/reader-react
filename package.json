@@ -7,9 +7,9 @@
     "serve": "vite preview",
     "test": "jest",
     "postversion": "git push && git push --tags",
-    "html-dev": "ts-node --project=scripts/tsconfig.json ./bin/html.dev.ts",
-    "html": "ts-node --project=scripts/tsconfig.json ./bin/html.prod.ts",
-    "copy-static": "ts-node --project=bin/tsconfig.json ./bin/copyStaticAssets.ts",
+    "html-dev": "ts-node --project=scripts/tsconfig.json ./scripts/html.dev.ts",
+    "html": "ts-node --project=scripts/tsconfig.json ./scripts/html.prod.ts",
+    "copy-static": "ts-node --project=scripts/tsconfig.json ./scripts/copyStaticAssets.ts",
     "deploy-dev": "yarn run build && yarn run html && yarn run copy-static",
     "deploy": "yarn run build && yarn run html && yarn run copy-static --prod"
   },

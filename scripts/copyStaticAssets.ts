@@ -8,11 +8,16 @@ const golandDir = `GolandProjects`;
 
 const cli = (new CLIParser()).parse();
 
-const htmlOutDir = resolve(
+const serverProjectDir = resolve(
   homedir(),
   golandDir,
   config.projectNameServer,
-  'web/template/reader'
+);
+
+const htmlOutDir = resolve(
+  serverProjectDir,
+  'web/template',
+  config.projectNameClient,
 );
 
 const jsCssOutDir = cli.isProd
@@ -41,6 +46,7 @@ shell.cp(`dist/assets/*.css`, jsCssOutDir);
 
 console.log(`Copy go templates to ${htmlOutDir}`);
 
-shell.cp(config.goTemplateSource, htmlOutDir);
+shell.cp(config.goTemplateFile, htmlOutDir);
+shell.cp(config.versionFile, serverProjectDir);
 
 

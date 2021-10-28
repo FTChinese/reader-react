@@ -1,10 +1,8 @@
 import { isAbsolute, resolve } from 'path';
 import { promises } from 'fs';
 import { Config, config } from './config';
-import render from './lib/render';
-import { Assets, extractDOMAssets } from './lib/extractDOMAssets';
-import { HTMLTagBuilder } from './lib/HTMLTagBuilder';
 import { JSDOM } from 'jsdom';
+import { readPkgFile } from './lib/readPkgFile';
 
 const { writeFile } = promises;
 
@@ -43,14 +41,21 @@ const { writeFile } = promises;
 
 async function build(config: Config): Promise<void> {
 
-  const homeHTML = await prependAssetsUrl(resolve(process.cwd(), 'dist/index.html'));
+  const homeContent = await prependAssetsUrl(resolve(process.cwd(), 'dist/index.html'));
 
   // Output html to current directory.
   // It will be copied by shelljs together with js and css.
   await writeFile(
-    config.goTemplateSource,
-    homeHTML,
+    config.goTemplateFile,
+    homeContent,
     { encoding: 'utf8' });
+
+  const pkg = await readPkgFile();
+  await writeFile(
+    config.versionFile,
+    pkg.version,
+    { encoding: 'utf8' },
+  );
 }
 
 build(config)

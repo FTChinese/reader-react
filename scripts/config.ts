@@ -4,7 +4,8 @@ export interface Config {
   projectNameServer: string;
   projectNameClient: string;
   staticPrefix: string; // Used when rendering html template.
-  goTemplateSource: string; // Intermediate file for html template.
+  goTemplateFile: string; // Intermediate file for html template.
+  versionFile: string;
 }
 
 function buildConfig(): Config {
@@ -16,7 +17,8 @@ function buildConfig(): Config {
     projectNameClient: clientName,
     projectNameServer: backendName,
     staticPrefix: `/static/frontend/${clientName}/`,
-    goTemplateSource: resolve(process.cwd(), 'dist/home.html'),
+    goTemplateFile: resolve(process.cwd(), 'dist/home.html'),
+    versionFile: resolve(process.cwd(), 'dist/client_version_reader'),
   }
 }
 
