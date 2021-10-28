@@ -45,6 +45,15 @@ export type EmailFormVal = {
   email: string;
 };
 
+export type PwResetLetterReq = EmailFormVal & {
+  sourceUrl: string;
+};
+
+export type ResetPwReq = {
+  token: string;
+  password: string;
+};
+
 // Used to send sms, or create new mobile-only account.
 export type MobileFormVal = {
   mobile: string;
