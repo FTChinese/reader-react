@@ -12,7 +12,7 @@ function VerifyToken(
 ) {
 
   const [ progress, setProgress ] = useState(true);
-  const [ err, setErr ] = useState<ResponseError>();
+  const [ errMsg, setErrMsg ]= useState('');
 
   useEffect(() => {
     verifyEmail(props.token)
@@ -21,26 +21,26 @@ function VerifyToken(
       })
       .catch((err: ResponseError) => {
         setProgress(false);
-        setErr(err);
+        if (err.notFound) {
+          setErrMsg('您似乎使用了无效的验证链接，请重试');
+          return;
+        }
+        setErrMsg(err.message);
       });
   }, []);
 
   if (progress) {
     return (
       <div className="text-center">
-        正在验证FT中文网企业订阅登录邮箱...
+        正在验证FT中文网登录邮箱...
       </div>
     );
   }
 
-  if (err) {
-    const msg = err.notFound
-      ? '您似乎使用无效的验证链接，请重试'
-      : err.message;
-
+  if (errMsg) {
     return (
       <div className="text-center">
-        {msg}
+        {errMsg}
       </div>
     );
   }
