@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { useAuthContext } from '../store/AuthContext';
 import { AuthLayout } from '../components/Layout'
 import { sitemap } from '../data/sitemap';
-import { emailLogin, mobileSignUp, requestMobileLoginSMS, verifyMobileLoginSMS } from '../repository/auth';
+import { emailLogin, mobileLinkExistingEmail, mobileSignUp, requestMobileLoginSMS, verifyMobileLoginSMS } from '../repository/auth';
 import { isCodeMissing, ResponseError } from '../repository/response-error';
 import { useState } from 'react';
 import Tabs from 'react-bootstrap/Tabs';
@@ -16,6 +16,16 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import ProgressButton from '../components/buttons/ProgressButton';
 import Alert from 'react-bootstrap/Alert';
+import { ChevronDown, ChevronUp } from '../components/icons';
+
+function LinkPwResetOrSignUp() {
+  return (
+    <div className="d-flex justify-content-between mt-3">
+      <Link to={sitemap.passwordReset}>忘记密码?</Link>
+      <Link to={sitemap.signUp}>新建账号</Link>
+    </div>
+  );
+}
 
 function EmailLogin() {
   const { setLoggedIn } = useAuthContext();
@@ -48,12 +58,10 @@ function EmailLogin() {
       <EmailLoginForm
         onSubmit={handleSubmit}
         errMsg={errMsg}
+        btnName="登录"
       />
 
-      <div className="d-flex justify-content-between mt-3">
-        <Link to={sitemap.forgotPassword}>忘记密码?</Link>
-        <Link to={sitemap.signUp}>新建账号</Link>
-      </div>
+      <LinkPwResetOrSignUp/>
     </>
   );
 }
@@ -66,6 +74,7 @@ function AlertMobileNotFound(
 ) {
   const { setLoggedIn } = useAuthContext();
   const [submitting, setSubmitting] = useState(false);
+  const [ linkEmail, setLinkEmail ] = useState(false);
 
   const handleSignUp = () => {
     setSubmitting(true);
@@ -77,10 +86,6 @@ function AlertMobileNotFound(
       .catch((err: ResponseError) => {
         toast.error(err.message);
       });
-  }
-
-  const showEmailAuth = () => {
-
   }
 
   return (
@@ -108,21 +113,90 @@ function AlertMobileNotFound(
           <Button
             variant="secondary"
             disabled={submitting}
-            onClick={showEmailAuth}
+            onClick={() => setLinkEmail(!linkEmail)}
           >
-            关联邮箱账号
+            <span className="pe-2">关联邮箱账号</span>
+            {linkEmail ?
+              <ChevronUp /> :
+              <ChevronDown />
+            }
           </Button>
         </div>
 
+        {linkEmail &&
+          <MobileLinkEmail
+            mobile={props.mobile}
+            onSubmitting={setSubmitting}
+          />
+        }
       </Modal.Body>
     </Modal>
+  );
+}
+
+/**
+ * @description Show the form to let a new mobile linking to existing email account.
+ */
+function MobileLinkEmail(
+  props: {
+    mobile: string;
+    onSubmitting: (yes: boolean) => void
+  }
+) {
+  const { setLoggedIn } = useAuthContext();
+  const [ errMsg, setErrMsg ] = useState('');
+
+  const handleSubmit = (
+    values: Credentials,
+    helper: FormikHelpers<Credentials>
+  ): void | Promise<any> => {
+    setErrMsg('');
+    helper.setSubmitting(true);
+    props.onSubmitting(true);
+
+    mobileLinkExistingEmail({
+      ...values,
+      mobile: props.mobile
+    })
+      .then(passport => {
+        helper.setSubmitting(false);
+        props.onSubmitting(false);
+        setLoggedIn(passport);
+      })
+      .catch((err: ResponseError) => {
+        helper.setSubmitting(false);
+        props.onSubmitting(false);
+        if (err.invalid) {
+          if (err.invalid.field === 'mobile') {
+            setErrMsg(err.message);
+            return;
+          }
+          helper.setErrors(err.toFormFields);
+          return;
+        }
+        setErrMsg(err.message);
+      });
+  }
+
+  return (
+    <div className="mt-4 pt-3 border-top">
+      <h4 className="text-center">验证已有邮箱账号</h4>
+      <p>验证后将绑定手机号{props.mobile}和邮箱，下次可以直接使用该手机号登录</p>
+      <EmailLoginForm
+        onSubmit={handleSubmit}
+        errMsg={errMsg}
+        btnName="验证并绑定"
+      />
+
+      <LinkPwResetOrSignUp/>
+    </div>
   );
 }
 
 function MobileLogin() {
   const { setLoggedIn } = useAuthContext();
   const [ errMsg, setErrMsg ] = useState('');
-  const [ mobile, setMobile ] = useState('1234567890');
+  const [ mobile, setMobile ] = useState('');
 
   const handleSMSRqeust = (mobile: string, helper: SMSHelper) => {
     console.log(mobile);
@@ -157,7 +231,6 @@ function MobileLogin() {
     verifyMobileLoginSMS(values)
       .then(passport => {
         helper.setSubmitting(false);
-        console.log(passport);
         setLoggedIn(passport);
       })
       .catch((err: ResponseError) => {
