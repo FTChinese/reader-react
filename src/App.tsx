@@ -34,7 +34,7 @@ function App() {
               <PasswordResetPage />
             </AuthRoute>
 
-            <Route path={sitemap.verification}>
+            <Route path={`${sitemap.verification}/:token`}>
               <VerificationPage />
             </Route>
 
