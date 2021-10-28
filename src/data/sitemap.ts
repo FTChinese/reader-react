@@ -2,10 +2,15 @@ export const sitemap = {
   home: '/',
   login: '/login',
   signUp: '/signup',
-  passwordReset: '/password-reset', // Show email input box, or perform verification if there's a url parameter following this path.
+  forgotPassword: '/forgot-password',
+  passwordReset: '/password-reset',
   verification: '/verification',
   membership: '/membership',
   subs: '/subscription',
   products: '/products',
   settings: '/settings',
 };
+
+export function passwordResetUrl(baseUrl: string): string {
+  return `${baseUrl}/reader${sitemap.passwordReset}`;
+}
