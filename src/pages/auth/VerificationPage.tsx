@@ -57,7 +57,7 @@ export function VerificationPage() {
     return (
       <CenterLayout>
         <div className="text-center">
-          您用于登录FT中文网企业订阅服务的邮箱已验证。
+          您用于登录FT中文网的邮箱已验证。
         </div>
       </CenterLayout>
     );
