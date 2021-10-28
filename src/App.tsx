@@ -6,7 +6,7 @@ import { Toolbar } from './components/toolbar/Toolbar';
 import { AuthProvider } from './store/AuthContext';
 import { LoginPage } from './pages/LoginPage';
 import { SignUpPage } from './pages/SignUpPage';
-import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { MembershipPage } from './pages/MembershipPage';
 import { HomePage } from './pages/HomePage';
 import { AuthRoute, ProtectedRoute } from './components/routes/ProtectedRoute';
