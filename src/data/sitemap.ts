@@ -14,3 +14,7 @@ export const sitemap = {
 export function passwordResetUrl(baseUrl: string): string {
   return `${baseUrl}/reader${sitemap.passwordReset}`;
 }
+
+export function emailVerificationUrl(baseUrl: string): string {
+  return `${baseUrl}/reader${sitemap.verification}`;
+}
