@@ -26,7 +26,7 @@ function App() {
             <AuthRoute path={sitemap.signUp}>
               <SignUpPage />
             </AuthRoute>
-            <AuthRoute path={sitemap.forgotPassword}>
+            <AuthRoute path={sitemap.passwordReset}>
               <ForgotPasswordPage />
             </AuthRoute>
 
