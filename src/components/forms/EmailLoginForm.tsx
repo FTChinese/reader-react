@@ -4,6 +4,7 @@ import { Credentials, invalidMessages } from "../../data/form-value";
 import ProgressButton from "../buttons/ProgressButton";
 import { TextInput } from "../controls/TextInput";
 import * as Yup from 'yup';
+import { useEffect, useState } from 'react';
 
 export function EmailLoginForm(
   props: {
@@ -12,19 +13,28 @@ export function EmailLoginForm(
       formikHelpers: FormikHelpers<Credentials>
     ) => void | Promise<any>;
     errMsg: string;
+    btnName: string;
   }
 ) {
+
+  const [errMsg, setErrMsg] = useState('')
+
+  // Sync props error message to state.
+  // Must use props.errMsg to detect changes.
+  useEffect(() => {
+    setErrMsg(props.errMsg);
+  }, [props.errMsg]);
 
   return (
     <>
       {
-        props.errMsg &&
+        errMsg &&
         <Alert
           variant="danger"
           dismissible
-          onClose={() => props.errMsg = ''}
+          onClose={() => setErrMsg('')}
         >
-          {props.errMsg}
+          {errMsg}
         </Alert>
       }
       <Formik<Credentials>
@@ -57,7 +67,7 @@ export function EmailLoginForm(
             />
             <ProgressButton
               disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-              text="登录"
+              text={props.btnName}
               isSubmitting={formik.isSubmitting}
             />
           </Form>
