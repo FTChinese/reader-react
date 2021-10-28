@@ -54,6 +54,10 @@ const footerMatrix: FooterColumn[] = [
     title: '服务',
     items: [
       {
+        name: '企业订阅',
+        href: 'https://next.ftacademy.cn/corporate/login'
+      },
+      {
         name: '广告业务',
         href: 'https://www.ftchinese.com/m/corp/sales.html',
       },
