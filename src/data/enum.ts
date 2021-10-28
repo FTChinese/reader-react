@@ -17,3 +17,11 @@ export interface Edition {
   tier: Tier;
   cycle: Cycle;
 }
+
+export function isInvalidSubStatus(s: SubStatus): boolean {
+  if (s === 'incomplete_expired' || s === 'past_due' || s === 'unpaid') {
+    return true;
+  }
+
+  return false;
+}
