@@ -12,6 +12,7 @@ import { HomePage } from './pages/HomePage';
 import { AuthRoute, ProtectedRoute } from './components/routes/ProtectedRoute';
 import { sitemap } from './data/sitemap';
 import { VerificationPage } from './pages/auth/VerificationPage';
+import { PasswordResetPage } from './pages/PasswordResetPage';
 
 function App() {
   return (
@@ -26,8 +27,11 @@ function App() {
             <AuthRoute path={sitemap.signUp}>
               <SignUpPage />
             </AuthRoute>
-            <AuthRoute path={sitemap.passwordReset}>
+            <AuthRoute path={sitemap.forgotPassword}>
               <ForgotPasswordPage />
+            </AuthRoute>
+            <AuthRoute path={`${sitemap.passwordReset}/:token`}>
+              <PasswordResetPage />
             </AuthRoute>
 
             <Route path={sitemap.verification}>
