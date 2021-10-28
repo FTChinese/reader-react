@@ -10,7 +10,7 @@ const navItems: ILink[] = [
   },
   {
     name: '会员订阅',
-    href: sitemap.subs,
+    href: sitemap.membership,
   },
 ];
 
