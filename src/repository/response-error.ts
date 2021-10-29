@@ -18,7 +18,7 @@ export function isCodeInvalid(invalid: InvalidReason, field: string): boolean {
   return invalid.field === field && invalid.code === 'invalid';
 }
 
-export function isCodeAlready(invalid: InvalidReason, field: string): boolean {
+export function isCodeAlreadyExists(invalid: InvalidReason, field: string): boolean {
   return invalid.field === field && invalid.code === 'already_exists';
 }
 export interface ApiErrorPayload {
