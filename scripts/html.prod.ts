@@ -1,4 +1,4 @@
-import { normalize, resolve } from 'path';
+import { basename, resolve } from 'path';
 import { promises } from 'fs';
 import { Config, config } from './config';
 import { JSDOM } from 'jsdom';
@@ -22,7 +22,8 @@ async function prependAssetsUrl(fileName: string): Promise<string> {
       console.log(`Processing href ${href}`);
 
       if (href && !href.startsWith('http')) {
-        const prefixed = normalize(`${config.staticPrefix}${href}`);
+
+        const prefixed = resolve(config.staticPrefix, basename(href));
 
         console.log(`Path prefixed ${prefixed}`);
 
@@ -36,7 +37,7 @@ async function prependAssetsUrl(fileName: string): Promise<string> {
 
       if (src && !src.startsWith('http')) {
 
-        const prefixed = normalize(`${config.staticPrefix}${src}`);
+        const prefixed = resolve(config.staticPrefix, basename(src));
 
         console.log(`Path prefixed ${prefixed}`);
 
