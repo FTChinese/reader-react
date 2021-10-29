@@ -4,6 +4,7 @@ import { invalidMessages, regex, SignupFormVal } from '../../data/form-value';
 import { TextInput } from '../controls/TextInput';
 import ProgressButton from '../buttons/ProgressButton';
 import Alert from 'react-bootstrap/Alert';
+import { useEffect, useState } from 'react';
 
 export function SignUpForm(
   props: {
@@ -13,15 +14,21 @@ export function SignUpForm(
   }
 ) {
 
+  const [ errMsg, setErrMsg ] = useState('');
+
+  useEffect(() => {
+    setErrMsg(props.errMsg);
+  }, [props.errMsg]);
+
   return (
     <>
       {
-        props.errMsg &&
+        errMsg &&
         <Alert
           variant="danger"
           dismissible
-          onClose={() => props.errMsg = ''}>
-          {props.errMsg}
+          onClose={() => setErrMsg('')}>
+          {errMsg}
         </Alert>
       }
 
