@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { createContext, useState } from 'react';
 import { isLoginExpired, ReaderPassport } from '../data/account';
 
-const storageLoginKey = 'ftc-b2b';
+const storageLoginKey = 'ftc-reader';
 
 interface AuthState {
   passport?: ReaderPassport;
