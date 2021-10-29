@@ -29,23 +29,18 @@ const jsCssOutDir = cli.isProd
     )
   // To dev folder
   : resolve(
-      homedir(),
-      'GolangProjects',
-      config.projectNameServer,
+      serverProjectDir,
       'build/public/static/frontend',
       config.projectNameClient
     );
 
 console.log(`Copy frontend assets to ${jsCssOutDir}`);
-
-shell.mkdir('-p', htmlOutDir);
 shell.mkdir('-p', jsCssOutDir);
-
 shell.cp(`dist/assets/*.js`, jsCssOutDir);
 shell.cp(`dist/assets/*.css`, jsCssOutDir);
 
 console.log(`Copy go templates to ${htmlOutDir}`);
-
+shell.mkdir('-p', htmlOutDir);
 shell.cp(config.goTemplateFile, htmlOutDir);
 shell.cp(config.versionFile, serverProjectDir);
 
