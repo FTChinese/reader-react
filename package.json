@@ -3,15 +3,15 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "vite",
+    "html-dev": "ts-node --project=scripts/tsconfig.json ./scripts/html.dev.ts",
     "build": "tsc && vite build",
     "serve": "vite preview",
     "test": "jest",
     "postversion": "git push && git push --tags",
-    "html-dev": "ts-node --project=scripts/tsconfig.json ./scripts/html.dev.ts",
     "html": "ts-node --project=scripts/tsconfig.json ./scripts/html.prod.ts",
     "copy-static": "ts-node --project=scripts/tsconfig.json ./scripts/copyStaticAssets.ts",
-    "deploy-dev": "yarn run build && yarn run html && yarn run copy-static",
-    "deploy": "yarn run build && yarn run html && yarn run copy-static --prod"
+    "deploy-dev": "pnpm run build && pnpm run html && pnpm run copy-static",
+    "deploy": "pnpm run build && pnpm run html && pnpm run copy-static -- --prod"
   },
   "dependencies": {
     "axios": "^0.23.0",
