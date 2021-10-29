@@ -1,4 +1,4 @@
-import { isAbsolute, resolve } from 'path';
+import { normalize, resolve } from 'path';
 import { promises } from 'fs';
 import { Config, config } from './config';
 import { JSDOM } from 'jsdom';
@@ -9,30 +9,38 @@ const { writeFile } = promises;
 /**
  * Add prefix to css and js bundle.
  */
- async function prependAssetsUrl(fileName: string): Promise<string> {
+async function prependAssetsUrl(fileName: string): Promise<string> {
   const dom = await JSDOM.fromFile(fileName);
 
   const document = dom.window.document;
 
   document.querySelectorAll('link')
     .forEach(link => {
-      const rel = link.getAttribute('rel');
-      if (rel !== 'stylesheet') {
-        return;
-      }
 
       const href = link.getAttribute('href');
 
-      if (href && !href.startsWith('http') && !isAbsolute(href)) {
-        link.setAttribute('href', `${config.staticPrefix}${href}`);
+      console.log(`Processing href ${href}`);
+
+      if (href && !href.startsWith('http')) {
+        const prefixed = normalize(`${config.staticPrefix}${href}`);
+
+        console.log(`Path prefixed ${prefixed}`);
+
+        link.setAttribute('href', prefixed);
       }
     });
 
   document.querySelectorAll('script')
     .forEach(script => {
       const src = script.getAttribute('src');
-      if (src) {
-        script.setAttribute('src', `${config.staticPrefix}${src}`);
+
+      if (src && !src.startsWith('http')) {
+
+        const prefixed = normalize(`${config.staticPrefix}${src}`);
+
+        console.log(`Path prefixed ${prefixed}`);
+
+        script.setAttribute('src', prefixed);
       }
     });
 
