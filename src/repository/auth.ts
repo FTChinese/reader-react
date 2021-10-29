@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { endpoint } from './endpoint';
-import { Credentials, MobileFormVal, MobileLinkExistingEmailReq, MobileLinkNewEmailReq, PwResetLetterReq, VerifySMSFormVal } from '../data/form-value';
+import { Credentials, EmailSignUpReq, MobileFormVal, MobileLinkExistingEmailReq, MobileLinkNewEmailReq, PwResetLetterReq, VerifySMSFormVal } from '../data/form-value';
 import { ApiErrorPayload, ResponseError } from './response-error';
 import { ReaderPassport } from '../data/account';
 import { PasswordResetReqParams, PasswordResetVerified } from '../data/password-reset';
@@ -23,8 +23,8 @@ export function emailLogin(c: Credentials): Promise<ReaderPassport> {
     });
 }
 
-export function emailSignUp(c: Credentials): Promise<ReaderPassport> {
-  return axios.post<Credentials, AxiosResponse<ReaderPassport>>(endpoint.emailSignUp, c)
+export function emailSignUp(v: EmailSignUpReq): Promise<ReaderPassport> {
+  return axios.post<EmailSignUpReq, AxiosResponse<ReaderPassport>>(endpoint.emailSignUp, v)
     .then(resp => {
       return resp.data;
     })
