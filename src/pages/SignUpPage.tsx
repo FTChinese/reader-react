@@ -19,7 +19,8 @@ export function SignUpPage() {
     helper.setSubmitting(true);
 
     emailSignUp({
-      ...values,
+      email: values.email,
+      password: values.password,
       sourceUrl: emailVerificationUrl(window.location.origin)
     })
       .then(passport => {
