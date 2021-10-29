@@ -1,6 +1,6 @@
 {
   "name": "reader-react",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "scripts": {
     "dev": "vite",
     "html-dev": "ts-node --project=scripts/tsconfig.json ./scripts/html.dev.ts",
