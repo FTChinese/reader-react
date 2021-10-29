@@ -16,7 +16,7 @@ function buildConfig(): Config {
   return {
     projectNameClient: clientName,
     projectNameServer: backendName,
-    staticPrefix: `/static/frontend/${clientName}/`,
+    staticPrefix: `/static/frontend/${clientName}`,
     goTemplateFile: resolve(process.cwd(), 'dist/home.html'),
     versionFile: resolve(process.cwd(), 'dist/client_version_reader'),
   }
