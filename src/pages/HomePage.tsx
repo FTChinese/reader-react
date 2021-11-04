@@ -22,7 +22,7 @@ export function HomePage() {
           isVerified={passport.isVerified}
         />
         <DisplayName
-          name={passport.userName}
+          userName={passport.userName}
         />
         <DisplayPassword/>
         <DisplayMobile
