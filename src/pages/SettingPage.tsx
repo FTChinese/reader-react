@@ -7,9 +7,9 @@ import { ResponseError } from '../repository/response-error';
 import { ContentLayout } from '../components/Layout';
 import { TextInput } from '../components/controls/TextInput';
 import ProgressButton from '../components/buttons/ProgressButton';
-import { invalidMessages, PasswordUpdateFormVal, toastMessages, UpdateNameFormVal, verifyPasswordSchema } from '../data/form-value';
+import { invalidMessages, PasswordUpdateFormVal, toastMessages, verifyPasswordSchema } from '../data/form-value';
 import Alert from 'react-bootstrap/Alert';
-import { updatePassword, updateDisplayName } from '../repository/reader-account';
+import { updatePassword } from '../repository/reader-account';
 import { ReaderPassport } from '../data/account';
 
 function UpdatePassword(props: {
@@ -98,80 +98,6 @@ function UpdatePassword(props: {
   );
 }
 
-function UpdateDisplayName(
-  props: {
-    passport: ReaderPassport,
-  }
-) {
-  const { setDisplayName } = useAuthContext();
-  const [ errMsg, setErrMsg ] = useState('');
-
-  return (
-    <div>
-      <h2 className="mt-3 mb-3 pt-3 border-top">更改显示名称</h2>
-
-      <Formik<UpdateNameFormVal>
-        initialValues={{
-          displayName: props.passport.userName || '',
-        }}
-        validationSchema={Yup.object({
-          displayName: Yup.string()
-            .required(invalidMessages.required),
-        })}
-        onSubmit={(values, helper) => {
-          helper.setSubmitting(true);
-
-          updateDisplayName(values, props.passport)
-            .then(ok => {
-              helper.setSubmitting(!ok);
-              if (ok) {
-                setDisplayName(values.displayName);
-                alert(toastMessages.saveSuccess);
-              }
-            })
-            .catch((err: ResponseError) => {
-              helper.setSubmitting(false);
-
-              if (err.invalid) {
-                helper.setErrors(err.toFormFields);
-                return;
-              }
-
-              setErrMsg(err.message);
-            });
-        }}
-      >
-        { formik => (
-          <>
-            {
-              errMsg &&
-              <Alert
-                variant="danger"
-                dismissible
-                onClose={() => setErrMsg('')}>
-                {errMsg}
-              </Alert>
-            }
-
-            <Form>
-              <TextInput
-                label="显示名称"
-                name="displayName"
-                type="text"
-              />
-              <ProgressButton
-                disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-                text="保存"
-                isSubmitting={formik.isSubmitting}
-                inline={true}
-              />
-            </Form>
-          </>
-        )}
-      </Formik>
-    </div>
-  );
-}
 
 export function SettingPage() {
   const { passport } = useAuthContext();
@@ -185,7 +111,6 @@ export function SettingPage() {
       <div className="row">
         <div className="col-sm-6">
           <UpdatePassword passport={passport} />
-          <UpdateDisplayName passport={passport} />
         </div>
       </div>
     </ContentLayout>
