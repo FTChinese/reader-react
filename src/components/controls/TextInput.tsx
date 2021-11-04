@@ -2,7 +2,7 @@ import { useField } from 'formik';
 
 interface FormGroupProps {
   name: string;
-  label: string;
+  label?: string;
   type: 'email' | 'password' | 'text' | 'url' | 'number';
   placeholder?: string;
   desc?: string;
@@ -18,12 +18,14 @@ export function TextInput(
 
   return (
     <div className="mb-3">
-      <label
-        className="form-label"
-        htmlFor={props.name}
-      >
-        {props.label}
-      </label>
+      { props.label &&
+        <label
+          className="form-label"
+          htmlFor={props.name}
+        >
+          {props.label}
+        </label>
+      }
       <input
         className={`form-control${isInvalid ? ' is-invalid' : ''}`}
         id={props.name}
