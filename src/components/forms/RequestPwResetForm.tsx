@@ -56,12 +56,10 @@ export function RequestPwResetForm(
               desc="请输入您的电子邮箱，我们会向该邮箱发送邮件，帮您重置密码"
             />
 
-            <div className="d-grid">
-              <ProgressButton
-                disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-                text="发送邮件"
-                isSubmitting={formik.isSubmitting}/>
-            </div>
+            <ProgressButton
+              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
+              text="发送邮件"
+              isSubmitting={formik.isSubmitting}/>
           </Form>
         )}
       </Formik>
