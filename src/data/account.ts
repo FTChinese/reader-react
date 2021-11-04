@@ -21,12 +21,12 @@ export function isMobileDerivedEmail(email: string): boolean {
   return email.endsWith('@ftchinese.user')
 }
 
-export function isEmailMissing(a: string): boolean {
-  if (a === '') {
-    return true;
+export function normalizeEmail(email: string): string {
+  if (isMobileDerivedEmail(email)) {
+    return '';
   }
 
-  return isMobileDerivedEmail(a);
+  return email;
 }
 
 export function isTestAccount(a: BaseAccount): boolean {
