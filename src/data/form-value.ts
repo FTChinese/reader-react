@@ -81,5 +81,5 @@ export interface PasswordUpdateFormVal {
 }
 
 export interface UpdateNameFormVal {
-  displayName: string;
+  userName: string;
 }
