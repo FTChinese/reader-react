@@ -98,6 +98,7 @@ a:hover {
 
 .btn-link {
   color: var(--color-teal);
+  padding: 0;
 }
 
 .btn-outline-primary {
