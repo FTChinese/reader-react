@@ -2,26 +2,64 @@ import { FormikHelpers, Formik, Form } from 'formik';
 import { useState, useEffect } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import * as Yup from 'yup';
-import { PasswordUpdateFormVal, verifyPasswordSchema } from '../../data/form-value';
+import { UpdatePasswordFormVal, toastMessages, verifyPasswordSchema } from '../../data/form-value';
+import { updatePassword } from '../../repository/reader-account';
+import { ResponseError } from '../../repository/response-error';
 import ProgressButton from '../buttons/ProgressButton';
 import { TextInput } from '../controls/TextInput';
 import { AccountRow } from "./AccountRow";
 
-export function DisplayPassword() {
+export function DisplayPassword(
+  props: {
+    token: string;
+  }
+) {
 
   const [editing, setEditing] = useState(false);
   const [errMsg, setErrMsg] = useState('');
 
+  const handleSubmit = (
+    values: UpdatePasswordFormVal,
+    helpers: FormikHelpers<UpdatePasswordFormVal>
+  ) => {
+    helpers.setSubmitting(true);
+
+    updatePassword(values, props.token)
+      .then(ok => {
+        helpers.setSubmitting(!ok);
+        if (ok) {
+          alert(toastMessages.updateSuccess);
+        } else {
+          alert(toastMessages.unknownErr);
+        }
+      })
+      .catch((err: ResponseError) => {
+        helpers.setSubmitting(false);
+        if (err.invalid) {
+          helpers.setErrors(err.toFormFields);
+          return;
+        }
+
+        setErrMsg(err.message);
+      });
+  }
+
   return (
     <AccountRow
       title="密码"
+      isEditing={editing}
+      onEdit={() => setEditing(!editing)}
     >
-      <div>
-        *******
-        <button
-          className="btn btn-link"
-        >修改</button>
-      </div>
+      {
+        editing ?
+
+        <UpdatePasswordForm
+          onSubmit={handleSubmit}
+          errMsg={errMsg}
+          onCancel={() => setEditing(false)}
+        /> :
+        <div>*******</div>
+      }
     </AccountRow>
   )
 }
@@ -29,8 +67,8 @@ export function DisplayPassword() {
 function UpdatePasswordForm(
   props: {
     onSubmit: (
-      values: PasswordUpdateFormVal,
-      formikHelpers: FormikHelpers<PasswordUpdateFormVal>
+      values: UpdatePasswordFormVal,
+      formikHelpers: FormikHelpers<UpdatePasswordFormVal>
     ) => void | Promise<any>;
     errMsg: string;
     onCancel: () => void;
@@ -56,10 +94,10 @@ function UpdatePasswordForm(
           {errMsg}
         </Alert>
       }
-      <Formik<PasswordUpdateFormVal>
+      <Formik<UpdatePasswordFormVal>
         initialValues={{
-          oldPassword: '',
-          password: '',
+          currentPassword: '',
+          newPassword: '',
           confirmPassword: ''
         }}
         validationSchema={Yup.object(verifyPasswordSchema)}
@@ -68,27 +106,27 @@ function UpdatePasswordForm(
         { formik => (
           <Form>
             <TextInput
-              label="密码"
-              name="password"
+              label="当前密码"
+              name="currentPassword"
               type="password"
             />
             <TextInput
-              label="确认密码"
+              label="新密码"
+              name="newPassword"
+              type="password"
+            />
+            <TextInput
+              label="确认新密码"
               name="confirmPassword"
               type="password"
             />
-            <div className="d-flex justify-content-end">
-              <button className="btn btn-link"
-                onClick={props.onCancel}
-              >
-                取消
-              </button>
-              <ProgressButton
-                disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-                text="重置"
-                isSubmitting={formik.isSubmitting}
-              />
-            </div>
+
+            <ProgressButton
+              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
+              text="重置"
+              inline={true}
+              isSubmitting={formik.isSubmitting}
+            />
           </Form>
         )}
       </Formik>

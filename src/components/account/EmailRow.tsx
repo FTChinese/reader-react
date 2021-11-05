@@ -19,6 +19,10 @@ export function DisplayEmail(
 
   const email = normalizeEmail(props.email);
 
+  const emailText = email
+    ? `${email}${props.isVerified ? '' : ' （未验证）'}`
+    : '未设置';
+
   const handleSubmit = (
     values: EmailFormVal,
     helpers: FormikHelpers<EmailFormVal>
@@ -32,6 +36,8 @@ export function DisplayEmail(
   return (
     <AccountRow
       title="邮箱"
+      isEditing={editing}
+      onEdit={() => setEditing(!editing)}
     >
       {
         editing ?
@@ -39,42 +45,13 @@ export function DisplayEmail(
           onSubmit={handleSubmit}
           errMsg={errMsg}
           email={email}
-          onCancel={() => setEditing(false)}
         /> :
-        <EmailDetails
-          email={email}
-          isVerified={props.isVerified}
-          onUpdate={() => setEditing(true)}
-        />
+        <div>{emailText}</div>
       }
     </AccountRow>
   );
 }
 
-function EmailDetails(
-  props: {
-    email: string;
-    isVerified: boolean;
-    onUpdate: () => void;
-  }
-) {
-
-  if (!props.email) {
-    return (
-      <div>
-        未设置
-        <button className="btn btn-link" onClick={props.onUpdate}>设置</button>
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      {props.email} {props.isVerified ? '' : '（未验证）'}
-      <button className="btn btn-link" onClick={props.onUpdate}>更改</button>
-    </div>
-  );
-}
 
 function EmailForm(
   props: {
@@ -83,7 +60,6 @@ function EmailForm(
       formikHelpers: FormikHelpers<EmailFormVal>
     ) => void | Promise<any>;
     errMsg: string;
-    onCancel: () => void;
     email: string;
   }
 ) {
@@ -126,20 +102,12 @@ function EmailForm(
               placeholder="name@example.com"
             />
 
-            <div className="d-flex justify-content-end">
-              <button className="btn btn-link"
-                onClick={props.onCancel}
-              >
-                取消
-              </button>
-
-              <ProgressButton
-                disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-                text="保存"
-                isSubmitting={formik.isSubmitting}
-                inline={true}
-              />
-            </div>
+            <ProgressButton
+              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
+              text="保存"
+              isSubmitting={formik.isSubmitting}
+              inline={true}
+            />
 
           </Form>
         )}

@@ -28,6 +28,8 @@ export function DisplayName(
   return (
     <AccountRow
       title="用户名"
+      isEditing={editing}
+      onEdit={() => setEditing(!editing)}
     >
       {
         editing ?
@@ -39,12 +41,6 @@ export function DisplayName(
         /> :
         <div>
           {props.userName || '未设置'}
-
-          <button className="btn btn-link"
-            onClick={() => setEditing(true)}
-          >
-            修改
-          </button>
         </div>
       }
     </AccountRow>
@@ -96,21 +92,13 @@ function UserNameForm(
               name="userName"
               type="text"
             />
-            <div className="d-flex justify-content-end">
-              <button className="btn btn-link"
-                onClick={props.onCancel}
-              >
-                取消
-              </button>
 
-              <ProgressButton
-                disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-                text="保存"
-                isSubmitting={formik.isSubmitting}
-                inline={true}
-              />
-
-            </div>
+            <ProgressButton
+              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
+              text="保存"
+              isSubmitting={formik.isSubmitting}
+              inline={true}
+            />
 
           </Form>
         )}
