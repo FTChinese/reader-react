@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
-import { authHeader, BaseAccount, ReaderPassport } from '../data/account';
-import { PasswordUpdateFormVal, UpdateNameFormVal } from '../data/form-value';
+import { authHeader, BaseAccount, bearerAuthHeader, ReaderPassport } from '../data/account';
+import { UpdatePasswordFormVal, UpdateNameFormVal } from '../data/form-value';
 import { ReaderAccount } from '../data/account';
 import { endpoint } from './endpoint';
 import { ResponseError } from './response-error';
@@ -45,12 +45,12 @@ export function updateDisplayName(v: UpdateNameFormVal, p: ReaderPassport): Prom
     });
 }
 
-export function updatePassword(v: PasswordUpdateFormVal, p: ReaderPassport,): Promise<boolean> {
+export function updatePassword(v: UpdatePasswordFormVal, token: string,): Promise<boolean> {
   return axios.patch(
     endpoint.changePassword,
     v,
     {
-      headers: authHeader(p),
+      headers: bearerAuthHeader(token),
     },
   )
     .then(resp => {
