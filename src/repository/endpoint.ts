@@ -21,6 +21,8 @@ export const endpoint = {
   },
   resetPassword: `${pwResetBase}`,
   emailAccount: `${accountBase}`,
+
+  // Update account fields
   changeEmail: `${accountBase}/email`,
   requestVerification: `${accountBase}/request-verification`,
   displayName: `${accountBase}/name`,
