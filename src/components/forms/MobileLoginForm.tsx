@@ -131,6 +131,7 @@ export function MobileLoginForm(
             <ProgressButton
               disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
               text={props.isLogin ? '登录' : '保存'}
+              inline={!props.isLogin}
               isSubmitting={formik.isSubmitting}
             />
           </Form>
