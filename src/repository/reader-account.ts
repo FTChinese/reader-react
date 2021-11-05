@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { authHeader, BaseAccount, bearerAuthHeader, ReaderPassport } from '../data/account';
-import { UpdatePasswordFormVal, UpdateNameFormVal } from '../data/form-value';
+import { UpdatePasswordFormVal, UpdateNameFormVal, MobileFormVal } from '../data/form-value';
 import { ReaderAccount } from '../data/account';
 import { endpoint } from './endpoint';
 import { ResponseError } from './response-error';
@@ -59,6 +59,18 @@ export function updatePassword(v: UpdatePasswordFormVal, token: string,): Promis
     .catch(error => {
       return Promise.reject(ResponseError.newInstance(error));
     });
+}
+
+export function requestVerifyMobile(v: MobileFormVal, token: string): Promise<boolean> {
+  return axios.put<MobileFormVal, AxiosResponse<boolean>>(
+    endpoint.verifyMobile,
+    v,
+    {
+      headers: bearerAuthHeader(token)
+    }
+  )
+    .then(resp => resp.status === 204)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
 export function loadAddress(p: ReaderPassport) {
