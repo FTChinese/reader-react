@@ -24,7 +24,9 @@ export function HomePage() {
         <DisplayName
           userName={passport.userName}
         />
-        <DisplayPassword/>
+        <DisplayPassword
+          token={passport.token}
+        />
         <DisplayMobile
           mobile={passport.mobile}
         />
