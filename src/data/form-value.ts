@@ -74,12 +74,15 @@ export interface PasswordResetFormVal {
   confirmPassword: string;
 }
 
-export interface PasswordUpdateFormVal {
-  oldPassword: string;
-  password: string;
-  confirmPassword: string;
-}
-
 export interface UpdateNameFormVal {
   userName: string;
+}
+
+export type UpdatePasswordReq = {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export type UpdatePasswordFormVal = UpdatePasswordReq & {
+  confirmPassword: string;
 }
