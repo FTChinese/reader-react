@@ -23,7 +23,7 @@ export function ContentLayout(
 ) {
 
   return (
-    <div className="container-fluid">
+    <div className="container">
       <div className="row">
 
         <div className="col-sm-2" role="navigation">
