@@ -66,6 +66,12 @@ export function authHeader(p: ReaderPassport): { [key: string]: string } {
   };
 }
 
+export function bearerAuthHeader(token: string): { [key: string]: string } {
+  return {
+    'Authorization': `Bearer ${token}`,
+  };
+}
+
 export function isLoginExpired(pp: ReaderPassport): boolean {
   return (Date.now() / 1000) > pp.expiresAt;
 }
