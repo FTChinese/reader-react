@@ -267,6 +267,8 @@ function MobileLogin() {
       <MobileLoginForm
         onSubmit={handleSubmit}
         onRequestSMS={handleSMSRqeust}
+        errMsg={errMsg}
+        isLogin={true}
       />
       {
         mobile &&
