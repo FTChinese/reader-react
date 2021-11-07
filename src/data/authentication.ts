@@ -1,4 +1,5 @@
 import { unixNow } from '../utils/now';
+import { WxOAuthKind } from './enum';
 import { Credentials } from './form-value';
 
 export type SignupFormVal = Credentials & {
@@ -9,13 +10,17 @@ export type EmailSignUpReq = Credentials & {
   sourceUrl: string;
 }
 
-/**
- * @description Used to request user consent to login with wechat.
- */
- export type WxOAuthCodeReq = {
+export type WxOAuthCodeReq = {
   state: string;
-  expiresAt: number; // Expiration time after which the state should be regarded as expired.
   redirectTo: string; // The URL to request wechat to show QR code.
+}
+
+/**
+ * @description Store WxOAuthCodeReq locally with expiration time.
+ */
+ export type WxOAuthCodeSession = WxOAuthCodeReq & {
+  expiresAt: number; // Expiration time after which the state should be regarded as expired.
+  kind: WxOAuthKind;
 }
 
 export type WxOAuthCodeResp = {
@@ -23,7 +28,7 @@ export type WxOAuthCodeResp = {
   state: string;
 }
 
-function validateWxOAuthCode(resp: WxOAuthCodeResp, req?: WxOAuthCodeReq): string {
+function validateWxOAuthCode(resp: WxOAuthCodeResp, req?: WxOAuthCodeSession): string {
   if (!req) {
     return '验证请求数据缺失';
   }

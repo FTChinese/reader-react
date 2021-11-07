@@ -1,11 +1,11 @@
 import axios, { AxiosResponse } from 'axios';
 import { bearerAuthHeader, ReaderPassport } from '../data/account';
 import { WxEmailLinkReq, WxEmailUnlinkReq } from '../data/account-wx';
-import { WxOAuthCodeReq, WxLoginReq, EmailSignUpReq } from '../data/authentication';
+import { WxLoginReq, EmailSignUpReq, WxOAuthCodeReq } from '../data/authentication';
 import { endpoint } from './endpoint';
 import { ResponseError } from './response-error';
 
-export function getWxOAuthSession(): Promise<WxOAuthCodeReq> {
+export function getWxOAuthCodeReq(): Promise<WxOAuthCodeReq> {
   return axios.get<WxOAuthCodeReq>(endpoint.wxCode)
     .then(resp => resp.data)
     .catch(err => Promise.reject(ResponseError.newInstance(err)));
