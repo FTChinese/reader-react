@@ -13,6 +13,7 @@ import { AuthRoute, ProtectedRoute } from './components/routes/ProtectedRoute';
 import { sitemap } from './data/sitemap';
 import { VerificationPage } from './pages/auth/VerificationPage';
 import { PasswordResetPage } from './pages/PasswordResetPage';
+import { WxCallbackPage } from './pages/oauth/WxCallbackPage';
 
 function App() {
   return (
@@ -26,6 +27,9 @@ function App() {
             </AuthRoute>
             <AuthRoute path={sitemap.signUp}>
               <SignUpPage />
+            </AuthRoute>
+            <AuthRoute path={sitemap.authCallback}>
+              <WxCallbackPage />
             </AuthRoute>
             <AuthRoute path={sitemap.forgotPassword}>
               <ForgotPasswordPage />
