@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import * as Yup from 'yup';
 import { normalizeEmail } from '../../data/account';
-import { EmailFormVal, invalidMessages } from '../../data/form-value';
+import { EmailVal, invalidMessages } from '../../data/form-value';
 import ProgressButton from '../buttons/ProgressButton';
 import { TextInput } from '../controls/TextInput';
 import { AccountRow } from "./AccountRow";
@@ -24,8 +24,8 @@ export function DisplayEmail(
     : '未设置';
 
   const handleSubmit = (
-    values: EmailFormVal,
-    helpers: FormikHelpers<EmailFormVal>
+    values: EmailVal,
+    helpers: FormikHelpers<EmailVal>
   ) => {
     setErrMsg('');
     helpers.setSubmitting(true);
@@ -56,8 +56,8 @@ export function DisplayEmail(
 function EmailForm(
   props: {
     onSubmit: (
-      values: EmailFormVal,
-      formikHelpers: FormikHelpers<EmailFormVal>
+      values: EmailVal,
+      formikHelpers: FormikHelpers<EmailVal>
     ) => void | Promise<any>;
     errMsg: string;
     email: string;
@@ -83,7 +83,7 @@ function EmailForm(
           {errMsg}
         </Alert>
       }
-      <Formik<EmailFormVal>
+      <Formik<EmailVal>
         initialValues={{
           email: props.email,
         }}

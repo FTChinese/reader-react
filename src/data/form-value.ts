@@ -28,24 +28,15 @@ export const toastMessages = {
   unknownErr: '失败：未知错误'
 };
 
-export interface Credentials {
+export type EmailVal = {
   email: string;
+};
+
+export type Credentials = EmailVal & {
   password: string;
 }
 
-export type SignupFormVal = Credentials & {
-  confirmPassword: string;
-};
-
-export type EmailSignUpReq = Credentials & {
-  sourceUrl: string;
-}
-
-export type EmailFormVal = {
-  email: string;
-};
-
-export type PwResetLetterReq = EmailFormVal & {
+export type PwResetLetterReq = EmailVal & {
   sourceUrl: string;
 };
 
@@ -72,14 +63,6 @@ export type MobileLinkNewEmailReq = Credentials & MobileFormVal & {
 export type PasswordResetFormVal = {
   password: string;
   confirmPassword: string;
-};
-
-export type WxLoginReq = {
-  code: string;
-};
-
-export type WxRefreshReq = {
-  sessionId: string;
 };
 
 export type UpdateNameFormVal = {

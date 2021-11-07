@@ -1,10 +1,11 @@
 import { Form, Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
-import { invalidMessages, regex, SignupFormVal } from '../../data/form-value';
+import { invalidMessages, regex } from '../../data/form-value';
 import { TextInput } from '../controls/TextInput';
 import ProgressButton from '../buttons/ProgressButton';
 import Alert from 'react-bootstrap/Alert';
 import { useEffect, useState } from 'react';
+import { SignupFormVal } from '../../data/authentication';
 
 export function SignUpForm(
   props: {

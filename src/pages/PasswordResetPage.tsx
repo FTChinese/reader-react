@@ -9,8 +9,9 @@ import { CenterLayout } from '../components/Layout';
 import { PasswordResetFormVal, verifyPasswordSchema } from '../data/form-value';
 import { PasswordResetVerified } from '../data/password-reset';
 import { sitemap } from '../data/sitemap';
-import { resetPassword, verifyPwToken, cancelSource } from '../repository/auth';
 import { ResponseError } from '../repository/response-error';
+import { resetPassword, verifyPwToken } from '../repository/password-reset';
+import { cancelSource } from '../repository/cancel';
 
 function ResetPassword(
   props: PasswordResetVerified

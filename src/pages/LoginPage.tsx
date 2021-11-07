@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { useAuthContext } from '../store/AuthContext';
 import { AuthLayout } from '../components/Layout'
 import { sitemap } from '../data/sitemap';
-import { emailLogin, mobileLinkExistingEmail, mobileSignUp, requestMobileLoginSMS, verifyMobileLoginSMS } from '../repository/auth';
+import { emailLogin } from '../repository/email-auth';
 import { isCodeMissing, ResponseError } from '../repository/response-error';
 import { useState } from 'react';
 import Tabs from 'react-bootstrap/Tabs';
@@ -18,6 +18,7 @@ import ProgressButton from '../components/buttons/ProgressButton';
 import Alert from 'react-bootstrap/Alert';
 import { ChevronDown, ChevronUp } from '../components/icons';
 import { WxLogin } from '../components/WxLogin';
+import { requestMobileLoginSMS, verifyMobileLoginSMS, mobileSignUp, mobileLinkExistingEmail } from '../repository/mobile-auth';
 
 function LinkPwResetOrSignUp() {
   return (

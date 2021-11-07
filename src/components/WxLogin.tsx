@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getWxOAuthSession } from '../repository/auth';
+import { getWxOAuthSession } from '../repository/wx-auth';
 
 export function WxLogin() {
 

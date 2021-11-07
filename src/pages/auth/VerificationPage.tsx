@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ResponseError } from '../../repository/response-error';
 import { CenterLayout } from '../../components/Layout';
-import { verifyEmail } from '../../repository/auth';
+import { verifyEmail } from '../../repository/email-auth';
 
 function VerifyToken(
   props: {

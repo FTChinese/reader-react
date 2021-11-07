@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { RequestPwResetForm } from '../components/forms/RequestPwResetForm';
 import { CenterLayout } from '../components/Layout';
-import { EmailFormVal } from '../data/form-value';
+import { EmailVal } from '../data/form-value';
 import { passwordResetUrl, sitemap } from '../data/sitemap';
-import { requestPasswordReset } from '../repository/auth';
+import { requestPasswordReset } from '../repository/password-reset';
 import { ResponseError } from '../repository/response-error';
 
 function RequestPwResetLetter(
@@ -28,8 +28,8 @@ function RequestPwResetLetter(
   }
 
   const handleSubmit = (
-    values: EmailFormVal,
-    helper: FormikHelpers<EmailFormVal>
+    values: EmailVal,
+    helper: FormikHelpers<EmailVal>
   ): void | Promise<any> => {
     setErrMsg('');
 

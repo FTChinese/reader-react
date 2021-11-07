@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import * as Yup from 'yup';
 import { UpdatePasswordFormVal, toastMessages, verifyPasswordSchema } from '../../data/form-value';
-import { updatePassword } from '../../repository/reader-account';
+import { updatePassword } from '../../repository/email-account';
 import { ResponseError } from '../../repository/response-error';
 import ProgressButton from '../buttons/ProgressButton';
 import { TextInput } from '../controls/TextInput';

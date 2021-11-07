@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import { useAuthContext } from '../store/AuthContext';
 import { AuthLayout } from '../components/Layout';
 import { emailVerificationUrl, sitemap } from '../data/sitemap';
-import { emailSignUp } from '../repository/auth';
+import { emailSignUp } from '../repository/email-auth';
 import { isCodeAlreadyExists, ResponseError } from '../repository/response-error';
 import { SignUpForm } from '../components/forms/SignUpForm';
 import { FormikHelpers } from 'formik';
-import { SignupFormVal } from '../data/form-value';
+import { SignupFormVal } from '../data/authentication';
 
 export function SignUpPage() {
 
