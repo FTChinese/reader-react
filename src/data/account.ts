@@ -79,3 +79,9 @@ export function isLoginExpired(pp: ReaderPassport): boolean {
 export type SearchResult = {
   id: string | null;
 }
+
+export type WxOAuthSession = {
+  state: string;
+  expiresAt: number;
+  redirectTo: string;
+}
