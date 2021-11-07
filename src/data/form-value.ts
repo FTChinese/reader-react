@@ -69,20 +69,28 @@ export type MobileLinkNewEmailReq = Credentials & MobileFormVal & {
   sourceUrl: string;
 };
 
-export interface PasswordResetFormVal {
+export type PasswordResetFormVal = {
   password: string;
   confirmPassword: string;
-}
+};
 
-export interface UpdateNameFormVal {
+export type WxLoginReq = {
+  code: string;
+};
+
+export type WxRefreshReq = {
+  sessionId: string;
+};
+
+export type UpdateNameFormVal = {
   userName: string;
-}
+};
 
 export type UpdatePasswordReq = {
   currentPassword: string;
   newPassword: string;
-}
+};
 
 export type UpdatePasswordFormVal = UpdatePasswordReq & {
   confirmPassword: string;
-}
+};

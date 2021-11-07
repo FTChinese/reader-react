@@ -1,8 +1,8 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { endpoint } from './endpoint';
-import { Credentials, EmailSignUpReq, MobileFormVal, MobileLinkExistingEmailReq, MobileLinkNewEmailReq, PwResetLetterReq, VerifySMSFormVal } from '../data/form-value';
+import { Credentials, EmailSignUpReq, MobileFormVal, MobileLinkExistingEmailReq, MobileLinkNewEmailReq, PwResetLetterReq, VerifySMSFormVal, WxLoginReq } from '../data/form-value';
 import { ApiErrorPayload, ResponseError } from './response-error';
-import { ReaderPassport, WxOAuthSession } from '../data/account';
+import { ReaderPassport, WxOAuthCodeReq, WxOAuthLoginSession } from '../data/account';
 import { PasswordResetReqParams, PasswordResetVerified } from '../data/password-reset';
 
 const CancelToken = axios.CancelToken;
@@ -142,8 +142,17 @@ export function resetPassword(v: PasswordResetReqParams): Promise<boolean> {
     });
 }
 
-export function getWxOAuthSession(): Promise<WxOAuthSession> {
-  return axios.get<WxOAuthSession>(endpoint.wxCode)
+export function getWxOAuthSession(): Promise<WxOAuthCodeReq> {
+  return axios.get<WxOAuthCodeReq>(endpoint.wxCode)
     .then(resp => resp.data)
     .catch(err => Promise.reject(ResponseError.newInstance(err)));
+}
+
+export function wxLogin(code: string): Promise<WxOAuthLoginSession> {
+  return axios.post<WxOAuthLoginSession, AxiosResponse<WxOAuthLoginSession>, WxLoginReq>(
+    endpoint.wxLogin,
+    { code, }
+  )
+  .then(resp => resp.data)
+  .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }

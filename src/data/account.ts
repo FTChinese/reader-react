@@ -1,3 +1,4 @@
+import { unixNow } from '../utils/now';
 import { LoginMethod } from './enum';
 import { Membership } from './membership';
 
@@ -80,8 +81,50 @@ export type SearchResult = {
   id: string | null;
 }
 
-export type WxOAuthSession = {
+/**
+ * @description Used to request user consent to login with wechat.
+ */
+export type WxOAuthCodeReq = {
   state: string;
-  expiresAt: number;
-  redirectTo: string;
+  expiresAt: number; // Expiration time after which the state should be regarded as expired.
+  redirectTo: string; // The URL to request wechat to show QR code.
+}
+
+export type WxOAuthCodeResp = {
+  code?: string; // Won't exist if user denied authorization
+  state: string;
+}
+
+function validateWxOAuthCode(resp: WxOAuthCodeResp, req?: WxOAuthCodeReq): string {
+  if (!req) {
+    return '验证请求数据缺失';
+  }
+
+  if (!resp.code && !resp.state) {
+    return '响应参数缺失：code, state';
+  }
+
+  if (!resp.code) {
+    return '响应参数缺失：code';
+  }
+
+  if (!resp.state) {
+    return '响应参数缺失：state';
+  }
+
+  if (resp.state !== req.state) {
+    return '无效的响应的状态';
+  }
+
+  if (req.expiresAt < unixNow()) {
+    return '本次登录验证已超时';
+  }
+
+  return ''
+}
+
+export type WxOAuthLoginSession = {
+  sessionId: string;
+  unionId: string;
+  createdAt: string;
 }
