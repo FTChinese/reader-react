@@ -2,8 +2,7 @@ import { useContext } from 'react';
 import { useEffect } from 'react';
 import { createContext, useState } from 'react';
 import { isLoginExpired, ReaderPassport } from '../data/account';
-
-const storageLoginKey = 'ftc-reader';
+import { storeKeyAccount } from './keys';
 
 interface AuthState {
   passport?: ReaderPassport;
@@ -26,13 +25,13 @@ export function AuthProvider(props: {children: JSX.Element}) {
   function load() {
     if (passport) {
       if (isLoginExpired(passport)) {
-        localStorage.removeItem(storageLoginKey);
+        localStorage.removeItem(storeKeyAccount);
         setPassport(undefined);
       }
       return;
     }
 
-    const ppStr = localStorage.getItem(storageLoginKey);
+    const ppStr = localStorage.getItem(storeKeyAccount);
 
     if (!ppStr) {
       return;
@@ -41,12 +40,12 @@ export function AuthProvider(props: {children: JSX.Element}) {
     try {
       const pp: ReaderPassport = JSON.parse(ppStr);
       if (isLoginExpired(pp)) {
-        localStorage.removeItem(storageLoginKey);
+        localStorage.removeItem(storeKeyAccount);
       }
 
       setPassport(JSON.parse(ppStr));
     } catch (e) {
-      localStorage.removeItem(storageLoginKey);
+      localStorage.removeItem(storeKeyAccount);
     }
   }
 
@@ -61,11 +60,11 @@ export function AuthProvider(props: {children: JSX.Element}) {
   const ctxValue: AuthState = {
     passport,
     setLoggedIn: (p: ReaderPassport) => {
-      localStorage.setItem(storageLoginKey, JSON.stringify(p));
+      localStorage.setItem(storeKeyAccount, JSON.stringify(p));
       setPassport(p);
     },
     setLoggedOut: () => {
-      localStorage.removeItem(storageLoginKey);
+      localStorage.removeItem(storeKeyAccount);
       setPassport(undefined);
     },
     setDisplayName: (n: string) => {
@@ -74,7 +73,7 @@ export function AuthProvider(props: {children: JSX.Element}) {
           ...passport,
           userName: n,
         };
-        localStorage.setItem(storageLoginKey, JSON.stringify(newPassport));
+        localStorage.setItem(storeKeyAccount, JSON.stringify(newPassport));
         setPassport(newPassport);
       }
     }
