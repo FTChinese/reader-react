@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { endpoint } from './endpoint';
 import { Credentials, EmailSignUpReq, MobileFormVal, MobileLinkExistingEmailReq, MobileLinkNewEmailReq, PwResetLetterReq, VerifySMSFormVal } from '../data/form-value';
 import { ApiErrorPayload, ResponseError } from './response-error';
-import { ReaderPassport } from '../data/account';
+import { ReaderPassport, WxOAuthSession } from '../data/account';
 import { PasswordResetReqParams, PasswordResetVerified } from '../data/password-reset';
 
 const CancelToken = axios.CancelToken;
@@ -140,4 +140,10 @@ export function resetPassword(v: PasswordResetReqParams): Promise<boolean> {
         ResponseError.newInstance(error),
       );
     });
+}
+
+export function getWxOAuthSession(): Promise<WxOAuthSession> {
+  return axios.get<WxOAuthSession>(endpoint.wxCode)
+    .then(resp => resp.data)
+    .catch(err => Promise.reject(ResponseError.newInstance(err)));
 }
