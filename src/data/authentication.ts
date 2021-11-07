@@ -58,15 +58,3 @@ export type WxLoginReq = {
   code: string; // Acquired from WxOAuthCodeResp.
 };
 
-/**
- * @description Response of WxLoginReq.
- */
-export type WxOAuthLoginSession = {
-  sessionId: string;
-  unionId: string;
-  createdAt: string;
-}
-
-export type WxRefreshReq = {
-  sessionId: string;
-};
