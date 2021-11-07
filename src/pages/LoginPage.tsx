@@ -17,6 +17,7 @@ import Button from 'react-bootstrap/Button';
 import ProgressButton from '../components/buttons/ProgressButton';
 import Alert from 'react-bootstrap/Alert';
 import { ChevronDown, ChevronUp } from '../components/icons';
+import { WxLogin } from '../components/WxLogin';
 
 function LinkPwResetOrSignUp() {
   return (
@@ -286,14 +287,18 @@ export function LoginPage() {
     <AuthLayout
       title="登录FT中文网"
     >
-      <Tabs defaultActiveKey="email" className="mb-3 mt-5 nav-fill">
-        <Tab eventKey="email" title="邮箱">
-          <EmailLogin/>
-        </Tab>
-        <Tab eventKey="mobile" title="手机号码">
-          <MobileLogin/>
-        </Tab>
-      </Tabs>
+      <>
+        <Tabs defaultActiveKey="email" className="mb-3 mt-5 nav-fill">
+          <Tab eventKey="email" title="邮箱">
+            <EmailLogin/>
+          </Tab>
+          <Tab eventKey="mobile" title="手机号码">
+            <MobileLogin/>
+          </Tab>
+        </Tabs>
+
+        <WxLogin/>
+      </>
     </AuthLayout>
   );
 }
