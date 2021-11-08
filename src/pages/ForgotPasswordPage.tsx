@@ -1,7 +1,7 @@
 import { FormikHelpers } from 'formik';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { RequestPwResetForm } from '../components/forms/RequestPwResetForm';
+import { EmailForm } from '../components/forms/EmailForm';
 import { CenterLayout } from '../components/Layout';
 import { EmailVal } from '../data/form-value';
 import { passwordResetUrl, sitemap } from '../data/sitemap';
@@ -54,9 +54,11 @@ function RequestPwResetLetter(
   }
 
   return (
-    <RequestPwResetForm
+    <EmailForm
       errMsg={errMsg}
       onSubmit={handleSubmit}
+      desc="请输入您的电子邮箱，我们会向该邮箱发送邮件，帮您重置密码"
+      btnText="发送邮件"
     />
   );
 }

@@ -1,18 +1,20 @@
-import { Formik, Form, FormikHelpers } from 'formik';
+import { FormikHelpers, Formik, Form } from 'formik';
 import { useState, useEffect } from 'react';
-import Alert from 'react-bootstrap/Alert';
-import * as Yup from 'yup';
+import { Alert } from 'react-bootstrap';
 import { EmailVal, invalidMessages } from '../../data/form-value';
 import ProgressButton from '../buttons/ProgressButton';
 import { TextInput } from '../controls/TextInput';
+import * as Yup from 'yup';
 
-export function RequestPwResetForm(
+export function EmailForm(
   props: {
     onSubmit: (
       values: EmailVal,
       formikHelpers: FormikHelpers<EmailVal>
     ) => void | Promise<any>;
     errMsg: string;
+    desc: string;
+    btnText: string;
   }
 ) {
 
@@ -52,13 +54,13 @@ export function RequestPwResetForm(
               label="邮箱"
               name="email"
               type="email"
-              placeholder="name@example.com"
-              desc="请输入您的电子邮箱，我们会向该邮箱发送邮件，帮您重置密码"
+              placeholder="yourname@example.org"
+              desc="检测邮箱是否已注册"
             />
 
             <ProgressButton
               disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-              text="发送邮件"
+              text="下一步"
               isSubmitting={formik.isSubmitting}/>
           </Form>
         )}
