@@ -6,6 +6,12 @@ import { TextInput } from "../controls/TextInput";
 import * as Yup from 'yup';
 import { useEffect, useState } from 'react';
 
+/**
+ * @description A form to collect email login data, used for:
+ * - Login with email
+ * - New mobile user links to an existing email account
+ * - Wechat user links to existing email.
+ */
 export function EmailLoginForm(
   props: {
     onSubmit: (
@@ -13,7 +19,8 @@ export function EmailLoginForm(
       formikHelpers: FormikHelpers<Credentials>
     ) => void | Promise<any>;
     errMsg: string;
-    btnName: string;
+    btnText: string;
+    email: string;
   }
 ) {
 
@@ -39,7 +46,7 @@ export function EmailLoginForm(
       }
       <Formik<Credentials>
         initialValues={{
-          email: '',
+          email: props.email,
           password: '',
         }}
         validationSchema={Yup.object({
@@ -59,6 +66,7 @@ export function EmailLoginForm(
               name="email"
               type="email"
               placeholder="name@example.com"
+              disabled={!!props.email}
             />
             <TextInput
               label="密码"
@@ -67,7 +75,7 @@ export function EmailLoginForm(
             />
             <ProgressButton
               disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-              text={props.btnName}
+              text={props.btnText}
               isSubmitting={formik.isSubmitting}
             />
           </Form>
