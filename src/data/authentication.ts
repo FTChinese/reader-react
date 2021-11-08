@@ -24,13 +24,13 @@ export type WxOAuthCodeReq = {
 }
 
 export type WxOAuthCodeResp = {
-  code?: string; // Won't exist if user denied authorization
-  state: string;
+  code: string | null; // Won't exist if user denied authorization
+  state: string | null;
 }
 
-function validateWxOAuthCode(resp: WxOAuthCodeResp, req?: WxOAuthCodeSession): string {
+export function validateWxOAuthCode(resp: WxOAuthCodeResp, req: WxOAuthCodeSession | null): string {
   if (!req) {
-    return '验证请求数据缺失';
+    return '本次会话请求数据缺失';
   }
 
   if (!resp.code && !resp.state) {
