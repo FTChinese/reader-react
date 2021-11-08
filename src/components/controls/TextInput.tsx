@@ -2,8 +2,8 @@ import { useField } from 'formik';
 
 interface FormGroupProps {
   name: string;
-  label?: string;
   type: 'email' | 'password' | 'text' | 'url' | 'number';
+  label?: string;
   placeholder?: string;
   desc?: string;
   disabled?: boolean;
