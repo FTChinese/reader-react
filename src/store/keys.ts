@@ -5,7 +5,7 @@ import { unixNow } from '../utils/now';
 export const storeKeyAccount = 'fta-reader';
 const storeKeyWxLogin = 'fta-wx-oauth'
 
-export const wxOAuthState = {
+export const wxCodeSessionStore = {
 
   save(req: WxOAuthCodeReq, k: WxOAuthKind) {
     const sess: WxOAuthCodeSession = {
