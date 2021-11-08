@@ -1,7 +1,8 @@
 import { differenceInDays, getDate, getMonth, parseISO, startOfDay } from 'date-fns';
+import { isExpired } from '../utils/now';
 import { Cycle, isInvalidSubStatus, SubStatus } from './enum';
 import { localizedCycle, localizedTier } from './localization';
-import { isExpired, Membership } from './membership';
+import { Membership } from './membership';
 
 /**
  * @description Describes the UI used to present Membership.

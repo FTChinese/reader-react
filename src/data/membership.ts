@@ -1,4 +1,5 @@
 import { isBefore, parseISO, startOfDay } from 'date-fns';
+import { isExpired } from '../utils/now';
 import { OrderKind, PaymentMethod, SubStatus } from './enum';
 import { Edition } from './paywall';
 
@@ -17,11 +18,6 @@ export type Membership =  Partial<Edition> & {
   standardAddOn: number;
   premiumAddOn: number;
   vip: boolean;
-}
-
-export function isExpired(date: Date): boolean {
-  const today = startOfDay(new Date());
-  return isBefore(date, today);
 }
 
 export function isMemberExpired(m: Membership): boolean {
