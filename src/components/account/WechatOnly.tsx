@@ -117,6 +117,7 @@ function LinkEmailDialog(
             <EmailForm
               onSubmit={checkEmail}
               errMsg={errMsg}
+              email=''
               desc="检测邮箱是否已注册"
               btnText="下一步"
             />

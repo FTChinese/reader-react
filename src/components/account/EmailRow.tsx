@@ -1,11 +1,8 @@
-import { FormikHelpers, Formik, Form } from 'formik';
-import { useState, useEffect } from 'react';
-import Alert from 'react-bootstrap/Alert';
-import * as Yup from 'yup';
+import { FormikHelpers } from 'formik';
+import { useState } from 'react';
 import { normalizeEmail } from '../../data/account';
-import { EmailVal, invalidMessages } from '../../data/form-value';
-import ProgressButton from '../buttons/ProgressButton';
-import { TextInput } from '../controls/TextInput';
+import { EmailVal } from '../../data/form-value';
+import { EmailForm } from '../forms/EmailForm';
 import { AccountRow } from "./AccountRow";
 
 export function DisplayEmail(
@@ -45,6 +42,9 @@ export function DisplayEmail(
           onSubmit={handleSubmit}
           errMsg={errMsg}
           email={email}
+          btnText="保存"
+          btnInline={true}
+          hideLabel={true}
         /> :
         <div>{emailText}</div>
       }
@@ -52,66 +52,3 @@ export function DisplayEmail(
   );
 }
 
-
-function EmailForm(
-  props: {
-    onSubmit: (
-      values: EmailVal,
-      formikHelpers: FormikHelpers<EmailVal>
-    ) => void | Promise<any>;
-    errMsg: string;
-    email: string;
-  }
-) {
-
-  const [errMsg, setErrMsg] = useState('')
-
-  // Sync props error message to state.
-  // Must use props.errMsg to detect changes.
-  useEffect(() => {
-    setErrMsg(props.errMsg);
-  }, [props.errMsg]);
-
-  return (
-    <>
-      {
-        errMsg &&
-        <Alert
-          variant="danger"
-          dismissible
-          onClose={() => setErrMsg('')}>
-          {errMsg}
-        </Alert>
-      }
-      <Formik<EmailVal>
-        initialValues={{
-          email: props.email,
-        }}
-        validationSchema={Yup.object({
-          email: Yup.string()
-            .email(invalidMessages.invalidEmail)
-            .required(invalidMessages.required)
-        })}
-        onSubmit={props.onSubmit}
-      >
-        { formik => (
-          <Form>
-            <TextInput
-              name="email"
-              type="email"
-              placeholder="name@example.com"
-            />
-
-            <ProgressButton
-              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-              text="保存"
-              isSubmitting={formik.isSubmitting}
-              inline={true}
-            />
-
-          </Form>
-        )}
-      </Formik>
-    </>
-  );
-}

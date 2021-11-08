@@ -57,6 +57,7 @@ function RequestPwResetLetter(
     <EmailForm
       errMsg={errMsg}
       onSubmit={handleSubmit}
+      email=''
       desc="请输入您的电子邮箱，我们会向该邮箱发送邮件，帮您重置密码"
       btnText="发送邮件"
     />
