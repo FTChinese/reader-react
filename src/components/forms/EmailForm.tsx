@@ -6,6 +6,12 @@ import ProgressButton from '../buttons/ProgressButton';
 import { TextInput } from '../controls/TextInput';
 import * as Yup from 'yup';
 
+/**
+ * @description An email input form used in multiple places:
+ * - Request password resetting letter
+ * - Updating email
+ * - Wechat links to email
+ */
 export function EmailForm(
   props: {
     onSubmit: (
@@ -13,8 +19,11 @@ export function EmailForm(
       formikHelpers: FormikHelpers<EmailVal>
     ) => void | Promise<any>;
     errMsg: string;
-    desc: string;
+    email: string;
     btnText: string;
+    desc?: string;
+    btnInline?: boolean;
+    hideLabel?: boolean;
   }
 ) {
 
@@ -39,7 +48,7 @@ export function EmailForm(
       }
       <Formik<EmailVal>
         initialValues={{
-          email: '',
+          email: props.email,
         }}
         validationSchema={Yup.object({
           email: Yup.string()
@@ -51,16 +60,17 @@ export function EmailForm(
         { formik => (
           <Form>
             <TextInput
-              label="邮箱"
+              label={props.hideLabel ? undefined : '邮箱'}
               name="email"
               type="email"
               placeholder="yourname@example.org"
-              desc="检测邮箱是否已注册"
+              desc={props.desc}
             />
 
             <ProgressButton
               disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-              text="下一步"
+              text={props.btnText}
+              inline={props.btnInline}
               isSubmitting={formik.isSubmitting}/>
           </Form>
         )}
