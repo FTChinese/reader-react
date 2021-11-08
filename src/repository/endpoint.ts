@@ -8,6 +8,7 @@ const pwResetBase = `${readerBase}/auth/password-reset`;
 const accountBase = `${readerBase}/account`;
 
 export const endpoint = {
+  emailExists: `${emailAuthBase}/exists`,
   emailLogin: `${emailAuthBase}/login`,
   emailSignUp: `${emailAuthBase}/signup`,
   verifyEmail: function (token: string): string {
