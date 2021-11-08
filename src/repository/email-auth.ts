@@ -5,6 +5,26 @@ import { ApiErrorPayload, ResponseError } from './response-error';
 import { ReaderPassport } from '../data/account';
 import { EmailSignUpReq } from '../data/authentication';
 
+export function emailExists(email: string): Promise<boolean> {
+  return axios.get<boolean>(
+      endpoint.emailExists,
+      {
+        params: {
+          v: email,
+        }
+      }
+    )
+    .then(resp => resp.status === 204)
+    .catch(err => {
+      const respErr = ResponseError.newInstance(err);
+      if (respErr.statusCode === 404) {
+        return false;
+      }
+
+      return Promise.reject(respErr);
+    });
+}
+
 export function emailLogin(c: Credentials): Promise<ReaderPassport> {
   return axios.post<Credentials, AxiosResponse<ReaderPassport>>(
       endpoint.emailLogin,
