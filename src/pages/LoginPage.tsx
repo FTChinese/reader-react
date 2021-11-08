@@ -60,7 +60,8 @@ function EmailLogin() {
       <EmailLoginForm
         onSubmit={handleSubmit}
         errMsg={errMsg}
-        btnName="登录"
+        btnText="登录"
+        email=''
       />
 
       <LinkPwResetOrSignUp/>
@@ -187,7 +188,8 @@ function MobileLinkEmail(
       <EmailLoginForm
         onSubmit={handleSubmit}
         errMsg={errMsg}
-        btnName="验证并绑定"
+        btnText="验证并绑定"
+        email=""
       />
 
       <LinkPwResetOrSignUp/>
