@@ -1,5 +1,5 @@
 import { LoginMethod } from './enum';
-import { Membership } from './membership';
+import { isMemberExpired, Membership } from './membership';
 
 export class Wechat {
   nickname?: string;
@@ -74,6 +74,34 @@ export function isAccountLinked(a: ReaderAccount): boolean {
 
 export function isAccountEqual(a: ReaderAccount, b: ReaderAccount): boolean {
   return a.id === b.id;
+}
+
+type LinkingAccounts = {
+  ftc: ReaderAccount;
+  wx: ReaderAccount;
+};
+
+export function isLinkable({ftc, wx}: LinkingAccounts): string {
+  if (isAccountEqual(ftc, wx)) {
+    return '两个账号已经绑定，无需操作。如果您未看到绑定后的账号信息，请点击"账号安全"刷新。';
+  }
+
+  if (isAccountLinked(ftc)) {
+    return `账号 ${ftc.email} 已经绑定了其他微信账号。一个FT中文网账号只能绑定一个微信账号。`;
+  }
+
+  if (isAccountLinked(wx)) {
+    return `微信账号 ${wx.wechat.nickname} 已经绑定了其他FT中文网账号。一个FT中文网账号只能绑定一个微信账号。`;
+  }
+
+  if (
+    !isMemberExpired(ftc.membership) &&
+    !isMemberExpired(wx.membership)
+  ) {
+    return `您的微信账号和FT中文网的账号均购买了会员服务，两个会员均未到期。合并账号会删除其中一个账号的会员信息。为保障您的权益，暂不支持绑定两个会员未过期的账号。您可以寻求客服帮助。`;
+  }
+
+  return '';
 }
 
 export interface ReaderPassport extends ReaderAccount {
