@@ -6,6 +6,34 @@ import { DisplayEmail } from '../components/account/EmailRow';
 import { DisplayPassword } from '../components/account/UpdatePassword';
 import { DisplayMobile } from '../components/account/MobileRow';
 import { DisplayWechat } from '../components/account/WechatRow';
+import { isAccountWxOnly, ReaderPassport } from '../data/account';
+import { WechatOnly } from '../components/account/WechatOnly';
+
+function FtcDetails(
+  props: ReaderPassport,
+) {
+  return (
+    <>
+      <DisplayEmail
+        email={props.email}
+        isVerified={props.isVerified}
+      />
+      <DisplayName
+        userName={props.userName}
+      />
+      <DisplayPassword
+        token={props.token}
+      />
+      <DisplayMobile
+        mobile={props.mobile}
+      />
+      <DisplayWechat
+        unionId={props.unionId}
+        wechat={props.wechat}
+      />
+    </>
+  );
+}
 
 export function HomePage() {
   const { passport } = useAuthContext();
@@ -14,27 +42,19 @@ export function HomePage() {
     return <Unauthorized />;
   }
 
+  const isWxOnly = isAccountWxOnly(passport);
+
   return (
     <ContentLayout>
-      <>
-        <DisplayEmail
-          email={passport.email}
-          isVerified={passport.isVerified}
-        />
-        <DisplayName
-          userName={passport.userName}
-        />
-        <DisplayPassword
+      { isWxOnly ?
+        <WechatOnly
           token={passport.token}
-        />
-        <DisplayMobile
-          mobile={passport.mobile}
-        />
-        <DisplayWechat
-          unionId={passport.unionId}
           wechat={passport.wechat}
+        /> :
+        <FtcDetails
+          {...passport}
         />
-      </>
+      }
     </ContentLayout>
   );
 }
