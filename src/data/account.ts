@@ -55,6 +55,27 @@ export function getDisplayName(account: ReaderAccount): string {
   return '';
 }
 
+export function accountVerified(account: ReaderAccount): ReaderAccount {
+  account.isVerified = true;
+  return account;
+}
+
+export function isAccountWxOnly(a: ReaderAccount): boolean {
+  return (!a.id) && (!!a.unionId);
+}
+
+export function isAccountFtcOnly(a: ReaderAccount): boolean {
+  return (!!a.id) && (!a.unionId);
+}
+
+export function isAccountLinked(a: ReaderAccount): boolean {
+  return !!(a.id && a.unionId);
+}
+
+export function isAccountEqual(a: ReaderAccount, b: ReaderAccount): boolean {
+  return a.id === b.id;
+}
+
 export interface ReaderPassport extends ReaderAccount {
   expiresAt: number;
   token: string;
