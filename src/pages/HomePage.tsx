@@ -48,8 +48,7 @@ export function HomePage() {
     <ContentLayout>
       { isWxOnly ?
         <WechatOnly
-          token={passport.token}
-          wechat={passport.wechat}
+          {...passport}
         /> :
         <FtcDetails
           {...passport}
