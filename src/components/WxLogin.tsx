@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { WxOAuthCodeReq } from '../data/authentication';
 import { getWxOAuthCodeReq } from '../repository/wx-auth';
-import { wxOAuthState } from '../store/keys';
+import { wxCodeSessionStore } from '../store/keys';
 
 export function WxLogin() {
 
@@ -21,7 +21,7 @@ export function WxLogin() {
   }
 
   const handleClick = () => {
-    wxOAuthState.save(req, 'login');
+    wxCodeSessionStore.save(req, 'login');
   }
 
   return (
