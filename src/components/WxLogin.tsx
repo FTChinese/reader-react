@@ -3,6 +3,10 @@ import { WxOAuthCodeReq } from '../data/authentication';
 import { getWxOAuthCodeReq } from '../repository/wx-auth';
 import { wxCodeSessionStore } from '../store/keys';
 
+/**
+ * @description WxLogin show a wechat login button and build the link to request a wechat OAuth code.
+ * It is shown at the bottom of the login page.
+ */
 export function WxLogin() {
 
   const [ req, setReq ] = useState<WxOAuthCodeReq>();
