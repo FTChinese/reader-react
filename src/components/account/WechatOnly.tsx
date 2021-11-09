@@ -22,6 +22,10 @@ import { useAuthContext } from '../../store/AuthContext';
  */
 type OnLinked = (passport: ReaderPassport) => void;
 
+/**
+ * @description WechatOnly show wechat name and avatar when the logged-in account
+ * contains only wechat data.
+ */
 export function WechatOnly(
   props: ReaderPassport
 ) {
