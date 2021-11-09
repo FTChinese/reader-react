@@ -30,7 +30,7 @@ export function isMemberExpired(m: Membership): boolean {
 }
 
 export function isMembershipZero(m: Membership): boolean {
-  return m.tier == null;
+  return m.tier == null && !m.vip;
 }
 
 export function isOneTimePurchase(m: Membership): boolean {
