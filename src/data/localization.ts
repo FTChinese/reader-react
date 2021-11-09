@@ -22,8 +22,8 @@ export function localizedCycle(c: Cycle): string {
 const paymentMethods: Record<PaymentMethod, string> = {
   alipay: '支付宝',
   wechat: '微信',
-  stripe: 'Stripe',
-  apple: '苹果App Store',
+  stripe: 'Stripe订阅',
+  apple: '苹果App内购',
   b2b: '企业订阅'
 };
 
