@@ -18,14 +18,16 @@ export function CardList(
         props.header &&
         <div className="card-header text-muted text-center">{props.header}</div>
       }
-      <div className="card-body">
-        {
-          props.title &&
-          <h5 className="card-title">{props.title}</h5>
-        }
-        {props.children}
-      </div>
-
+      {
+        (props.title || props.children) &&
+        <div className="card-body">
+          {
+            props.title &&
+            <h5 className="card-title">{props.title}</h5>
+          }
+          {props.children}
+        </div>
+      }
       <TwoColList rows={props.rows}/>
     </div>
   );

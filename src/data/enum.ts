@@ -10,6 +10,7 @@ export type AccountKind = 'ftc' | 'mobile' | 'wechat' | 'linked';
 export type PriceSource = 'ftc' | 'stripe';
 export type OfferKind = 'promotion' | 'retention' | 'win_back';
 export type WxOAuthKind = 'login' | 'link';
+export type WxUnlinkAnchor = 'ftc' | 'wechat';
 
 export const tiers: Tier[] = ['standard', 'premium'];
 export const cycles: Cycle[] = ['month', 'year'];

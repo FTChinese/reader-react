@@ -2,7 +2,7 @@ import { differenceInDays, getDate, getMonth, parseISO, startOfDay } from 'date-
 import { StringPair } from '../components/list/pair';
 import { isExpired } from '../utils/now';
 import { Cycle, isInvalidSubStatus, SubStatus } from './enum';
-import { localizedCycle, localizedTier } from './localization';
+import { localizedCycle, localizedTier, localizePaymentMethod } from './localization';
 import { Membership } from './membership';
 
 /**
@@ -56,7 +56,7 @@ function formatAutoRenewMoment(expiresAt?: Date, cycle?: Cycle): string {
 
   switch (cycle) {
     case 'year':
-      return `${getMonth(expiresAt)}月${getDate(expiresAt)}/${localizedCycle(cycle)}`
+      return `${getMonth(expiresAt)}月${getDate(expiresAt)}日/${localizedCycle(cycle)}`
 
     case 'month':
       return `${getDate(expiresAt)}/${localizedCycle(cycle)}`
@@ -68,7 +68,7 @@ const vipSubsStatus: MemberStatus = {
     details: [
       [expirationTitle, '无限期']
     ],
-}
+};
 
 function onetimeSubsStatus(m: Membership): MemberStatus {
   return {
@@ -82,17 +82,34 @@ function onetimeSubsStatus(m: Membership): MemberStatus {
   };
 }
 
+/**
+ * @description Build card like:
+ *       标准会员
+ * 订阅方式       企业订阅
+ * 到期时间       2021-11-11
+ */
 function b2bMemberStatus(m: Membership): MemberStatus {
   return {
     reminder: '企业订阅续订或升级请联系所属机构的管理人员',
     productName: m.tier ? localizedTier(m.tier) : '',
     details: [
-      ['订阅方式', '机构订阅'],
+      ['订阅方式', localizePaymentMethod(m.payMethod)],
       [expirationTitle, m.expireDate || '未知'],
     ],
   };
 }
 
+/**
+ * @description Build a card like:
+ *      标准会员
+ * 订阅方式     Stripe订阅
+ * 自动续订     xx月xx日/年
+ * if auto renew if off
+ *      标准会员
+ * 订阅方式     Stripe订阅
+ * 到期时间     2021-11-11
+ * 自动续订     已关闭
+ */
 function stripeSubsStatus(m: Membership): MemberStatus {
   const productName = m.tier ? localizedTier(m.tier) : '';
 
@@ -176,3 +193,4 @@ export function buildMemberStatus(m: Membership): MemberStatus {
       }
   }
 }
+
