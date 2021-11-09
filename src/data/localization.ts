@@ -27,11 +27,19 @@ const paymentMethods: Record<PaymentMethod, string> = {
   b2b: '企业订阅'
 };
 
-export function localizePaymentMethod(m: PaymentMethod): string {
+export function localizePaymentMethod(m: PaymentMethod | null): string {
+  if (!m) {
+    return '未知来源';
+  }
+
   return paymentMethods[m];
 }
 
-export function formatEdition(e: Edition): string {
+export function localizedEdition(e: Partial<Edition>): string {
+  if (!e.tier || !e.cycle) {
+    return '未知版本';
+  }
+
   return `${localizedTier(e.tier)}/${localizedCycle(e.cycle)}`;
 }
 
