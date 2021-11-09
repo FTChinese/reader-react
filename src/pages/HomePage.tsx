@@ -7,9 +7,37 @@ import { DisplayPassword } from '../components/account/UpdatePassword';
 import { DisplayMobile } from '../components/account/MobileRow';
 import { DisplayWechat } from '../components/account/WechatRow';
 import { isAccountWxOnly, ReaderPassport } from '../data/account';
-import { WechatOnly } from '../components/account/WechatOnly';
+import { WxLinkEmailDialog, OnLinked } from '../components/wx/WxLinkEmailDialog';
+import { useState } from 'react';
+import { WxAvatar } from '../components/wx/WxAvatar';
 
-function FtcDetails(
+export function HomePage() {
+  const { passport } = useAuthContext();
+
+  if (!passport) {
+    return <Unauthorized />;
+  }
+
+  const isWxOnly = isAccountWxOnly(passport);
+
+  return (
+    <ContentLayout>
+      { isWxOnly ?
+        <WechatDetails
+          {...passport}
+        /> :
+        <FtcDetails
+          {...passport}
+        />
+      }
+    </ContentLayout>
+  );
+}
+
+/**
+ * @description Show details for account with email or mobile
+ */
+ function FtcDetails(
   props: ReaderPassport,
 ) {
   return (
@@ -34,25 +62,51 @@ function FtcDetails(
   );
 }
 
-export function HomePage() {
-  const { passport } = useAuthContext();
+/**
+ * @description Show details if account is wechat-only
+ */
+function WechatDetails(
+  props: ReaderPassport
+) {
+  const { setLoggedIn } = useAuthContext();
+  const [showDialog, setShowDialog] = useState(false);
 
-  if (!passport) {
-    return <Unauthorized />;
+  const handleDialog = () => {
+    setShowDialog(!showDialog);
   }
 
-  const isWxOnly = isAccountWxOnly(passport);
+  const handleLinked: OnLinked = (passsport: ReaderPassport) => {
+    setShowDialog(false);
+    setLoggedIn(passsport);
+  }
 
   return (
-    <ContentLayout>
-      { isWxOnly ?
-        <WechatOnly
-          {...passport}
-        /> :
-        <FtcDetails
-          {...passport}
-        />
-      }
-    </ContentLayout>
+    <div className="row justify-content-center">
+      <div className="col-sm-10 col-lg-6">
+
+        <div className="d-flex justify-content-center">
+          <WxAvatar wechat={props.wechat} />
+        </div>
+
+        <div className="text-center">
+          <p>您目前使用了微信账号登录FT中文网。为保障账号安全，建议绑定在FT中文网注册的邮箱账号。</p>
+
+          <button
+            className="btn btn-primary"
+            onClick={handleDialog}
+          >
+            绑定邮箱
+          </button>
+
+          <WxLinkEmailDialog
+            passport={props}
+            show={showDialog}
+            onClose={handleDialog}
+            onLinked={handleLinked}
+          />
+        </div>
+
+      </div>
+    </div>
   );
 }

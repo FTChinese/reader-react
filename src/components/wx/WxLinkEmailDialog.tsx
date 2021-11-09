@@ -15,64 +15,11 @@ import { localizedTier } from '../../data/localization';
 import ProgressButton from '../buttons/ProgressButton';
 import Alert from 'react-bootstrap/Alert';
 import { wxLinkExistingEmail } from '../../repository/wx-auth';
-import { useAuthContext } from '../../store/AuthContext';
-import { WxAvatar } from '../wx/WxAvatar';
 
 /**
  * @description The callback function after accouns linked.
  */
-type OnLinked = (passport: ReaderPassport) => void;
-
-/**
- * @description WechatOnly show wechat name and avatar when the logged-in account
- * contains only wechat data.
- */
-export function WechatOnly(
-  props: ReaderPassport
-) {
-
-  const { setLoggedIn } = useAuthContext();
-  const [showDialog, setShowDialog] = useState(false);
-
-  const handleDialog = () => {
-    setShowDialog(!showDialog);
-  }
-
-  const handleLinked: OnLinked = (passsport: ReaderPassport) => {
-    setShowDialog(false);
-    setLoggedIn(passsport);
-  }
-
-  return (
-    <div className="row justify-content-center">
-      <div className="col-sm-10 col-lg-6">
-
-        <div className="d-flex justify-content-center">
-          <WxAvatar wechat={props.wechat} />
-        </div>
-
-        <div className="text-center">
-          <p>您目前使用了微信账号登录FT中文网。为保障账号安全，建议绑定在FT中文网注册的邮箱账号。</p>
-
-          <button
-            className="btn btn-primary"
-            onClick={handleDialog}
-          >
-            绑定邮箱
-          </button>
-
-          <LinkEmailDialog
-            passport={props}
-            show={showDialog}
-            onClose={handleDialog}
-            onLinked={handleLinked}
-          />
-        </div>
-
-      </div>
-    </div>
-  );
-}
+export type OnLinked = (passport: ReaderPassport) => void;
 
 /**
  * @description Show a dialog to let user link to email.
@@ -88,7 +35,7 @@ export function WechatOnly(
  * Both operations returnes a fresh copy of account data.
  * Use it to replace the cachec version.
  */
-function LinkEmailDialog(
+export function WxLinkEmailDialog(
   props: {
     passport: ReaderPassport;
     show: boolean;
