@@ -17,7 +17,7 @@ import Button from 'react-bootstrap/Button';
 import ProgressButton from '../components/buttons/ProgressButton';
 import Alert from 'react-bootstrap/Alert';
 import { ChevronDown, ChevronUp } from '../components/icons';
-import { WxLogin } from '../components/WxLogin';
+import { WxLogin } from '../components/wx/WxLogin';
 import { requestMobileLoginSMS, verifyMobileLoginSMS, mobileSignUp, mobileLinkExistingEmail } from '../repository/mobile-auth';
 
 function LinkPwResetOrSignUp() {
