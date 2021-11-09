@@ -1,7 +1,7 @@
 import { FormikHelpers } from 'formik';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
-import { isLinkable, ReaderAccount, ReaderPassport } from '../../data/account';
+import { isAccountWxOnly, isLinkable, isMobileDerivedEmail, ReaderAccount, ReaderPassport } from '../../data/account';
 import { Credentials, EmailVal } from '../../data/form-value';
 import { CenterLayout } from '../Layout';
 import { emailExists, emailLogin } from '../../repository/email-auth';
@@ -9,15 +9,33 @@ import { ResponseError } from '../../repository/response-error';
 import { BackButton } from '../buttons/BackButton';
 import { EmailForm } from '../forms/EmailForm';
 import { EmailLoginForm } from '../forms/EmailLoginForm';
+import { CardList } from '../list/CardList';
+import { StringPair } from '../list/pair';
+import { localizedTier } from '../../data/localization';
+import ProgressButton from '../buttons/ProgressButton';
+import Alert from 'react-bootstrap/Alert';
+import { wxLinkExistingEmail } from '../../repository/wx-auth';
+import { useAuthContext } from '../../store/AuthContext';
+
+/**
+ * @description The callback function after accouns linked.
+ */
+type OnLinked = (passport: ReaderPassport) => void;
 
 export function WechatOnly(
   props: ReaderPassport
 ) {
 
+  const { setLoggedIn } = useAuthContext();
   const [showDialog, setShowDialog] = useState(false);
 
   const handleDialog = () => {
     setShowDialog(!showDialog);
+  }
+
+  const handleLinked: OnLinked = (passsport: ReaderPassport) => {
+    setShowDialog(false);
+    setLoggedIn(passsport);
   }
 
   return (
@@ -50,6 +68,7 @@ export function WechatOnly(
             passport={props}
             show={showDialog}
             onClose={handleDialog}
+            onLinked={handleLinked}
           />
         </div>
 
@@ -77,6 +96,7 @@ function LinkEmailDialog(
     passport: ReaderPassport;
     show: boolean;
     onClose: () => void;
+    onLinked: OnLinked;
   }
 ) {
   const [errMsg, setErrMsg] = useState('');
@@ -126,6 +146,7 @@ function LinkEmailDialog(
               email={emailChecked}
               found={emailFound}
               onCancel={() => setEmailChecked('')}
+              onLinked={props.onLinked}
             /> :
             <EmailForm
               onSubmit={checkEmail}
@@ -147,6 +168,7 @@ function SignInOrUp(
     email: string;
     found: boolean;
     onCancel: () => void;
+    onLinked: OnLinked;
   }
 ) {
 
@@ -157,6 +179,7 @@ function SignInOrUp(
         <EmailLogIn
           passport={props.passport}
           email={props.email}
+          onLinked={props.onLinked}
         />
       </>
     );
@@ -172,8 +195,9 @@ function SignInOrUp(
 
 function EmailLogIn(
   props: {
-    passport: ReaderPassport;
-    email: string
+    passport: ReaderPassport; // Current logged-in account.
+    email: string; // Email to link.
+    onLinked: OnLinked;
   }
 ) {
 
@@ -184,11 +208,13 @@ function EmailLogIn(
     values: Credentials,
     helpers: FormikHelpers<Credentials>
   ) => {
-setErrMsg('');
+    setErrMsg('');
+    setFtcAccount(undefined);
     helpers.setSubmitting(true);
 
     emailLogin(values)
       .then(passport => {
+
         helpers.setSubmitting(false);
         const denied = isLinkable({
           ftc: passport,
@@ -222,25 +248,99 @@ setErrMsg('');
         email={props.email}
       />
       {
-        ftcAccount && <LinkWechatEmail
+        ftcAccount &&
+        <LinkWechatEmail
           token={props.passport.token}
           wxAccount={props.passport}
           ftcAccount={ftcAccount}
+          onLinked={props.onLinked}
         />
       }
     </>
   );
 }
 
+/**
+ * @description Display the two accounts to be linked and a button
+ * to let user to confirm the link.
+ */
 function LinkWechatEmail(
   props: {
     token: string;
     wxAccount: ReaderAccount,
     ftcAccount: ReaderAccount,
+    onLinked: OnLinked;
   }
 ) {
 
+  const [submitting, setSubmitting] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
+
+  const handleSubmit = () => {
+    setSubmitting(true);
+
+    wxLinkExistingEmail({
+        ftcId: props.ftcAccount.id,
+        token: props.token,
+      })
+      .then(passport => {
+        setSubmitting(false);
+        props.onLinked(passport);
+      })
+      .catch((err: ResponseError) => {
+        setSubmitting(false);
+        setErrMsg(err.message);
+      });
+  };
+
   return (
-    <div></div>
+    <div className="mt-5">
+      <h4 className="text-center">关联如下账号</h4>
+      <CardList
+        rows={buildAccountRows(props.ftcAccount)}
+        header="邮箱/手机账号"
+        className="mt-3"
+      />
+      <CardList
+        rows={buildAccountRows(props.wxAccount)}
+        header="微信账号"
+        className="mt-3 mb-3"
+      />
+      {
+        errMsg &&
+        <Alert
+          variant="danger"
+          dismissible
+          onClose={() => setErrMsg('')}
+        >
+          {errMsg}
+        </Alert>
+      }
+      <ProgressButton
+        disabled={submitting}
+        text="绑定账号"
+        isSubmitting={submitting}
+        asButton={true}
+        onClick={handleSubmit}
+      />
+    </div>
   );
+}
+
+function buildAccountRows(a: ReaderAccount): StringPair[] {
+  let firstRow: StringPair;
+
+  if (isAccountWxOnly(a)) {
+    firstRow = ['昵称', a.wechat.nickname || '-'];
+  } else if (isMobileDerivedEmail(a.email)) {
+    firstRow = ['手机', a.mobile || ''];
+  } else {
+    firstRow = ['邮箱', a.email];
+  }
+
+  return [
+    firstRow,
+    ['会员类型', a.membership.tier ? localizedTier(a.membership.tier) : '-'],
+    ['会员期限', a.membership.expireDate || '-'],
+  ];
 }
