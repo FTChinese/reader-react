@@ -20,10 +20,17 @@ export function wxLogin(code: string): Promise<ReaderPassport> {
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function wxLinkNewEmail(v: EmailSignUpReq, token: string): Promise<ReaderPassport> {
-  return axios.post<ReaderPassport, AxiosResponse<ReaderPassport>, EmailSignUpReq>(
-      endpoint.wxSignUp,
-      v,
+export function wxLinkExistingEmail(
+  {ftcId, token}: {
+    ftcId: string,
+    token: string
+  }
+): Promise<ReaderPassport> {
+  return axios.post<ReaderPassport, AxiosResponse<ReaderPassport>, WxEmailLinkReq>(
+      endpoint.wxLink,
+      {
+        ftcId,
+      },
       {
         headers: bearerAuthHeader(token)
       }
@@ -32,12 +39,10 @@ export function wxLinkNewEmail(v: EmailSignUpReq, token: string): Promise<Reader
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function wxLinkExistingEmail(ftcId: string, token: string): Promise<ReaderPassport> {
-  return axios.post<ReaderPassport, AxiosResponse<ReaderPassport>, WxEmailLinkReq>(
-      endpoint.wxLink,
-      {
-        ftcId,
-      },
+export function wxLinkNewEmail(v: EmailSignUpReq, token: string): Promise<ReaderPassport> {
+  return axios.post<ReaderPassport, AxiosResponse<ReaderPassport>, EmailSignUpReq>(
+      endpoint.wxSignUp,
+      v,
       {
         headers: bearerAuthHeader(token)
       }
