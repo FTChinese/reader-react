@@ -1,4 +1,5 @@
 import { differenceInDays, getDate, getMonth, parseISO, startOfDay } from 'date-fns';
+import { StringPair } from '../components/list/pair';
 import { isExpired } from '../utils/now';
 import { Cycle, isInvalidSubStatus, SubStatus } from './enum';
 import { localizedCycle, localizedTier } from './localization';
@@ -10,7 +11,7 @@ import { Membership } from './membership';
  export type MemberStatus = {
   reminder?: string;
   productName: string;
-  details: string[][];
+  details: StringPair[];
   reactivateStripe?: boolean;
 }
 

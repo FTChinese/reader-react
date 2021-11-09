@@ -4,6 +4,7 @@ import { isMembershipZero, Membership } from '../data/membership';
 import { Redirect } from 'react-router-dom';
 import { sitemap } from '../data/sitemap';
 import { buildMemberStatus } from '../data/member-status';
+import { CardList } from '../components/list/CardList';
 
 function SubsDetail(
   props: Membership
@@ -15,28 +16,17 @@ function SubsDetail(
   const memberStatus = buildMemberStatus(props);
 
   return (
-    <div className="card">
-      <div className="card-header text-muted text-center">当前订阅</div>
-      <div className="card-body">
-        <h5 className="text-center">{memberStatus.productName}</h5>
-        {
-          memberStatus.reminder &&
-          <p className="text-danger text-center">{memberStatus.reminder}</p>
-        }
-      </div>
-
-      <ul className="list-group list-group-flush">
+    <CardList
+      rows={memberStatus.details}
+      header="当前订阅"
+      title={memberStatus.productName}
+    >
       {
-        memberStatus.details.map(pair =>
-          <li className="list-group-item d-flex justify-content-between">
-            <span>{pair[0]}</span>
-            <span>{pair[1]}</span>
-          </li>
-        )
+        memberStatus.reminder ?
+        <p className="text-danger text-center">{memberStatus.reminder}</p> :
+        <></>
       }
-      </ul>
-
-    </div>
+    </CardList>
   )
 }
 
