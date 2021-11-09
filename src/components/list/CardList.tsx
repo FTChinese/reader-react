@@ -16,14 +16,14 @@ export function CardList(
     <div className={wrapperClass}>
       {
         props.header &&
-        <div className="card-header text-muted text-center">{props.header}</div>
+        <div className="card-header text-muted">{props.header}</div>
       }
       {
         (props.title || props.children) &&
         <div className="card-body">
           {
             props.title &&
-            <h5 className="card-title">{props.title}</h5>
+            <h5 className="card-title text-center">{props.title}</h5>
           }
           {props.children}
         </div>
