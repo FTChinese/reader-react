@@ -1,22 +1,24 @@
 import { useState } from 'react';
-import { Wechat } from "../../data/account";
+import { isAccountLinked, ReaderPassport, Wechat } from "../../data/account";
+import { WxAvatar } from '../wx/WxAvatar';
 import { AccountRow } from "./AccountRow";
 
 export function DisplayWechat(
   props: {
-    unionId: string | null;
-    wechat: Wechat;
+    passport: ReaderPassport;
   }
 ) {
 
-  const isLinked = !!props.unionId;
+  const isLinked = isAccountLinked(props.passport);
 
   return (
     <AccountRow
       title="微信"
     >
       { isLinked ?
-        <WechatLinked/> :
+        <WechatLinked
+          wechat={props.passport.wechat}
+        /> :
         <WechatMissing/>
       }
     </AccountRow>
@@ -24,26 +26,22 @@ export function DisplayWechat(
 }
 
 function WechatLinked(
-  props: Wechat
+  props: {
+    wechat: Wechat;
+  }
 ) {
-  if (!props.avatarUrl && !props.nickname) {
+  if (!props.wechat.avatarUrl && !props.wechat.nickname) {
     return <></>;
   }
 
   return (
-    <div className="d-flex">
+    <div className="d-flex justify-content-between">
       <div className="flex-grow-1">
-        <figure className="figure ">
-          <img src={props.avatarUrl} alt="微信头像" />
-          <figcaption className="figure-caption text-center">
-            {props.nickname}
-          </figcaption>
-        </figure>
+        <button className="btn btn-link">
+          解除绑定
+        </button>
       </div>
-
-      <button className="btn btn-link">
-        解除绑定
-      </button>
+      <WxAvatar wechat={props.wechat} />
     </div>
   );
 }

@@ -28,8 +28,7 @@ function FtcDetails(
         mobile={props.mobile}
       />
       <DisplayWechat
-        unionId={props.unionId}
-        wechat={props.wechat}
+        passport={props}
       />
     </>
   );

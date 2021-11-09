@@ -16,6 +16,7 @@ import ProgressButton from '../buttons/ProgressButton';
 import Alert from 'react-bootstrap/Alert';
 import { wxLinkExistingEmail } from '../../repository/wx-auth';
 import { useAuthContext } from '../../store/AuthContext';
+import { WxAvatar } from '../wx/WxAvatar';
 
 /**
  * @description The callback function after accouns linked.
@@ -47,15 +48,7 @@ export function WechatOnly(
       <div className="col-sm-10 col-lg-6">
 
         <div className="d-flex justify-content-center">
-          <figure className="figure">
-            <img
-              className="figure-img img-fluid rounded"
-              src={props.wechat.avatarUrl}
-              alt="微信头像" />
-            <figcaption className="figure-caption text-center">
-              {props.wechat.nickname}
-            </figcaption>
-          </figure>
+          <WxAvatar wechat={props.wechat} />
         </div>
 
         <div className="text-center">
