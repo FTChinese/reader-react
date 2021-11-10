@@ -1,5 +1,5 @@
-import { buildMemberStatus } from "../../data/member-status";
-import { Membership } from "../../data/membership";
+import { buildMemberStatus } from './member-status'
+import { Membership } from '../../data/membership';
 import { TwoColList } from '../list/TwoColList';
 
 export function CurrentSubs(
@@ -9,7 +9,7 @@ export function CurrentSubs(
   const memberStatus = buildMemberStatus(props);
 
   return (
-    <div className="card">
+    <div className="card mb-3">
       <div className="card-header">我的订阅</div>
       <div className="card-body">
         <h5 className="card-title text-center">{memberStatus.productName}</h5>
