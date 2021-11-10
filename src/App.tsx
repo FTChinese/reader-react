@@ -28,9 +28,7 @@ function App() {
             <AuthRoute path={sitemap.signUp}>
               <SignUpPage />
             </AuthRoute>
-            <AuthRoute path={sitemap.authCallback}>
-              <WxCallbackPage />
-            </AuthRoute>
+
             <AuthRoute path={sitemap.forgotPassword}>
               <ForgotPasswordPage />
             </AuthRoute>
@@ -40,6 +38,9 @@ function App() {
 
             <Route path={`${sitemap.verification}/:token`}>
               <VerificationPage />
+            </Route>
+            <Route path={sitemap.authCallback}>
+              <WxCallbackPage />
             </Route>
 
             <ProtectedRoute path={sitemap.membership}>
