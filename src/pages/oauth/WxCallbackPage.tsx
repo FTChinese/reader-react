@@ -17,7 +17,7 @@ export function WxCallbackPage() {
     state: query.get('state'),
   };
 
-  const sess = wxCodeSessionStore.load()
+  const sess = wxCodeSessionStore.load();
 
   return (
     <AuthLayout
