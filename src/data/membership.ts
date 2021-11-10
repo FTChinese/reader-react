@@ -1,11 +1,13 @@
 import { parseISO } from 'date-fns';
 import { isExpired } from '../utils/now';
-import { OrderKind, PaymentMethod, SubStatus } from './enum';
+import { Cycle, OrderKind, PaymentMethod, SubStatus, Tier } from './enum';
 import { Edition } from './paywall';
 
-export type Membership =  Partial<Edition> & {
+export type Membership =  {
   ftcId: string | null;
   unionId: string | null;
+  tier: Tier | null;
+  cycle: Cycle | null;
   expireDate: string | null;
   payMethod: PaymentMethod | null;
   ftcPlanId: string | null;
@@ -34,12 +36,11 @@ export function isMembershipZero(m: Membership): boolean {
 }
 
 export function isOneTimePurchase(m: Membership): boolean {
-  // Backward compatible.
-  if (m.tier != null && m.payMethod == null) {
-    return true;
-  }
-
   return m.payMethod === 'alipay' || m.payMethod === 'wechat';
+}
+
+export function isRenewalSubs(m: Membership): boolean {
+  return m.payMethod === 'stripe' || m.payMethod === 'wechat';
 }
 
 export function isConvertableToAddOn(m: Membership): boolean {
