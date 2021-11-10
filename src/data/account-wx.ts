@@ -6,5 +6,5 @@ export type WxEmailLinkReq = {
 
 export type WxEmailUnlinkReq = {
   ftcId: string;
-  anchor?: WxUnlinkAnchor;
+  anchor: WxUnlinkAnchor | null;
 }
