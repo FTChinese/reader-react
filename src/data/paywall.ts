@@ -12,7 +12,7 @@ export function isEditionEqual(a: Edition, b: Edition): boolean {
 /**
  * @description Price determines how much a product cost.
  */
-export interface Price extends Edition {
+export type Price = Edition & {
   id: string;
   active: boolean;
   currency: string;
