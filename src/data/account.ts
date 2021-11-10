@@ -1,11 +1,11 @@
 import { LoginMethod } from './enum';
 import { isMemberExpired, Membership } from './membership';
 
-export class Wechat {
-  nickname?: string;
-  avatarUrl?: string;
+export type Wechat = {
+  nickname: string | null;
+  avatarUrl: string | null;
 }
-export interface BaseAccount {
+export type BaseAccount = {
   id: string;
   unionId: string | null;
   stripeId: string | null;
