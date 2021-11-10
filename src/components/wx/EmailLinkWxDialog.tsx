@@ -5,7 +5,7 @@ import { ResponseError } from '../../repository/response-error';
 import { getWxOAuthCodeReq } from '../../repository/wx-auth';
 import { wxCodeSessionStore } from '../../store/keys';
 import ProgressButton from '../buttons/ProgressButton';
-import { OnLinkOrUnlink } from './OnLinkOrUnlink';
+import { OnReaderAccount } from './OnReaderAccount';
 
 /**
  * @description Show a dialog to let a user logged in
@@ -16,7 +16,7 @@ export function EmailLinkWxDialog(
     passport: ReaderPassport;
     show: boolean;
     onClose: () => void;
-    onLinked: OnLinkOrUnlink;
+    onLinked: OnReaderAccount;
   }
 ) {
 

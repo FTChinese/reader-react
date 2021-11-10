@@ -6,7 +6,7 @@ import { wxLinkExistingEmail } from '../../repository/wx-auth';
 import ProgressButton from '../buttons/ProgressButton';
 import { CardList } from '../list/CardList';
 import { StringPair, rowAccountIdentifier, rowTier, rowExpiration } from '../list/pair';
-import { OnLinkOrUnlink } from "./OnLinkOrUnlink";
+import { OnReaderAccount } from "./OnReaderAccount";
 
 /**
  * @description Display the two accounts to be linked and a button
@@ -17,7 +17,7 @@ export function LinkAccounts(
     token: string;
     wxAccount: ReaderAccount,
     ftcAccount: ReaderAccount,
-    onLinked: OnLinkOrUnlink;
+    onLinked: OnReaderAccount;
   }
 ) {
 

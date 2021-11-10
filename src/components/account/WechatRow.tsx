@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { isAccountLinked, ReaderPassport } from "../../data/account";
 import { useAuthContext } from '../../store/AuthContext';
 import { EmailLinkWxDialog } from '../wx/EmailLinkWxDialog';
-import { OnLinkOrUnlink } from '../wx/OnLinkOrUnlink';
+import { OnReaderAccount } from '../wx/OnReaderAccount';
 import { UnlinkDialog } from '../wx/UnlinkDialog';
 import { WxAvatar } from '../wx/WxAvatar';
 import { AccountRow } from "./AccountRow";
@@ -41,7 +41,7 @@ function WechatLinked(
 
   const [showUnlink, setShowUnlink] = useState(false);
 
-  const handleUnlinked: OnLinkOrUnlink = (passport: ReaderPassport) => {
+  const handleUnlinked: OnReaderAccount = (passport: ReaderPassport) => {
     setShowUnlink(false);
     setLoggedIn(passport);
   };
@@ -77,7 +77,7 @@ function WechatMissing(
     setShow(!show);
   };
 
-  const handleLinked: OnLinkOrUnlink = (passport: ReaderPassport) => {
+  const handleLinked: OnReaderAccount = (passport: ReaderPassport) => {
     setShow(false);
     setLoggedIn(passport);
   }

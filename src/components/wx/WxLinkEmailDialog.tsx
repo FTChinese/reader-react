@@ -10,7 +10,7 @@ import { BackButton } from '../buttons/BackButton';
 import { EmailForm } from '../forms/EmailForm';
 import { EmailLoginForm } from '../forms/EmailLoginForm';
 import { LinkAccounts } from './LinkAccounts';
-import { OnLinkOrUnlink } from './OnLinkOrUnlink';
+import { OnReaderAccount } from './OnReaderAccount';
 
 /**
  * @description Show a dialog to let a user logged
@@ -32,7 +32,7 @@ export function WxLinkEmailDialog(
     passport: ReaderPassport;
     show: boolean;
     onClose: () => void;
-    onLinked: OnLinkOrUnlink;
+    onLinked: OnReaderAccount;
   }
 ) {
   const [errMsg, setErrMsg] = useState('');
@@ -104,7 +104,7 @@ function SignInOrUp(
     email: string;
     found: boolean;
     onCancel: () => void;
-    onLinked: OnLinkOrUnlink;
+    onLinked: OnReaderAccount;
   }
 ) {
 
@@ -133,7 +133,7 @@ function EmailLogIn(
   props: {
     passport: ReaderPassport; // Current logged-in account.
     email: string; // Email to link.
-    onLinked: OnLinkOrUnlink;
+    onLinked: OnReaderAccount;
   }
 ) {
 

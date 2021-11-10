@@ -10,14 +10,14 @@ import ProgressButton from '../buttons/ProgressButton';
 import { CardList } from '../list/CardList';
 import { StringPair, pairEmail, pairWxName } from '../list/pair';
 import { UnlinkableSubs } from '../subs/UnlinkableSubs';
-import { OnLinkOrUnlink } from './OnLinkOrUnlink';
+import { OnReaderAccount } from './OnReaderAccount';
 
 export function UnlinkDialog(
   props: {
     passport: ReaderPassport;
     show: boolean;
     onClose: () => void;
-    onUnlinked: OnLinkOrUnlink;
+    onUnlinked: OnReaderAccount;
   }
 ) {
   const [errMsg, setErrMsg] = useState('');
