@@ -35,11 +35,7 @@ export function localizePaymentMethod(m: PaymentMethod | null): string {
   return paymentMethods[m];
 }
 
-export function localizedEdition(e: Partial<Edition>): string {
-  if (!e.tier || !e.cycle) {
-    return '未知版本';
-  }
-
+export function localizedEdition(e: Edition): string {
   return `${localizedTier(e.tier)}/${localizedCycle(e.cycle)}`;
 }
 
