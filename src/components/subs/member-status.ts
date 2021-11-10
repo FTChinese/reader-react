@@ -1,9 +1,9 @@
-import { getDate, getMonth, parseISO } from 'date-fns';
-import { StringPair } from '../components/list/pair';
-import { diffToday, isExpired } from '../utils/now';
-import { Cycle, isInvalidSubStatus, PaymentMethod, SubStatus } from './enum';
-import { localizedCycle, localizedTier, localizePaymentMethod } from './localization';
-import { isMembershipZero, Membership } from './membership';
+import { parseISO } from 'date-fns';
+import { SubStatus, isInvalidSubStatus } from '../../data/enum';
+import { localizedTier } from '../../data/localization';
+import { Membership, isMembershipZero } from '../../data/membership';
+import { diffToday, isExpired } from '../../utils/now';
+import { StringPair, rowExpiration, rowSubsSource, rowAutoRenewOn, rowAutoRenewDate, rowAutoRenewOff } from '../list/pair';
 
 /**
  * @description Describes the UI used to present Membership.
@@ -39,44 +39,6 @@ function formatRemainingDays(expiresAt?: Date, subStatus?: SubStatus | null): st
   }
 
   return undefined;
-}
-
-
-/**
- * @description Show auto renewal date
- * @example 11月11日/年 or 11日/月 depending on the value of cycle.
- */
-function formatAutoRenewMoment(expiresAt: Date, cycle: Cycle): string {
-  switch (cycle) {
-    case 'year':
-      return `${getMonth(expiresAt)}月${getDate(expiresAt)}日/${localizedCycle(cycle)}`
-
-    case 'month':
-      return `${getDate(expiresAt)}/${localizedCycle(cycle)}`
-  }
-}
-
-function rowSubsSource(pm: PaymentMethod | null): StringPair {
-  return ['订阅方式', localizePaymentMethod(pm)];
-}
-
-function rowExpiration(date: string | null, isVip: boolean = false): StringPair {
-  return [
-    '到期时间',
-    isVip ? '无限期' : (date || '-')
-  ];
-}
-
-function rowAutoRenewDate(expiresAt: Date, cycle: Cycle): StringPair {
-  return ['自动续订', formatAutoRenewMoment(expiresAt, cycle)];
-}
-
-function rowAutoRenewOn(): StringPair {
-  return ['自动续订', '已开启'];
-}
-
-function rowAutoRenewOff(): StringPair {
-  return ['自动续订', '已关闭'];
 }
 
 /**
