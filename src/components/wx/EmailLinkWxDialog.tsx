@@ -1,5 +1,10 @@
+import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { ReaderPassport } from '../../data/account';
+import { ResponseError } from '../../repository/response-error';
+import { getWxOAuthCodeReq } from '../../repository/wx-auth';
+import { wxCodeSessionStore } from '../../store/keys';
+import ProgressButton from '../buttons/ProgressButton';
 import { OnLinkOrUnlink } from './OnLinkOrUnlink';
 
 /**
@@ -14,6 +19,23 @@ export function EmailLinkWxDialog(
     onLinked: OnLinkOrUnlink;
   }
 ) {
+
+  const [ submitting, setSubmitting ] = useState(false);
+
+  const handleClick = () => {
+    setSubmitting(true);
+    getWxOAuthCodeReq()
+      .then(codeReq => {
+        wxCodeSessionStore.save(codeReq, 'link');
+        setSubmitting(false);
+        window.location.href = codeReq.redirectTo;
+      })
+      .catch((err: ResponseError) => {
+        setSubmitting(false);
+        console.log(err);
+      });
+  }
+
   return (
     <Modal
       show={props.show}
@@ -28,7 +50,14 @@ export function EmailLinkWxDialog(
         </p>
       </Modal.Body>
       <Modal.Footer>
-        <button className="btn btn-primary">获取微信授权</button>
+        <ProgressButton
+          disabled={submitting}
+          text="获取微信授权"
+          isSubmitting={submitting}
+          inline={true}
+          asButton={true}
+          onClick={handleClick}
+        />
       </Modal.Footer>
     </Modal>
   );
