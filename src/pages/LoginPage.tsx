@@ -17,7 +17,7 @@ import Button from 'react-bootstrap/Button';
 import ProgressButton from '../components/buttons/ProgressButton';
 import Alert from 'react-bootstrap/Alert';
 import { ChevronDown, ChevronUp } from '../components/icons';
-import { InitWxLogin } from '../components/wx/InitWxLogin';
+import { InitWxOAuth } from '../components/wx/InitWxOAuth';
 import { requestMobileLoginSMS, verifyMobileLoginSMS, mobileSignUp, mobileLinkExistingEmail } from '../repository/mobile-auth';
 
 function LinkPwResetOrSignUp() {
@@ -300,7 +300,7 @@ export function LoginPage() {
           </Tab>
         </Tabs>
 
-        <InitWxLogin/>
+        <InitWxOAuth/>
       </>
     </AuthLayout>
   );
