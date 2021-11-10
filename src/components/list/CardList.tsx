@@ -16,7 +16,7 @@ export function CardList(
     <div className={wrapperClass}>
       {
         props.header &&
-        <div className="card-header text-muted">{props.header}</div>
+        <div className="card-header">{props.header}</div>
       }
       {
         (props.title || props.children) &&
