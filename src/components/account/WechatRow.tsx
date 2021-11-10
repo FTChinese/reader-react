@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { isAccountLinked, ReaderPassport } from "../../data/account";
 import { useAuthContext } from '../../store/AuthContext';
+import { EmailLinkWxDialog } from '../wx/EmailLinkWxDialog';
 import { OnLinkOrUnlink } from '../wx/OnLinkOrUnlink';
 import { UnlinkDialog } from '../wx/UnlinkDialog';
 import { WxAvatar } from '../wx/WxAvatar';
@@ -22,7 +23,9 @@ export function DisplayWechat(
         <WechatLinked
           passport={props.passport}
         /> :
-        <WechatMissing/>
+        <WechatMissing
+          passport={props.passport}
+        />
       }
     </AccountRow>
   )
@@ -62,13 +65,41 @@ function WechatLinked(
   );
 }
 
-function WechatMissing() {
+function WechatMissing(
+  props: {
+    passport: ReaderPassport
+  }
+) {
+  const { setLoggedIn } = useAuthContext();
+  const [ show, setShow ] = useState(false);
+
+  const handleClick = () => {
+    setShow(!show);
+  };
+
+  const handleLinked: OnLinkOrUnlink = (passport: ReaderPassport) => {
+    setShow(false);
+    setLoggedIn(passport);
+  }
+
   return (
-    <div className="d-flex">
-      <div className="flex-grow-1">未设置</div>
-      <button className="btn btn-link">绑定微信</button>
-    </div>
-  )
+    <>
+      <button className="btn btn-link"
+        onClick={handleClick}
+      >
+        尚未绑定
+      </button>
+      {
+        show &&
+        <EmailLinkWxDialog
+          passport={props.passport}
+          show={show}
+          onClose={handleClick}
+          onLinked={handleLinked}
+        />
+      }
+    </>
+  );
 }
 
 

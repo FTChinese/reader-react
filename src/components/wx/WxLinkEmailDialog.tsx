@@ -13,7 +13,8 @@ import { LinkAccounts } from './LinkAccounts';
 import { OnLinkOrUnlink } from './OnLinkOrUnlink';
 
 /**
- * @description Show a dialog to let user link to email.
+ * @description Show a dialog to let a user logged
+ * in with wechat link to email.
  * Link to existing email requires 3 steps:
  * 1. Check email
  * 2. Verify Password and get email account data.
