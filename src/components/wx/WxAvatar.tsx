@@ -9,7 +9,7 @@ export function WxAvatar(
     <figure className="figure">
       <img
         className="figure-img img-fluid rounded"
-        src={props.wechat.avatarUrl}
+        src={props.wechat.avatarUrl || undefined}
         alt="微信头像" />
       <figcaption className="figure-caption text-center">
         {props.wechat.nickname}
