@@ -1,7 +1,7 @@
 import { FormikHelpers } from 'formik';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
-import { isAccountWxOnly, isLinkable, isMobileDerivedEmail, ReaderAccount, ReaderPassport } from '../../data/account';
+import { isLinkable, ReaderAccount, ReaderPassport } from '../../data/account';
 import { Credentials, EmailVal } from '../../data/form-value';
 import { CenterLayout } from '../Layout';
 import { emailExists, emailLogin } from '../../repository/email-auth';
@@ -9,17 +9,8 @@ import { ResponseError } from '../../repository/response-error';
 import { BackButton } from '../buttons/BackButton';
 import { EmailForm } from '../forms/EmailForm';
 import { EmailLoginForm } from '../forms/EmailLoginForm';
-import { CardList } from '../list/CardList';
-import { StringPair } from '../list/pair';
-import { localizedTier } from '../../data/localization';
-import ProgressButton from '../buttons/ProgressButton';
-import Alert from 'react-bootstrap/Alert';
-import { wxLinkExistingEmail } from '../../repository/wx-auth';
-
-/**
- * @description The callback function after accouns linked.
- */
-export type OnLinked = (passport: ReaderPassport) => void;
+import { LinkAccounts } from './LinkAccounts';
+import { OnLinkOrUnlink } from './OnLinkOrUnlink';
 
 /**
  * @description Show a dialog to let user link to email.
@@ -40,7 +31,7 @@ export function WxLinkEmailDialog(
     passport: ReaderPassport;
     show: boolean;
     onClose: () => void;
-    onLinked: OnLinked;
+    onLinked: OnLinkOrUnlink;
   }
 ) {
   const [errMsg, setErrMsg] = useState('');
@@ -112,7 +103,7 @@ function SignInOrUp(
     email: string;
     found: boolean;
     onCancel: () => void;
-    onLinked: OnLinked;
+    onLinked: OnLinkOrUnlink;
   }
 ) {
 
@@ -132,7 +123,7 @@ function SignInOrUp(
   return (
     <>
       <BackButton onBack={props.onCancel}/>
-      <div>Email not found. Create new account</div>
+      <EmailSignUp/>
     </>
   );
 }
@@ -141,7 +132,7 @@ function EmailLogIn(
   props: {
     passport: ReaderPassport; // Current logged-in account.
     email: string; // Email to link.
-    onLinked: OnLinked;
+    onLinked: OnLinkOrUnlink;
   }
 ) {
 
@@ -193,7 +184,7 @@ function EmailLogIn(
       />
       {
         ftcAccount &&
-        <LinkWechatEmail
+        <LinkAccounts
           token={props.passport.token}
           wxAccount={props.passport}
           ftcAccount={ftcAccount}
@@ -204,87 +195,9 @@ function EmailLogIn(
   );
 }
 
-/**
- * @description Display the two accounts to be linked and a button
- * to let user to confirm the link.
- */
-function LinkWechatEmail(
-  props: {
-    token: string;
-    wxAccount: ReaderAccount,
-    ftcAccount: ReaderAccount,
-    onLinked: OnLinked;
-  }
-) {
-
-  const [submitting, setSubmitting] = useState(false);
-  const [errMsg, setErrMsg] = useState('');
-
-  const handleSubmit = () => {
-    setSubmitting(true);
-
-    wxLinkExistingEmail({
-        ftcId: props.ftcAccount.id,
-        token: props.token,
-      })
-      .then(passport => {
-        setSubmitting(false);
-        props.onLinked(passport);
-      })
-      .catch((err: ResponseError) => {
-        setSubmitting(false);
-        setErrMsg(err.message);
-      });
-  };
-
+function EmailSignUp() {
   return (
-    <div className="mt-5">
-      <h4 className="text-center">关联如下账号</h4>
-      <CardList
-        rows={buildAccountRows(props.ftcAccount)}
-        header="邮箱/手机账号"
-        className="mt-3"
-      />
-      <CardList
-        rows={buildAccountRows(props.wxAccount)}
-        header="微信账号"
-        className="mt-3 mb-3"
-      />
-      {
-        errMsg &&
-        <Alert
-          variant="danger"
-          dismissible
-          onClose={() => setErrMsg('')}
-        >
-          {errMsg}
-        </Alert>
-      }
-      <ProgressButton
-        disabled={submitting}
-        text="绑定账号"
-        isSubmitting={submitting}
-        asButton={true}
-        onClick={handleSubmit}
-      />
-    </div>
+    <div>Email not found. Create new account</div>
   );
 }
 
-function buildAccountRows(a: ReaderAccount): StringPair[] {
-  let firstRow: StringPair;
-
-  if (isAccountWxOnly(a)) {
-    firstRow = ['昵称', a.wechat.nickname || '-'];
-  } else if (isMobileDerivedEmail(a.email)) {
-    firstRow = ['手机', a.mobile || ''];
-  } else {
-    firstRow = ['邮箱', a.email];
-  }
-
-  return [
-    firstRow,
-    ['会员类型', a.membership.tier ? localizedTier(a.membership.tier) : '-'],
-    ['会员期限', a.membership.expireDate || '-'],
-  ];
-}
