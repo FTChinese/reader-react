@@ -7,7 +7,8 @@ import { DisplayPassword } from '../components/account/UpdatePassword';
 import { DisplayMobile } from '../components/account/MobileRow';
 import { DisplayWechat } from '../components/account/WechatRow';
 import { isAccountWxOnly, ReaderPassport } from '../data/account';
-import { WxLinkEmailDialog, OnLinked } from '../components/wx/WxLinkEmailDialog';
+import { WxLinkEmailDialog } from '../components/wx/WxLinkEmailDialog';
+import { OnLinkOrUnlink } from "../components/wx/OnLinkOrUnlink";
 import { useState } from 'react';
 import { WxAvatar } from '../components/wx/WxAvatar';
 
@@ -75,7 +76,7 @@ function WechatDetails(
     setShowDialog(!showDialog);
   }
 
-  const handleLinked: OnLinked = (passsport: ReaderPassport) => {
+  const handleLinked: OnLinkOrUnlink = (passsport: ReaderPassport) => {
     setShowDialog(false);
     setLoggedIn(passsport);
   }
