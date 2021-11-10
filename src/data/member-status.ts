@@ -3,7 +3,7 @@ import { StringPair } from '../components/list/pair';
 import { diffToday, isExpired } from '../utils/now';
 import { Cycle, isInvalidSubStatus, PaymentMethod, SubStatus } from './enum';
 import { localizedCycle, localizedTier, localizePaymentMethod } from './localization';
-import { Membership } from './membership';
+import { isMembershipZero, Membership } from './membership';
 
 /**
  * @description Describes the UI used to present Membership.
@@ -157,7 +157,7 @@ function autoRenewalSubsStatus(m: Membership): MemberStatus {
     };
   }
 
-  const expired = expiresAt ? isExpired(expiresAt) : false;
+  const expired = expiresAt ? isExpired(expiresAt) : true;
 
   return {
     productName,
@@ -178,6 +178,14 @@ function autoRenewalSubsStatus(m: Membership): MemberStatus {
 
 
 export function buildMemberStatus(m: Membership): MemberStatus {
+  if (isMembershipZero(m)) {
+    return {
+      productName: '未订阅',
+      details: [],
+      reminder: '您尚未订阅FT中文网服务'
+    }
+  }
+
   /**
    *      超级会员
    * 到期时间    无限期
