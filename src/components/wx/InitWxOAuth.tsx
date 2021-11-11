@@ -82,11 +82,7 @@ export function WxOAuthAccess(
         wxCodeSessionStore.remove();
 
         // If user already logged in, this is a link session; otherwise a login session.
-        if (passport) {
-          setWxAccount(wxPassport);
-        } else {
-          setLoggedIn(wxPassport)
-        }
+        setWxAccount(wxPassport);
       })
       .catch((err: ResponseError) => {
         setProgress(false);
@@ -94,6 +90,7 @@ export function WxOAuthAccess(
       });
   }, [props.code]);
 
+  // Fetching account, or error.
   if (!wxAccount) {
     {/* TODO: show this only for login; otherwise to to home page. <Link to={sitemap.login}>重试</Link>*/}
     return (
@@ -119,7 +116,23 @@ export function WxOAuthAccess(
     );
   }
 
-  return <Redirect to={sitemap.home}/>;
+  return <LoginSuccess passport={wxAccount}/>;
 }
 
+function LoginSuccess(
+  props: {
+    passport: ReaderPassport;
+  }
+) {
+  const { setLoggedIn, passport } = useAuthContext();
 
+  useEffect(() => {
+    setLoggedIn(props.passport);
+  });
+
+  if (passport) {
+    return <Redirect to={sitemap.home}/>;
+  }
+
+  return <div>登录成功，跳转...</div>
+}
