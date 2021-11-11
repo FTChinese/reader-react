@@ -19,6 +19,7 @@ import Alert from 'react-bootstrap/Alert';
 import { ChevronDown, ChevronUp } from '../components/icons';
 import { InitWxOAuth } from '../components/wx/InitWxOAuth';
 import { requestMobileLoginSMS, verifyMobileLoginSMS, mobileSignUp, mobileLinkExistingEmail } from '../repository/mobile-auth';
+import { GlobalSpinner } from '../components/progress/GlobalSpinner';
 
 function LinkPwResetOrSignUp() {
   return (
@@ -301,6 +302,7 @@ export function LoginPage() {
         </Tabs>
 
         <InitWxOAuth/>
+        <GlobalSpinner/>
       </>
     </AuthLayout>
   );
