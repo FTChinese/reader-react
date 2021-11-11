@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import { ReaderPassport } from '../../data/account';
 import { WxOAuthCodeReq } from '../../data/authentication';
+import { sitemap } from '../../data/sitemap';
 import { ResponseError } from '../../repository/response-error';
 import { getWxOAuthCodeReq, wxLogin } from '../../repository/wx-auth';
 import { useAuthContext } from '../../store/AuthContext';
@@ -102,20 +104,22 @@ export function WxOAuthAccess(
     );
   }
 
-  return (
-    <div>
-      <div className="text-center">授权成功！</div>
-      {
-        passport &&
+  // User already logged-in. So this is a email-linking-wechat session.
+  if (passport) {
+    return (
+      <div>
+        <div className="text-center">授权成功！</div>
         <LinkAccounts
           token={passport.token}
           wxAccount={wxAccount}
           ftcAccount={passport}
           onLinked={accountLoaded}
         />
-      }
-    </div>
-  );
+      </div>
+    );
+  }
+
+  return <Redirect to={sitemap.home}/>;
 }
 
 
