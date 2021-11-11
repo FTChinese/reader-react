@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Form, Formik, FormikHelpers } from 'formik';
-import { invalidMessages, VerifySMSFormVal } from '../../data/form-value';
+import { invalidMessages } from '../../data/form-value';
 import * as Yup from 'yup';
 import { TextInput } from '../controls/TextInput';
 import ProgressButton from '../buttons/ProgressButton';
@@ -9,6 +9,7 @@ import FormControl from 'react-bootstrap/FormControl';
 import { CounterButton } from '../buttons/CounterButton';
 import styles from '../buttons/CounterButton.module.css';
 import Alert from 'react-bootstrap/Alert';
+import { VerifySMSFormVal } from '../../data/mobile';
 
 export interface SMSHelper {
   setProgress: (p: boolean) => void;

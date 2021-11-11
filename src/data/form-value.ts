@@ -36,44 +36,7 @@ export type Credentials = EmailVal & {
   password: string;
 }
 
-export type PwResetLetterReq = EmailVal & {
-  sourceUrl: string;
-};
 
-export type ResetPwReq = {
-  token: string;
-  password: string;
-};
 
-// Used to send sms, or create new mobile-only account.
-export type MobileFormVal = {
-  mobile: string;
-};
 
-export type VerifySMSFormVal = MobileFormVal & {
-  code: string;
-};
 
-export type MobileLinkExistingEmailReq = Credentials & MobileFormVal;
-
-export type MobileLinkNewEmailReq = Credentials & MobileFormVal & {
-  sourceUrl: string;
-};
-
-export type PasswordResetFormVal = {
-  password: string;
-  confirmPassword: string;
-};
-
-export type UpdateNameFormVal = {
-  userName: string;
-};
-
-export type UpdatePasswordReq = {
-  currentPassword: string;
-  newPassword: string;
-};
-
-export type UpdatePasswordFormVal = UpdatePasswordReq & {
-  confirmPassword: string;
-};

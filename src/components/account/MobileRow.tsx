@@ -1,6 +1,6 @@
 import { FormikHelpers } from 'formik';
 import { useState } from 'react';
-import { VerifySMSFormVal } from '../../data/form-value';
+import { VerifySMSFormVal } from '../../data/mobile';
 import { MobileLoginForm, SMSHelper } from '../forms/MobileLoginForm';
 import { AccountRow } from "./AccountRow";
 

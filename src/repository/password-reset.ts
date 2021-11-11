@@ -1,8 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { endpoint } from './endpoint';
-import { PwResetLetterReq } from '../data/form-value';
 import { ResponseError } from './response-error';
-import { PasswordResetVerified, PasswordResetReqParams } from '../data/password-reset';
+import { PasswordResetVerified, PasswordResetReqParams, PwResetLetterReq } from '../data/password-reset';
 import { cancelSource } from './cancel';
 
 

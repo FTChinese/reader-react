@@ -6,8 +6,8 @@ import { Link, Route, Switch, useParams, useRouteMatch } from 'react-router-dom'
 import ProgressButton from '../components/buttons/ProgressButton';
 import { TextInput } from '../components/controls/TextInput';
 import { CenterLayout } from '../components/Layout';
-import { PasswordResetFormVal, verifyPasswordSchema } from '../data/form-value';
-import { PasswordResetVerified } from '../data/password-reset';
+import { verifyPasswordSchema } from '../data/form-value';
+import { PasswordResetFormVal, PasswordResetVerified } from '../data/password-reset';
 import { sitemap } from '../data/sitemap';
 import { ResponseError } from '../repository/response-error';
 import { resetPassword, verifyPwToken } from '../repository/password-reset';

@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { endpoint } from './endpoint';
-import { MobileFormVal, MobileLinkExistingEmailReq, MobileLinkNewEmailReq, VerifySMSFormVal } from '../data/form-value';
+import { MobileFormVal, MobileLinkExistingEmailReq, MobileLinkNewEmailReq, VerifySMSFormVal } from '../data/mobile';
 import { ResponseError } from './response-error';
 import { ReaderPassport } from '../data/account';
 

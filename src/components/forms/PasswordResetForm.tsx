@@ -2,7 +2,8 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import { useEffect, useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import * as Yup from 'yup';
-import { PasswordResetFormVal, verifyPasswordSchema } from '../../data/form-value';
+import { verifyPasswordSchema } from '../../data/form-value';
+import { PasswordResetFormVal } from '../../data/password-reset';
 import ProgressButton from '../buttons/ProgressButton';
 import { TextInput } from '../controls/TextInput';
 

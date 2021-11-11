@@ -9,7 +9,7 @@ import { useState } from 'react';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import { FormikHelpers } from 'formik';
-import { Credentials, VerifySMSFormVal } from '../data/form-value';
+import { Credentials } from '../data/form-value';
 import { EmailLoginForm } from '../components/forms/EmailLoginForm';
 import { MobileLoginForm, SMSHelper } from '../components/forms/MobileLoginForm';
 import Modal from 'react-bootstrap/Modal';
@@ -19,6 +19,7 @@ import Alert from 'react-bootstrap/Alert';
 import { ChevronDown, ChevronUp } from '../components/icons';
 import { InitWxOAuth } from '../components/wx/InitWxOAuth';
 import { requestMobileLoginSMS, verifyMobileLoginSMS, mobileSignUp, mobileLinkExistingEmail } from '../repository/mobile-auth';
+import { VerifySMSFormVal } from '../data/mobile';
 
 function LinkPwResetOrSignUp() {
   return (
