@@ -110,7 +110,7 @@ function SignInOrUp(
 
   if (props.found) {
     return (
-    <>
+      <>
         <BackButton onBack={props.onCancel}/>
         <EmailLogIn
           passport={props.passport}
@@ -152,16 +152,6 @@ function EmailLogIn(
       .then(passport => {
 
         helpers.setSubmitting(false);
-        const denied = isLinkable({
-          ftc: passport,
-          wx: props.passport,
-        });
-
-        if (denied) {
-          setErrMsg(denied);
-          return;
-        }
-
         setFtcAccount(passport);
       })
       .catch((err: ResponseError) => {

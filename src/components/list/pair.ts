@@ -18,25 +18,10 @@ export function pairEmail(email: string): StringPair {
 }
 
 /**
- * @description Pick identifiable row of an account
- */
-export function rowAccountIdentifier(a: ReaderAccount): StringPair {
-  if (isAccountWxOnly(a)) {
-    return pairWxName(a.wechat.nickname);
-  }
-
-  if (isMobileDerivedEmail(a.email)) {
-    return pairMobile(a.mobile);
-  }
-
-  return pairEmail(a.email);
-}
-
-/**
  * @description Show auto renewal date
  * @example 11月11日/年 or 11日/月 depending on the value of cycle.
  */
- function formatAutoRenewMoment(expiresAt: Date, cycle: Cycle): string {
+function formatAutoRenewMoment(expiresAt: Date, cycle: Cycle): string {
   switch (cycle) {
     case 'year':
       return `${getMonth(expiresAt)}月${getDate(expiresAt)}日/${localizedCycle(cycle)}`
