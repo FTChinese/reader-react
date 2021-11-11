@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { ReaderPassport } from '../../data/account';
-import { validateWxOAuthCode, WxOAuthCodeReq, WxOAuthCodeResp, WxOAuthCodeSession } from '../../data/authentication';
-import { sitemap } from '../../data/sitemap';
+import { WxOAuthCodeReq } from '../../data/authentication';
 import { ResponseError } from '../../repository/response-error';
 import { getWxOAuthCodeReq, wxLogin } from '../../repository/wx-auth';
 import { useAuthContext } from '../../store/AuthContext';
 import { wxCodeSessionStore } from '../../store/keys';
+import { ProgressOrError } from '../ProgressErrorBoundary';
 import { LinkAccounts } from './LinkAccounts';
 
 type OnAccountLoaded = (passport: ReaderPassport) => void;
@@ -45,100 +44,78 @@ export function InitWxOAuth() {
   );
 }
 
+/**
+ * @description Validate OAuath code and fetch user info if valid.
+ */
 export function WxOAuthAccess(
   props: {
-    resp: WxOAuthCodeResp;
-    session: WxOAuthCodeSession | null;
+    code: string;
   }
 ) {
 
   const { setLoggedIn, passport} = useAuthContext();
+
   const [ wxAccount, setWxAccount] = useState<ReaderPassport>();
 
-  const errMsg = validateWxOAuthCode(props.resp, props.session);
+  const [progress, setProgress] = useState(true);
+  const [errMsg, setErrMsg] = useState('');
 
+  // After wechat account is loaded.
   const accountLoaded: OnAccountLoaded = (pp: ReaderPassport) => {
-    switch (props.session?.kind) {
-      case 'login':
-        setLoggedIn(pp);
-        return;
 
-      case 'link':
-        setWxAccount(pp);
+    if (passport) {
+      setWxAccount(pp);
+    } else {
+      setLoggedIn(pp);
     }
   }
 
-  if (errMsg) {
-    return (
-      <div className="text-danger">{errMsg}</div>
-    );
-  }
+  useEffect(() => {
+    wxLogin(props.code)
+      .then(wxPassport => {
+        // We get wechat account data.
+        // Not progress. No error.
+        setErrMsg('');
+        setProgress(false);
+        wxCodeSessionStore.remove();
+
+        // If user already logged in, this is a link session; otherwise a login session.
+        if (passport) {
+          setWxAccount(wxPassport);
+        } else {
+          setLoggedIn(wxPassport)
+        }
+      })
+      .catch((err: ResponseError) => {
+        setProgress(false);
+        setErrMsg(err.message);
+      });
+  }, [props.code]);
 
   if (!wxAccount) {
+    {/* TODO: show this only for login; otherwise to to home page. <Link to={sitemap.login}>重试</Link>*/}
     return (
-      <RetrieveWxInfo
-        code={props.resp.code!}
-        onLoaded={accountLoaded}
+      <ProgressOrError
+        progress={progress}
+        errMsg={errMsg}
       />
     );
   }
 
   return (
-    <LinkAccounts
-      token={passport?.token}
-      wxAccount={wxAccount}
-      ftcAccount={passport}
-    />
-  );
-}
-
-/**
- * @description Retrieve wx user info.
- * UI in 3 state:
- * - In progress;
- * - Error occurred while fetching data;
- * - No error and fetching data succeeded.
- */
-function RetrieveWxInfo(
-  props: {
-    code: string;
-    onLoaded: OnAccountLoaded;
-  }
-) {
-
-  const [progress, setProgress] = useState(true);
-  const [errMsg, setErrMsg] = useState('');
-
-  useEffect(() => {
-    wxLogin(props.code)
-      .then(passport => {
-        setProgress(false);
-        wxCodeSessionStore.remove();
-      })
-      .catch((err: ResponseError) => {
-        setErrMsg(err.message);
-      });
-  }, [props.code]);
-
-  if (progress) {
-    return (
-      <div className="text-center">
-        正在获取数据，请稍候
-        <span className="spinner-border spinner-border-sm"></span>
-      </div>
-    );
-  }
-
-  if (errMsg) {
-    <div className="text-center">
-      <div>出错了！</div>
-      <div className="text-danger">{errMsg}</div>
-      {/* TODO: show this only for login; otherwise to to home page. */}
-      <Link to={sitemap.login}>重试</Link>
+    <div>
+      <div className="text-center">授权成功！</div>
+      {
+        passport &&
+        <LinkAccounts
+          token={passport.token}
+          wxAccount={wxAccount}
+          ftcAccount={passport}
+          onLinked={accountLoaded}
+        />
+      }
     </div>
-  }
-
-  return (
-    <div className="text-center">授权成功！</div>
   );
 }
+
+
