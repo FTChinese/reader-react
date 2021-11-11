@@ -1,11 +1,12 @@
 import axios, { AxiosResponse } from 'axios';
 import { authHeader, BaseAccount, bearerAuthHeader, ReaderPassport } from '../data/account';
-import { UpdatePasswordFormVal, UpdateNameFormVal, MobileFormVal } from '../data/form-value';
 import { ReaderAccount } from '../data/account';
 import { endpoint } from './endpoint';
 import { ResponseError } from './response-error';
 import { Address, AddressFormVal } from '../data/address';
 import { Profile, ProfileFormVal } from '../data/profile';
+import { UpdateEmailReq, UpdateNameFormVal, UpdatePasswordFormVal } from '../data/update-account';
+import { MobileFormVal } from '../data/mobile';
 
 export function loadAccount(p: ReaderPassport): Promise<ReaderAccount> {
   return axios.get<undefined, AxiosResponse<ReaderAccount>>(endpoint.emailAccount, {
@@ -32,7 +33,7 @@ export function requestEmailVerification(p: ReaderPassport): Promise<boolean> {
 }
 
 export function updateDisplayName(v: UpdateNameFormVal, p: ReaderPassport): Promise<BaseAccount> {
-  return axios.patch<UpdateNameFormVal, AxiosResponse<BaseAccount>>(
+  return axios.patch<BaseAccount, AxiosResponse<BaseAccount>, UpdateNameFormVal>(
     endpoint.displayName,
     v,
     {
@@ -45,6 +46,18 @@ export function updateDisplayName(v: UpdateNameFormVal, p: ReaderPassport): Prom
     .catch(error => {
       return Promise.reject(ResponseError.newInstance(error));
     });
+}
+
+export function updateEmail(v: UpdateEmailReq, token: string): Promise<BaseAccount> {
+  return axios.patch<BaseAccount, AxiosResponse<BaseAccount>, UpdateEmailReq>(
+      endpoint.changeEmail,
+      v,
+      {
+        headers: bearerAuthHeader(token)
+      }
+    )
+    .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
 export function updatePassword(v: UpdatePasswordFormVal, token: string,): Promise<boolean> {

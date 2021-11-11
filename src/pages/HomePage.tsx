@@ -6,11 +6,12 @@ import { DisplayEmail } from '../components/account/EmailRow';
 import { DisplayPassword } from '../components/account/UpdatePassword';
 import { DisplayMobile } from '../components/account/MobileRow';
 import { DisplayWechat } from '../components/account/WechatRow';
-import { isAccountWxOnly, ReaderPassport } from '../data/account';
+import { BaseAccount, isAccountWxOnly, ReaderPassport } from '../data/account';
 import { WxLinkEmailDialog } from '../components/wx/WxLinkEmailDialog';
 import { OnReaderAccount } from "../components/wx/OnReaderAccount";
 import { useState } from 'react';
 import { WxAvatar } from '../components/wx/WxAvatar';
+import { OnAccountUpdated } from '../components/account/OnAccountUpdated';
 
 export function HomePage() {
   const { passport } = useAuthContext();
@@ -41,11 +42,23 @@ export function HomePage() {
  function FtcDetails(
   props: ReaderPassport,
 ) {
+
+  const { setLoggedIn } = useAuthContext();
+
+  const handleUpdated: OnAccountUpdated = (a: BaseAccount) => {
+    setLoggedIn({
+      ...props,
+      ...a
+    });
+  };
+
   return (
     <>
       <DisplayEmail
+        token={props.token}
         email={props.email}
         isVerified={props.isVerified}
+        onUpdated={handleUpdated}
       />
       <DisplayName
         userName={props.userName}
