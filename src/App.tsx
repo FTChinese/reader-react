@@ -1,5 +1,4 @@
 import 'react-toastify/dist/ReactToastify.min.css';
-import './App.css';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { Toolbar } from './components/toolbar/Toolbar';
