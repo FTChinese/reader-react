@@ -1,4 +1,3 @@
-import React from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 import { useAuthContext } from '../../store/AuthContext';
 import { sitemap } from '../../data/sitemap';

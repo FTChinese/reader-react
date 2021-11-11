@@ -8,11 +8,3 @@ export function Unauthorized() {
     }}
   />;
 }
-
-export function TeamNotSet() {
-  return <Redirect
-    to={{
-      pathname: sitemap.home
-    }}
-  />
-}
