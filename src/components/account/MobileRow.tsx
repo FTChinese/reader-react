@@ -79,6 +79,7 @@ export function DisplayMobile(
           onRequestSMS={handleSMSRequest}
           errMsg={errMsg}
           isLogin={false}
+          mobile={props.mobile}
         /> :
 
         <div>{props.mobile || '未设置'}</div>

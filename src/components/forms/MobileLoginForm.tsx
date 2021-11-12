@@ -28,6 +28,7 @@ export function MobileLoginForm(
     ) => void;
     errMsg: string;
     isLogin: boolean;
+    mobile?: string | null;
   }
 ) {
 
@@ -53,7 +54,7 @@ export function MobileLoginForm(
       }
       <Formik<VerifySMSFormVal>
         initialValues={{
-          mobile: '',
+          mobile: props.mobile || '',
           code: '',
         }}
         validationSchema={Yup.object({
