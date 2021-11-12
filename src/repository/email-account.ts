@@ -5,7 +5,7 @@ import { endpoint } from './endpoint';
 import { ResponseError } from './response-error';
 import { Address, AddressFormVal } from '../data/address';
 import { Profile, ProfileFormVal } from '../data/profile';
-import { UpdateEmailReq, UpdateNameFormVal, UpdatePasswordFormVal } from '../data/update-account';
+import { UpdateEmailReq, UpdateNameFormVal, UpdatePasswordReq } from '../data/update-account';
 import { MobileFormVal, VerifySMSFormVal } from '../data/mobile';
 
 export function loadAccount(p: ReaderPassport): Promise<ReaderAccount> {
@@ -56,7 +56,7 @@ export function updateEmail(v: UpdateEmailReq, token: string): Promise<BaseAccou
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function updatePassword(v: UpdatePasswordFormVal, token: string,): Promise<boolean> {
+export function updatePassword(v: UpdatePasswordReq, token: string,): Promise<boolean> {
   return axios.patch(
     endpoint.changePassword,
     v,
