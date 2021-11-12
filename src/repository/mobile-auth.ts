@@ -18,7 +18,7 @@ export function requestMobileLoginSMS(v: MobileFormVal): Promise<boolean> {
 }
 
 export function verifyMobileLoginSMS(v: VerifySMSFormVal): Promise<ReaderPassport> {
-  return axios.post<VerifySMSFormVal, AxiosResponse<ReaderPassport>>(endpoint.smsLogin, v)
+  return axios.post<ReaderPassport, AxiosResponse<ReaderPassport>, VerifySMSFormVal>(endpoint.smsLogin, v)
     .then(resp => {
       return resp.data;
     })
