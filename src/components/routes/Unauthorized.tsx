@@ -8,3 +8,11 @@ export function Unauthorized() {
     }}
   />;
 }
+
+export function GoHome() {
+  return <Redirect
+    to={{
+      pathname: sitemap.home
+    }}
+  />;
+}
