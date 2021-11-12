@@ -1,12 +1,19 @@
 import { FormikHelpers } from 'formik';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
+import { toastMessages } from '../../data/form-value';
 import { VerifySMSFormVal } from '../../data/mobile';
+import { changeMobile, requestVerifyMobile } from '../../repository/email-account';
+import { ResponseError } from '../../repository/response-error';
 import { MobileLoginForm, SMSHelper } from '../forms/MobileLoginForm';
 import { AccountRow } from "./AccountRow";
+import { OnAccountUpdated } from './OnAccountUpdated';
 
 export function DisplayMobile(
   props: {
+    token: string;
     mobile: string | null;
+    onUpdated: OnAccountUpdated;
   }
 ) {
 
@@ -17,7 +24,22 @@ export function DisplayMobile(
     console.log(mobile);
     helper.setProgress(true);
 
-    console.log(mobile);
+    requestVerifyMobile(
+        { mobile },
+        props.token,
+      )
+      .then(ok => {
+        if (ok) {
+          helper.setShowCounter(true);
+          toast.info(toastMessages.smsSent);
+        } else {
+          setErrMsg(toastMessages.smsFailed);
+        }
+      })
+      .catch((err: ResponseError) => {
+        helper.setProgress(false);
+        setErrMsg(err.message);
+      });
   };
 
   const handleSubmit = (
@@ -27,7 +49,21 @@ export function DisplayMobile(
     setErrMsg('');
     helper.setSubmitting(true);
 
-    console.log(values)
+    changeMobile(values, props.token)
+      .then(ba => {
+        helper.setSubmitting(false);
+        toast.success(toastMessages.updateSuccess);
+        props.onUpdated(ba)
+      })
+      .catch((err: ResponseError) => {
+        helper.setSubmitting(false);
+        if (err.invalid) {
+          helper.setErrors(err.toFormFields);
+          return
+        }
+
+        setErrMsg(err.message);
+      });
   }
 
   return (

@@ -1,16 +1,22 @@
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useEffect, useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
+import { toast } from 'react-toastify';
 import * as Yup from 'yup';
-import { invalidMessages, } from '../../data/form-value';
+import { invalidMessages, toastMessages, } from '../../data/form-value';
 import { UpdateNameFormVal } from '../../data/update-account';
+import { updateUserName } from '../../repository/email-account';
+import { ResponseError } from '../../repository/response-error';
 import ProgressButton from '../buttons/ProgressButton';
 import { TextInput } from '../controls/TextInput';
 import { AccountRow } from "./AccountRow";
+import { OnAccountUpdated } from './OnAccountUpdated';
 
-export function DisplayName(
+export function UserNameRow(
   props: {
+    token: string;
     userName: string | null;
+    onUpdated: OnAccountUpdated;
   }
 ) {
   const [editing, setEditing] = useState(false);
@@ -23,7 +29,21 @@ export function DisplayName(
     setErrMsg('');
     helpers.setSubmitting(true);
 
-    console.log(values);
+    updateUserName(values, props.token)
+      .then(ba => {
+        helpers.setSubmitting(false);
+        toast.success(toastMessages.updateSuccess);
+        props.onUpdated(ba);
+      })
+      .catch((err: ResponseError) => {
+        helpers.setSubmitting(false);
+        if (err.invalid) {
+          helpers.setErrors(err.toFormFields);
+          return;
+        }
+
+        setErrMsg(err.message);
+      });
   }
 
   return (
@@ -36,7 +56,6 @@ export function DisplayName(
         editing ?
         <UserNameForm
           onSubmit={handleSubmit}
-          onCancel={() => setEditing(false)}
           errMsg={errMsg}
           userName={props.userName}
         /> :
@@ -54,7 +73,6 @@ function UserNameForm(
       values: UpdateNameFormVal,
       formikHelpers: FormikHelpers<UpdateNameFormVal>
     ) => void | Promise<any>;
-    onCancel: () => void;
     errMsg: string;
     userName: string | null;
   }

@@ -1,6 +1,7 @@
 import { FormikHelpers, Formik, Form } from 'formik';
 import { useState, useEffect } from 'react';
 import Alert from 'react-bootstrap/Alert';
+import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { toastMessages, verifyPasswordSchema } from '../../data/form-value';
 import { UpdatePasswordFormVal } from '../../data/update-account';
@@ -29,9 +30,9 @@ export function DisplayPassword(
       .then(ok => {
         helpers.setSubmitting(!ok);
         if (ok) {
-          alert(toastMessages.updateSuccess);
+          toast.success(toastMessages.updateSuccess);
         } else {
-          alert(toastMessages.unknownErr);
+          toast.error(toastMessages.unknownErr);
         }
       })
       .catch((err: ResponseError) => {
