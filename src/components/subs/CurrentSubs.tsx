@@ -15,7 +15,7 @@ export function CurrentSubs(
         <h5 className="card-title text-center">{memberStatus.productName}</h5>
 
         {
-          memberStatus.reminder ||
+          memberStatus.reminder &&
           <p className="text-danger text-center">{memberStatus.reminder}</p>
         }
       </div>
