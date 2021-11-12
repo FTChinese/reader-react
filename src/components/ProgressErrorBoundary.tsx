@@ -2,8 +2,8 @@ import { GlobalSpinner } from './progress/GlobalSpinner';
 
 export function ProgressOrError(
   props: {
-    progress: boolean;
     errMsg: string;
+    progress?: boolean;
     children?: JSX.Element
   }
 ) {
@@ -13,9 +13,9 @@ export function ProgressOrError(
 
   if (props.errMsg) {
     return (
-      <div className="text-danger text-center">
+      <div className="text-center">
         <div>出错了！</div>
-        <div>{props.errMsg}</div>
+        <div className="text-danger">{props.errMsg}</div>
       </div>
     );
   }
