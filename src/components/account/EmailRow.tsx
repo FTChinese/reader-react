@@ -1,7 +1,8 @@
 import { FormikHelpers } from 'formik';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { normalizeEmail } from '../../data/account';
-import { EmailVal } from '../../data/form-value';
+import { EmailVal, toastMessages } from '../../data/form-value';
 import { emailVerificationUrl } from '../../data/sitemap';
 import { updateEmail } from '../../repository/email-account';
 import { ResponseError } from '../../repository/response-error';
@@ -42,6 +43,7 @@ export function DisplayEmail(
       )
       .then(ba => {
         helpers.setSubmitting(false);
+        toast.success(toastMessages.updateSuccess);
         props.onUpdated(ba);
       })
       .catch((err: ResponseError) => {
