@@ -6,6 +6,7 @@ export const invalidMessages = {
   invalidPassword: '必须包含数字和字母，不能少于8位',
   passwordMismatch: '两次输入的密码必须相同',
   smsNotFound: '验证码无效！',
+  emailAlreadyExists: '该账号已经注册，请直接登录',
 };
 
 export const regex = {
