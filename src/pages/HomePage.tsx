@@ -1,7 +1,7 @@
 import { useAuthContext } from '../store/AuthContext';
 import { ContentLayout } from '../components/Layout';
 import { Unauthorized } from '../components/routes/Unauthorized';
-import { DisplayName } from '../components/account/UserName';
+import { UserNameRow } from '../components/account/UserNameRow';
 import { DisplayEmail } from '../components/account/EmailRow';
 import { DisplayPassword } from '../components/account/UpdatePassword';
 import { DisplayMobile } from '../components/account/MobileRow';
@@ -60,14 +60,18 @@ export function HomePage() {
         isVerified={props.isVerified}
         onUpdated={handleUpdated}
       />
-      <DisplayName
+      <UserNameRow
+        token={props.token}
         userName={props.userName}
+        onUpdated={handleUpdated}
       />
       <DisplayPassword
         token={props.token}
       />
       <DisplayMobile
+        token={props.token}
         mobile={props.mobile}
+        onUpdated={handleUpdated}
       />
       <DisplayWechat
         passport={props}
