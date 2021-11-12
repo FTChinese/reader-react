@@ -3,7 +3,7 @@ import { ContentLayout } from '../components/Layout';
 import { Unauthorized } from '../components/routes/Unauthorized';
 import { UserNameRow } from '../components/account/UserNameRow';
 import { DisplayEmail } from '../components/account/EmailRow';
-import { DisplayPassword } from '../components/account/UpdatePassword';
+import { DisplayPassword } from '../components/account/PasswordRow';
 import { DisplayMobile } from '../components/account/MobileRow';
 import { DisplayWechat } from '../components/account/WechatRow';
 import { BaseAccount, isAccountWxOnly, ReaderPassport } from '../data/account';

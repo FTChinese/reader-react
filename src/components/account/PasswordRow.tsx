@@ -1,16 +1,12 @@
-import { FormikHelpers, Formik, Form } from 'formik';
-import { useState, useEffect } from 'react';
-import Alert from 'react-bootstrap/Alert';
+import { FormikHelpers } from 'formik';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
-import * as Yup from 'yup';
-import { toastMessages, verifyPasswordSchema } from '../../data/form-value';
+import { toastMessages } from '../../data/form-value';
 import { UpdatePasswordFormVal } from '../../data/update-account';
 import { updatePassword } from '../../repository/email-account';
 import { ResponseError } from '../../repository/response-error';
-import ProgressButton from '../buttons/ProgressButton';
-import { TextInput } from '../controls/TextInput';
 import { UpdatePasswordForm } from '../forms/UpdatePasswordForm';
-import { AccountRow } from "./AccountRow";
+import { AccountRow } from './AccountRow';
 
 export function DisplayPassword(
   props: {
