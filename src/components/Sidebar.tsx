@@ -24,7 +24,8 @@ export function Sidebar() {
             to={item.href}
             key={index}
             className="nav-link"
-            activeClassName="active">
+            activeClassName="active"
+            exact={true}>
             {item.name}
           </NavLink>
         ))

@@ -134,7 +134,9 @@ a:hover {
   background-color: var(--color-teal);
   border-color: var(--color-teal);
 }
-
+.nav-link.active {
+  color: var(--color-claret);
+}
 .o-footer {
   margin-top: 40px;
   border-top: 10px solid;
