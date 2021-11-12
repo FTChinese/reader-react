@@ -38,9 +38,9 @@ function App() {
             <Route path={`${sitemap.verification}/:token`}>
               <VerificationPage />
             </Route>
-            <AuthRoute path={sitemap.authCallback}>
+            <Route path={sitemap.authCallback}>
               <WxCallbackPage />
-            </AuthRoute>
+            </Route>
 
             <ProtectedRoute path={sitemap.membership}>
               <MembershipPage />
