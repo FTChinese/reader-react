@@ -9,6 +9,7 @@ import { updatePassword } from '../../repository/email-account';
 import { ResponseError } from '../../repository/response-error';
 import ProgressButton from '../buttons/ProgressButton';
 import { TextInput } from '../controls/TextInput';
+import { UpdatePasswordForm } from '../forms/UpdatePasswordForm';
 import { AccountRow } from "./AccountRow";
 
 export function DisplayPassword(
@@ -24,13 +25,21 @@ export function DisplayPassword(
     values: UpdatePasswordFormVal,
     helpers: FormikHelpers<UpdatePasswordFormVal>
   ) => {
+    setErrMsg('');
     helpers.setSubmitting(true);
 
-    updatePassword(values, props.token)
+    updatePassword(
+        {
+          currentPassword: values.currentPassword,
+          newPassword: values.password,
+        },
+        props.token
+      )
       .then(ok => {
         helpers.setSubmitting(!ok);
         if (ok) {
           toast.success(toastMessages.updateSuccess);
+          setEditing(false);
         } else {
           toast.error(toastMessages.unknownErr);
         }
@@ -58,7 +67,6 @@ export function DisplayPassword(
         <UpdatePasswordForm
           onSubmit={handleSubmit}
           errMsg={errMsg}
-          onCancel={() => setEditing(false)}
         /> :
         <div>*******</div>
       }
@@ -66,72 +74,4 @@ export function DisplayPassword(
   )
 }
 
-function UpdatePasswordForm(
-  props: {
-    onSubmit: (
-      values: UpdatePasswordFormVal,
-      formikHelpers: FormikHelpers<UpdatePasswordFormVal>
-    ) => void | Promise<any>;
-    errMsg: string;
-    onCancel: () => void;
-  }
-) {
 
-  const [errMsg, setErrMsg] = useState('')
-
-  // Sync props error message to state.
-  // Must use props.errMsg to detect changes.
-  useEffect(() => {
-    setErrMsg(props.errMsg);
-  }, [props.errMsg]);
-
-  return (
-    <>
-      {
-        errMsg &&
-        <Alert
-          variant="danger"
-          dismissible
-          onClose={() => setErrMsg('')}>
-          {errMsg}
-        </Alert>
-      }
-      <Formik<UpdatePasswordFormVal>
-        initialValues={{
-          currentPassword: '',
-          newPassword: '',
-          confirmPassword: ''
-        }}
-        validationSchema={Yup.object(verifyPasswordSchema)}
-        onSubmit={props.onSubmit}
-      >
-        { formik => (
-          <Form>
-            <TextInput
-              label="当前密码"
-              name="currentPassword"
-              type="password"
-            />
-            <TextInput
-              label="新密码"
-              name="newPassword"
-              type="password"
-            />
-            <TextInput
-              label="确认新密码"
-              name="confirmPassword"
-              type="password"
-            />
-
-            <ProgressButton
-              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-              text="重置"
-              inline={true}
-              isSubmitting={formik.isSubmitting}
-            />
-          </Form>
-        )}
-      </Formik>
-    </>
-  );
-}

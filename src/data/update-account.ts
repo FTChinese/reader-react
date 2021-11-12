@@ -13,6 +13,8 @@ export type UpdatePasswordReq = {
   newPassword: string;
 };
 
-export type UpdatePasswordFormVal = UpdatePasswordReq & {
+export type UpdatePasswordFormVal = {
+  currentPassword: string;
+  password: string
   confirmPassword: string;
 };

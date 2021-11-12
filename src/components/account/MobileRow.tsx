@@ -21,7 +21,7 @@ export function DisplayMobile(
   const [errMsg, setErrMsg] = useState('');
 
   const handleSMSRequest = (mobile: string, helper: SMSHelper) => {
-    console.log(mobile);
+    setErrMsg('');
     helper.setProgress(true);
 
     requestVerifyMobile(
@@ -53,7 +53,8 @@ export function DisplayMobile(
       .then(ba => {
         helper.setSubmitting(false);
         toast.success(toastMessages.updateSuccess);
-        props.onUpdated(ba)
+        props.onUpdated(ba);
+        setEditing(false);
       })
       .catch((err: ResponseError) => {
         helper.setSubmitting(false);

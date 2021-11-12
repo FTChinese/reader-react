@@ -31,6 +31,7 @@ export function UserNameRow(
         helpers.setSubmitting(false);
         toast.success(toastMessages.updateSuccess);
         props.onUpdated(ba);
+        setEditing(false);
       })
       .catch((err: ResponseError) => {
         helpers.setSubmitting(false);
