@@ -1,16 +1,16 @@
+import { link } from 'fs';
 import { useEffect, useState } from 'react';
-import { Redirect } from 'react-router-dom';
-import { ReaderPassport } from '../../data/account';
+import { ReaderAccount, ReaderPassport } from '../../data/account';
 import { WxOAuthCodeReq } from '../../data/authentication';
-import { sitemap } from '../../data/sitemap';
+import { WxOAuthKind } from '../../data/enum';
 import { ResponseError } from '../../repository/response-error';
 import { getWxOAuthCodeReq, wxLogin } from '../../repository/wx-auth';
 import { useAuthContext } from '../../store/AuthContext';
 import { wxCodeSessionStore } from '../../store/keys';
 import { ProgressOrError } from '../ProgressErrorBoundary';
+import { GoHome, Unauthorized } from '../routes/Unauthorized';
 import { LinkAccounts } from './LinkAccounts';
-
-type OnAccountLoaded = (passport: ReaderPassport) => void;
+import { OnReaderAccount } from './OnReaderAccount';
 
 /**
  * @description WxLogin show a wechat login button and build the link to request a wechat OAuth code.
@@ -52,25 +52,14 @@ export function InitWxOAuth() {
 export function WxOAuthAccess(
   props: {
     code: string;
+    usage: WxOAuthKind;
   }
 ) {
 
-  const { setLoggedIn, passport} = useAuthContext();
-
-  const [ wxAccount, setWxAccount] = useState<ReaderPassport>();
+  const [ wxPassport, setWxPassport] = useState<ReaderPassport>();
 
   const [progress, setProgress] = useState(true);
   const [errMsg, setErrMsg] = useState('');
-
-  // After wechat account is loaded.
-  const accountLoaded: OnAccountLoaded = (pp: ReaderPassport) => {
-
-    if (passport) {
-      setWxAccount(pp);
-    } else {
-      setLoggedIn(pp);
-    }
-  }
 
   useEffect(() => {
     wxLogin(props.code)
@@ -79,20 +68,21 @@ export function WxOAuthAccess(
         // Not progress. No error.
         setErrMsg('');
         setProgress(false);
-        wxCodeSessionStore.remove();
-
         // If user already logged in, this is a link session; otherwise a login session.
-        setWxAccount(wxPassport);
+        setWxPassport(wxPassport);
       })
       .catch((err: ResponseError) => {
         setProgress(false);
         setErrMsg(err.message);
       });
+
+    return function() {
+      wxCodeSessionStore.remove();
+    };
   }, [props.code]);
 
   // Fetching account, or error.
-  if (!wxAccount) {
-    {/* TODO: show this only for login; otherwise to to home page. <Link to={sitemap.login}>重试</Link>*/}
+  if (!wxPassport) {
     return (
       <ProgressOrError
         progress={progress}
@@ -101,38 +91,64 @@ export function WxOAuthAccess(
     );
   }
 
-  // User already logged-in. So this is a email-linking-wechat session.
-  if (passport) {
-    return (
-      <div>
-        <div className="text-center">授权成功！</div>
-        <LinkAccounts
-          token={passport.token}
-          wxAccount={wxAccount}
-          ftcAccount={passport}
-          onLinked={accountLoaded}
-        />
-      </div>
-    );
-  }
+  switch (props.usage) {
+    case 'login':
+      return <HandleLogin wxPassport={wxPassport}/>;
 
-  return <LoginSuccess passport={wxAccount}/>;
+    case 'link':
+      return <HandleLink wxPassport={wxPassport}/>;
+
+    default:
+      return <div className="text-center">授权成功！</div>;
+  }
 }
 
-function LoginSuccess(
+function HandleLogin(
   props: {
-    passport: ReaderPassport;
+    wxPassport: ReaderPassport;
   }
 ) {
   const { setLoggedIn, passport } = useAuthContext();
 
   useEffect(() => {
-    setLoggedIn(props.passport);
+    setLoggedIn(props.wxPassport);
   });
 
-  if (passport) {
-    return <Redirect to={sitemap.home}/>;
+  if (!passport) {
+    return <Unauthorized/>;
   }
 
-  return <div>登录成功，跳转...</div>
+  return <GoHome />;
+}
+
+function HandleLink(
+  props: {
+    wxPassport: ReaderPassport;
+  }
+) {
+
+  const { setLoggedIn, passport } = useAuthContext();
+  const [ linked, setLinked ] = useState(false);
+
+  const handleLinked: OnReaderAccount = (pp) => {
+    setLoggedIn(pp);
+    setLinked(true);
+  }
+
+  if (!passport) {
+    return <GoHome/>;
+  }
+
+  if (linked) {
+    return <GoHome/>;
+  }
+
+  return (
+    <LinkAccounts
+      token={props.wxPassport.token}
+      wxAccount={props.wxPassport}
+      ftcAccount={passport}
+      onLinked={handleLinked}
+    />
+  );
 }
