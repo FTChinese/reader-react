@@ -1,16 +1,20 @@
 import { FormikHelpers } from 'formik';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
-import { isLinkable, ReaderAccount, ReaderPassport } from '../../data/account';
-import { Credentials, EmailVal } from '../../data/form-value';
+import { ReaderAccount, ReaderPassport } from '../../data/account';
+import { Credentials, EmailVal, invalidMessages } from '../../data/form-value';
 import { CenterLayout } from '../Layout';
 import { emailExists, emailLogin } from '../../repository/email-auth';
-import { ResponseError } from '../../repository/response-error';
+import { isCodeAlreadyExists, ResponseError } from '../../repository/response-error';
 import { BackButton } from '../buttons/BackButton';
 import { EmailForm } from '../forms/EmailForm';
 import { EmailLoginForm } from '../forms/EmailLoginForm';
 import { LinkAccounts } from './LinkAccounts';
 import { OnReaderAccount } from './OnReaderAccount';
+import { SignUpForm } from '../forms/SignUpForm';
+import { SignupFormVal } from '../../data/authentication';
+import { wxLinkNewEmail } from '../../repository/wx-auth';
+import { emailVerificationUrl } from '../../data/sitemap';
 
 /**
  * @description Show a dialog to let a user logged
@@ -108,6 +112,7 @@ function SignInOrUp(
   }
 ) {
 
+  // If email is found, ask user to verify password.
   if (props.found) {
     return (
       <>
@@ -121,10 +126,15 @@ function SignInOrUp(
     );
   }
 
+  // Otherwise ask user to create a new account.
   return (
     <>
       <BackButton onBack={props.onCancel}/>
-      <EmailSignUp/>
+      <EmailSignUp
+        token={props.passport.token}
+        email={props.email}
+        onLinked={props.onLinked}
+      />
     </>
   );
 }
@@ -186,9 +196,59 @@ function EmailLogIn(
   );
 }
 
-function EmailSignUp() {
+function EmailSignUp(
+  props: {
+    token: string; // Current wechat passport token
+    email: string; // Email to link.
+    onLinked: OnReaderAccount;
+  }
+) {
+
+  const [ errMsg, setErrMsg ] = useState('');
+
+  const handleSignUp = (values: SignupFormVal, helper: FormikHelpers<SignupFormVal>) => {
+    setErrMsg('');
+    helper.setSubmitting(false);
+
+    wxLinkNewEmail(
+        {
+          email: values.email,
+          password: values.password,
+          sourceUrl: emailVerificationUrl(window.location.origin)
+        },
+        props.token,
+      )
+      .then(passport => {
+        helper.setSubmitting(false);
+        props.onLinked(passport);
+      })
+      .catch((err: ResponseError) => {
+        helper.setSubmitting(false);
+        if (err.invalid) {
+          if (isCodeAlreadyExists(err.invalid, 'email')) {
+            helper.setErrors({
+              email: invalidMessages.emailAlreadyExists,
+            })
+          } else {
+            helper.setErrors(err.toFormFields);
+          }
+          return;
+        }
+
+        setErrMsg(err.message);
+      });
+  };
+
   return (
-    <div>Email not found. Create new account</div>
+    <>
+      <h5 className="text-center">注册FT中文网账号</h5>
+      <p>该邮箱上位注册FT中文网账号，设置密码后为您创建账号并关联微信</p>
+      <SignUpForm
+        onSubmit={handleSignUp}
+        errMsg={errMsg}
+        email={props.email}
+      />
+    </>
   );
 }
 

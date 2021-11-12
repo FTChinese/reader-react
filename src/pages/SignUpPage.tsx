@@ -8,6 +8,7 @@ import { isCodeAlreadyExists, ResponseError } from '../repository/response-error
 import { SignUpForm } from '../components/forms/SignUpForm';
 import { FormikHelpers } from 'formik';
 import { SignupFormVal } from '../data/authentication';
+import { invalidMessages } from '../data/form-value';
 
 export function SignUpPage() {
 
@@ -32,7 +33,7 @@ export function SignUpPage() {
         if (err.invalid) {
           if (isCodeAlreadyExists(err.invalid, 'email')) {
             helper.setErrors({
-              'email': '该账号已经注册，请直接登录'
+              email: invalidMessages.emailAlreadyExists,
             });
           } else {
             helper.setErrors(err.toFormFields);
