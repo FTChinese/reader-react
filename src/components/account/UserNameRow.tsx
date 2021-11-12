@@ -1,14 +1,11 @@
-import { Form, Formik, FormikHelpers } from 'formik';
-import { useEffect, useState } from 'react';
-import Alert from 'react-bootstrap/Alert';
+import { FormikHelpers } from 'formik';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
-import * as Yup from 'yup';
-import { invalidMessages, toastMessages, } from '../../data/form-value';
+import { toastMessages, } from '../../data/form-value';
 import { UpdateNameFormVal } from '../../data/update-account';
 import { updateUserName } from '../../repository/email-account';
 import { ResponseError } from '../../repository/response-error';
-import ProgressButton from '../buttons/ProgressButton';
-import { TextInput } from '../controls/TextInput';
+import { UserNameForm } from '../forms/UserNameForm';
 import { AccountRow } from "./AccountRow";
 import { OnAccountUpdated } from './OnAccountUpdated';
 
@@ -67,61 +64,3 @@ export function UserNameRow(
   );
 }
 
-function UserNameForm(
-  props: {
-    onSubmit: (
-      values: UpdateNameFormVal,
-      formikHelpers: FormikHelpers<UpdateNameFormVal>
-    ) => void | Promise<any>;
-    errMsg: string;
-    userName: string | null;
-  }
-) {
-
-  const [ errMsg, setErrMsg ] = useState('');
-
-  useEffect(() => {
-    setErrMsg(props.errMsg);
-  }, [props.errMsg]);
-
-  return (
-    <>
-      {
-        errMsg &&
-        <Alert
-          variant="danger"
-          dismissible
-          onClose={() => setErrMsg('')}>
-          {errMsg}
-        </Alert>
-      }
-      <Formik<UpdateNameFormVal>
-        initialValues={{
-          userName: props.userName || '',
-        }}
-        validationSchema={Yup.object({
-          displayName: Yup.string()
-            .required(invalidMessages.required),
-        })}
-        onSubmit={props.onSubmit}
-      >
-        { formik => (
-          <Form>
-            <TextInput
-              name="userName"
-              type="text"
-            />
-
-            <ProgressButton
-              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-              text="保存"
-              isSubmitting={formik.isSubmitting}
-              inline={true}
-            />
-
-          </Form>
-        )}
-      </Formik>
-    </>
-  );
-}
