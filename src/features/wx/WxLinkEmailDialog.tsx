@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { ReaderAccount, ReaderPassport } from '../../data/account';
 import { Credentials, EmailVal, invalidMessages } from '../../data/form-value';
-import { CenterLayout } from '../../components/Layout';
+import { CenterLayout } from '../../components/layout/Layout';
 import { emailExists, emailLogin } from '../../repository/email-auth';
 import { isCodeAlreadyExists, ResponseError } from '../../repository/response-error';
 import { BackButton } from '../../components/buttons/BackButton';

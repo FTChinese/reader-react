@@ -1,5 +1,4 @@
 import { useAuthContext } from '../store/AuthContext';
-import { ContentLayout } from '../components/Layout';
 import { Unauthorized } from '../components/routes/Unauthorized';
 import { UserNameRow } from '../features/account/UserNameRow';
 import { DisplayEmail } from '../features/account/EmailRow';
@@ -22,17 +21,13 @@ export function HomePage() {
 
   const isWxOnly = isAccountWxOnly(passport);
 
-  return (
-    <ContentLayout>
-      { isWxOnly ?
-        <WechatDetails
-          {...passport}
-        /> :
-        <FtcDetails
-          {...passport}
-        />
-      }
-    </ContentLayout>
+  return ( isWxOnly ?
+    <WechatDetails
+      {...passport}
+    /> :
+    <FtcDetails
+      {...passport}
+    />
   );
 }
 

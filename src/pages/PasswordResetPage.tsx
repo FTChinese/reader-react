@@ -2,16 +2,17 @@ import { FormikHelpers, Formik, Form } from 'formik';
 import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import Alert from 'react-bootstrap/Alert';
-import { Link, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import ProgressButton from '../components/buttons/ProgressButton';
 import { TextInput } from '../components/controls/TextInput';
-import { CenterLayout } from '../components/Layout';
 import { verifyPasswordSchema } from '../data/form-value';
 import { PasswordResetFormVal, PasswordResetVerified } from '../data/password-reset';
 import { sitemap } from '../data/sitemap';
 import { ResponseError } from '../repository/response-error';
 import { resetPassword, verifyPwToken } from '../repository/password-reset';
 import { cancelSource } from '../repository/cancel';
+import { ErrorBoudary } from '../components/progress/ErrorBoundary';
+import { Loading } from '../components/progress/Loading';
 
 function ResetPassword(
   props: PasswordResetVerified
@@ -112,6 +113,7 @@ function VerifyToken(props: {
   useEffect(() => {
     verifyPwToken(props.token)
       .then(v => {
+        setProgress(false);
         props.onVerified(v);
       })
       .catch((err: ResponseError) => {
@@ -130,46 +132,38 @@ function VerifyToken(props: {
     };
   }, []);
 
-  if (progress) {
-    return (
-      <div className="text-center">
-        正在验证...
-      </div>
-    );
-  }
-
-  if (notFound) {
-    return (
-      <div className="text-center">
-        <h5>无法重置密码</h5>
-        <p>
-        您似乎使用了无效的重置密码链接，请重新<Link to={sitemap.forgotPassword}>获取重置密码邮件</Link>或直接<Link to={sitemap.login}>登录</Link>
-        </p>
-      </div>
-    );
-  }
-
-  if (errMsg) {
-    return (
-      <>
-        <h5 className="text-center">验证过程出错了!</h5>
-        <Alert
-          variant="danger"
-        >
-          {errMsg}
-        </Alert>
-      </>
-    );
-  }
-
-  return <></>;
+  return (
+    <ErrorBoudary
+      errMsg={errMsg}
+    >
+      <Loading
+        loading={progress}
+      >
+        {
+          notFound ?
+          <div className="text-center">
+            <h5>无法重置密码</h5>
+            <p>
+            您似乎使用了无效的重置密码链接，请重新<Link to={sitemap.forgotPassword}>获取重置密码邮件</Link>或直接<Link to={sitemap.login}>登录</Link>
+            </p>
+          </div> :
+          <div>
+            Unknown error occurred.
+          </div>
+        }
+      </Loading>
+    </ErrorBoudary>
+  );
 }
 
-export function PasswordReset(
-  props: {
-    token: string;
+export function PasswordResetPage() {
+
+  const { token } = useParams<'token'>();
+
+  if (!token) {
+    return <div>Incorrect query parameter!</div>;
   }
-) {
+
   const [ verified, setVerified ] = useState<PasswordResetVerified | undefined>(undefined);
 
   if (verified) {
@@ -177,19 +171,6 @@ export function PasswordReset(
   }
 
   return <VerifyToken
-    token={props.token}
+    token={token}
     onVerified={setVerified}/>;
-}
-
-export function PasswordResetPage() {
-
-  const { token } = useParams<{token: string}>();
-
-  return (
-    <CenterLayout>
-       <PasswordReset
-          token={token}
-       />
-    </CenterLayout>
-  );
 }

@@ -1,25 +1,17 @@
 import { useAuthContext } from '../store/AuthContext';
-import { ContentLayout } from '../components/Layout';
-import { Redirect } from 'react-router-dom';
-import { sitemap } from '../data/sitemap';
 import { CurrentSubs } from '../features/subs/CurrentSubs';
+import { Unauthorized } from '../components/routes/Unauthorized';
 
 
 export function MembershipPage() {
   const { passport } = useAuthContext();
   if (!passport) {
-    return <Redirect to={sitemap.login}/>;
+    return <Unauthorized/>;
   }
 
   return (
-    <ContentLayout>
-      <div className="row justify-content-center">
-        <div className="col-md-8 col-lg-6">
-          <CurrentSubs
+    <CurrentSubs
             {...passport.membership}
           />
-        </div>
-      </div>
-    </ContentLayout>
   );
 }

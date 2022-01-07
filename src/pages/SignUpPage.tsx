@@ -1,7 +1,7 @@
 import { useState} from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthContext } from '../store/AuthContext';
-import { AuthLayout } from '../components/Layout';
+import { AuthLayout } from '../components/layout/Layout';
 import { emailVerificationUrl, sitemap } from '../data/sitemap';
 import { emailSignUp } from '../repository/email-auth';
 import { isCodeAlreadyExists, ResponseError } from '../repository/response-error';

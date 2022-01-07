@@ -7,7 +7,7 @@ export function ErrorBoudary(
 
   if (props.errMsg) {
     return (
-      <div className="text-danger">Error: {props.errMsg}</div>
+      <div className="text-danger text-center">Error: {props.errMsg}</div>
     );
   }
 

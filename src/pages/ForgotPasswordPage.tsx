@@ -2,7 +2,6 @@ import { FormikHelpers } from 'formik';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { EmailForm } from '../components/forms/EmailForm';
-import { CenterLayout } from '../components/Layout';
 import { EmailVal } from '../data/form-value';
 import { passwordResetUrl, sitemap } from '../data/sitemap';
 import { requestPasswordReset } from '../repository/password-reset';
@@ -68,13 +67,11 @@ export function ForgotPasswordPage() {
 
   console.log(document.location);
   return (
-    <CenterLayout>
-      <>
-        <h2 className="text-center">找回密码</h2>
-        <RequestPwResetLetter
-          baseUrl={document.location.origin}
-        />
-      </>
-    </CenterLayout>
+    <>
+      <h2 className="text-center">找回密码</h2>
+      <RequestPwResetLetter
+        baseUrl={document.location.origin}
+      />
+    </>
   );
 }

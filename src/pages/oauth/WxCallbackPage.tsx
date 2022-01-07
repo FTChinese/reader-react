@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '../../components/hooks/useLocation';
-import { AuthLayout } from '../../components/Layout';
+import { AuthLayout } from '../../components/layout/Layout';
 import { ProgressOrError } from '../../components/ProgressErrorBoundary';
 import { WxOAuthAccess } from '../../features/wx/InitWxOAuth';
 import { validateWxOAuthCode, WxOAuthCodeResp, WxOAuthCodeSession } from '../../data/authentication';

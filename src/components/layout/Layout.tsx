@@ -1,5 +1,3 @@
-import { Sidebar } from './Sidebar';
-
 export function CenterLayout(
   props: {
     children: JSX.Element
@@ -9,28 +7,6 @@ export function CenterLayout(
     <div className="container">
       <div className="row justify-content-center">
         <div className="col-md-8 col-lg-6">
-          {props.children}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export function ContentLayout(
-  props: {
-    children: JSX.Element,
-  }
-) {
-
-  return (
-    <div className="container">
-      <div className="row">
-
-        <div className="col-sm-3" role="navigation">
-          <Sidebar />
-        </div>
-
-        <div className="col-sm-9">
           {props.children}
         </div>
       </div>

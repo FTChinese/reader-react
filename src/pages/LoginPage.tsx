@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuthContext } from '../store/AuthContext';
-import { AuthLayout } from '../components/Layout'
+import { AuthLayout } from '../components/layout/Layout'
 import { sitemap } from '../data/sitemap';
 import { emailLogin } from '../repository/email-auth';
 import { isCodeMissing, ResponseError } from '../repository/response-error';
