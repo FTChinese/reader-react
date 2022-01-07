@@ -1,4 +1,4 @@
-import { Tier, Cycle, PriceSource, PriceKind, DiscountStatus, OfferKind } from './enum';
+import { Tier, Cycle, PriceKind, DiscountStatus, OfferKind } from './enum';
 import { YearMonthDay } from './period';
 
 export interface Edition {

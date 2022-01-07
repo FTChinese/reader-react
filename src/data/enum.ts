@@ -8,7 +8,6 @@ export type SubStatus = 'active' | 'canceled' | 'incomplete' | 'incomplete_expir
 export type OrderKind = 'create' | 'renew' | 'upgrade' | 'downgrade' | 'add_on';
 export type AccountKind = 'ftc' | 'mobile' | 'wechat' | 'linked';
 export type PriceKind = 'recurring' | 'one_time';
-export type PriceSource = 'ftc' | 'stripe';
 export type OfferKind = 'promotion' | 'retention' | 'win_back';
 export type DiscountStatus = 'active' | 'paused' | 'cancelled';
 export type WxOAuthKind = 'login' | 'link';
