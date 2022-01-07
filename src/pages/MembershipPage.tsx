@@ -2,7 +2,7 @@ import { useAuthContext } from '../store/AuthContext';
 import { ContentLayout } from '../components/Layout';
 import { Redirect } from 'react-router-dom';
 import { sitemap } from '../data/sitemap';
-import { CurrentSubs } from '../components/subs/CurrentSubs';
+import { CurrentSubs } from '../features/subs/CurrentSubs';
 
 
 export function MembershipPage() {

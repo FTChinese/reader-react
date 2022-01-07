@@ -5,7 +5,7 @@ import { toastMessages } from '../../data/form-value';
 import { UpdatePasswordFormVal } from '../../data/update-account';
 import { updatePassword } from '../../repository/email-account';
 import { ResponseError } from '../../repository/response-error';
-import { UpdatePasswordForm } from '../forms/UpdatePasswordForm';
+import { UpdatePasswordForm } from '../../components/forms/UpdatePasswordForm';
 import { AccountRow } from './AccountRow';
 
 export function DisplayPassword(

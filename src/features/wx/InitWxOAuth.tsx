@@ -7,8 +7,8 @@ import { ResponseError } from '../../repository/response-error';
 import { getWxOAuthCodeReq, wxLogin } from '../../repository/wx-auth';
 import { useAuthContext } from '../../store/AuthContext';
 import { wxCodeSessionStore } from '../../store/keys';
-import { ProgressOrError } from '../ProgressErrorBoundary';
-import { GoHome, Unauthorized } from '../routes/Unauthorized';
+import { ProgressOrError } from '../../components/ProgressErrorBoundary';
+import { GoHome, Unauthorized } from '../../components/routes/Unauthorized';
 import { LinkAccounts } from './LinkAccounts';
 import { OnReaderAccount } from './OnReaderAccount';
 

@@ -5,7 +5,7 @@ import { toastMessages } from '../../data/form-value';
 import { VerifySMSFormVal } from '../../data/mobile';
 import { changeMobile, requestVerifyMobile } from '../../repository/email-account';
 import { ResponseError } from '../../repository/response-error';
-import { MobileLoginForm, SMSHelper } from '../forms/MobileLoginForm';
+import { MobileLoginForm, SMSHelper } from '../../components/forms/MobileLoginForm';
 import { AccountRow } from "./AccountRow";
 import { OnAccountUpdated } from './OnAccountUpdated';
 

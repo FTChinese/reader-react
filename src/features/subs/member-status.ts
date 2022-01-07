@@ -3,7 +3,7 @@ import { SubStatus, isInvalidSubStatus } from '../../data/enum';
 import { localizedTier } from '../../data/localization';
 import { Membership, isMembershipZero } from '../../data/membership';
 import { diffToday, isExpired } from '../../utils/now';
-import { StringPair, rowExpiration, rowSubsSource, rowAutoRenewOn, rowAutoRenewDate, rowAutoRenewOff } from '../list/pair';
+import { StringPair, rowExpiration, rowSubsSource, rowAutoRenewOn, rowAutoRenewDate, rowAutoRenewOff } from '../../components/list/pair';
 
 /**
  * @description Describes the UI used to present Membership.

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '../../components/hooks/useLocation';
 import { AuthLayout } from '../../components/Layout';
 import { ProgressOrError } from '../../components/ProgressErrorBoundary';
-import { WxOAuthAccess } from '../../components/wx/InitWxOAuth';
+import { WxOAuthAccess } from '../../features/wx/InitWxOAuth';
 import { validateWxOAuthCode, WxOAuthCodeResp, WxOAuthCodeSession } from '../../data/authentication';
 import { wxCodeSessionStore } from '../../store/keys';
 

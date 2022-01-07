@@ -1,17 +1,17 @@
 import { useAuthContext } from '../store/AuthContext';
 import { ContentLayout } from '../components/Layout';
 import { Unauthorized } from '../components/routes/Unauthorized';
-import { UserNameRow } from '../components/account/UserNameRow';
-import { DisplayEmail } from '../components/account/EmailRow';
-import { DisplayPassword } from '../components/account/PasswordRow';
-import { DisplayMobile } from '../components/account/MobileRow';
-import { DisplayWechat } from '../components/account/WechatRow';
+import { UserNameRow } from '../features/account/UserNameRow';
+import { DisplayEmail } from '../features/account/EmailRow';
+import { DisplayPassword } from '../features/account/PasswordRow';
+import { DisplayMobile } from '../features/account/MobileRow';
+import { DisplayWechat } from '../features/account/WechatRow';
 import { BaseAccount, isAccountWxOnly, ReaderPassport } from '../data/account';
-import { WxLinkEmailDialog } from '../components/wx/WxLinkEmailDialog';
-import { OnReaderAccount } from "../components/wx/OnReaderAccount";
+import { WxLinkEmailDialog } from '../features/wx/WxLinkEmailDialog';
+import { OnReaderAccount } from "../features/wx/OnReaderAccount";
 import { useState } from 'react';
-import { WxAvatar } from '../components/wx/WxAvatar';
-import { OnAccountUpdated } from '../components/account/OnAccountUpdated';
+import { WxAvatar } from '../features/wx/WxAvatar';
+import { OnAccountUpdated } from '../features/account/OnAccountUpdated';
 
 export function HomePage() {
   const { passport } = useAuthContext();

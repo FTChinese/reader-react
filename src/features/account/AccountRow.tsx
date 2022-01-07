@@ -1,4 +1,4 @@
-import { XLarge, Pencil } from '../icons';
+import { XLarge, Pencil } from '../../components/icons';
 
 export function AccountRow(
   props: {

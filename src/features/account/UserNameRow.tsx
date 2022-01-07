@@ -5,7 +5,7 @@ import { toastMessages, } from '../../data/form-value';
 import { UpdateNameFormVal } from '../../data/update-account';
 import { updateUserName } from '../../repository/email-account';
 import { ResponseError } from '../../repository/response-error';
-import { UserNameForm } from '../forms/UserNameForm';
+import { UserNameForm } from '../../components/forms/UserNameForm';
 import { AccountRow } from "./AccountRow";
 import { OnAccountUpdated } from './OnAccountUpdated';
 

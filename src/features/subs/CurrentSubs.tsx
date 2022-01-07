@@ -1,6 +1,6 @@
 import { buildMemberStatus } from './member-status'
 import { Membership } from '../../data/membership';
-import { TwoColList } from '../list/TwoColList';
+import { TwoColList } from '../../components/list/TwoColList';
 
 export function CurrentSubs(
   props: Membership

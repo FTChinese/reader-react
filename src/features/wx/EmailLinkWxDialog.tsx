@@ -4,7 +4,7 @@ import { ReaderPassport } from '../../data/account';
 import { ResponseError } from '../../repository/response-error';
 import { getWxOAuthCodeReq } from '../../repository/wx-auth';
 import { wxCodeSessionStore } from '../../store/keys';
-import ProgressButton from '../buttons/ProgressButton';
+import ProgressButton from '../../components/buttons/ProgressButton';
 import { OnReaderAccount } from './OnReaderAccount';
 
 /**

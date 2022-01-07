@@ -1,5 +1,8 @@
 import { GlobalSpinner } from './progress/GlobalSpinner';
 
+/**
+ * @deprecated
+ */
 export function ProgressOrError(
   props: {
     errMsg: string;
