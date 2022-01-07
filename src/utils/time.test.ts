@@ -1,4 +1,4 @@
-import { extractDate } from './time-formatter';
+import { extractDate } from './time';
 
 describe('Extract date part from iso datetime', () => {
   test('date of datetime', () => {
