@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuthContext } from '../store/AuthContext';
 import { AuthLayout } from '../components/layout/Layout'
@@ -287,6 +287,16 @@ function MobileLogin() {
 }
 
 export function LoginPage() {
+
+  const { passport } = useAuthContext();
+
+  if (passport) {
+    return <Navigate
+      to={sitemap.home}
+      replace={true}
+    />;
+  }
+
   return (
     <AuthLayout
       title="登录FT中文网"
