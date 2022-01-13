@@ -6,7 +6,7 @@ import { AuthProvider } from './store/AuthContext'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { CenterLayout } from './components/layout/CenterLayout'
 import { ContentLayout } from './components/layout/ContentLayout'
-import { sitemap } from './data/sitemap'
+import { siteRoot } from './data/sitemap'
 import { LoginPage } from './pages/LoginPage'
 import { VerificationPage } from './pages/auth/VerificationPage'
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage'
@@ -15,68 +15,33 @@ import { PasswordResetPage } from './pages/PasswordResetPage'
 import { SignUpPage } from './pages/SignUpPage'
 import { HomePage } from './pages/HomePage'
 import { MembershipPage } from './pages/MembershipPage'
+import { RecoilRoot } from 'recoil'
 
 ReactDOM.render(
   <React.StrictMode>
-    <AuthProvider>
-      <BrowserRouter basename="/reader">
-        <Routes>
-          <Route
-            path="/"
-            element={<App />}
-          >
-            <Route
-              path=""
-              element={<CenterLayout />}
-            >
-              <Route
-                path={sitemap.login}
-                element={<LoginPage />}
-              />
+    <RecoilRoot>
+      <AuthProvider>
+        <BrowserRouter basename="/reader">
+          <Routes>
+            <Route path="/" element={<App />} >
+              <Route element={<CenterLayout />}>
+                <Route path={siteRoot.login} element={<LoginPage />} />
+                <Route path={siteRoot.signUp} element={<SignUpPage />} />
+                <Route path={siteRoot.forgotPassword} element={<ForgotPasswordPage />} />
+                <Route path={`${siteRoot.passwordReset}/:token`} element={<PasswordResetPage />} />
+                <Route path={`${siteRoot.verification}/:token`} element={<VerificationPage />} />
+                <Route path={siteRoot.authCallback} element={<WxCallbackPage />} />
+              </Route>
 
-              <Route
-                path={sitemap.signUp}
-                element={<SignUpPage />}
-              />
-
-              <Route
-                path={sitemap.forgotPassword}
-                element={<ForgotPasswordPage />}
-              />
-
-              <Route
-                path={`${sitemap.passwordReset}/:token`}
-                element={<PasswordResetPage />}
-              />
-
-              <Route
-                path={`${sitemap.verification}/:token`}
-                element={<VerificationPage />}
-              />
-
-              <Route
-                path={sitemap.authCallback}
-                element={<WxCallbackPage />}
-              />
+              <Route element={<ContentLayout />}>
+                <Route path={siteRoot.membership} element={<MembershipPage />} />
+                <Route index element={<HomePage />} />
+              </Route>
             </Route>
-
-            <Route
-              path=""
-              element={<ContentLayout />}
-            >
-              <Route path={sitemap.membership}
-                element={<MembershipPage />}
-              />
-
-              <Route path={sitemap.home}
-                element={<HomePage />}
-              />
-
-            </Route>
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </RecoilRoot>
   </React.StrictMode>,
   document.getElementById('root')
 )
