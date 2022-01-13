@@ -4,7 +4,7 @@ import { useAuthContext } from '../../store/AuthContext';
 import styles from  './Toolbar.module.css';
 
 export function Toolbar() {
-  const { passport, setLoggedOut: logout } = useAuthContext();
+  const { passport, setLoggedOut } = useAuthContext();
 
   return (
     <div className={`d-flex justify-content-between ${styles.toolbar}`}>
@@ -17,8 +17,12 @@ export function Toolbar() {
         <div className="d-flex align-items-center">
           <span className="border-end pe-3">{getDisplayName(passport)}</span>
 
-          <button className="btn btn-link" onClick={() => logout() }>Logout</button>
-
+          <button
+            className="btn btn-link"
+            onClick={() => setLoggedOut()}
+          >
+            Logout
+          </button>
         </div>
       }
     </div>
