@@ -7,11 +7,11 @@ export function ContentLayout() {
     <div className="container">
       <div className="row">
 
-        <div className="col-sm-3" role="navigation">
+        <div className="col-sm-12 col-md-3" role="navigation">
           <Sidebar />
         </div>
 
-        <div className="col-sm-9">
+        <div className="col-sm-12 col-md-9">
           <Outlet/>
         </div>
       </div>
