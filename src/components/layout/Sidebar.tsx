@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
-import { sitemap } from '../data/sitemap';
-import { ILink } from '../widgets/link';
+import { sitemap } from '../../data/sitemap';
+import { ILink } from '../../widgets/link';
 import styles from './Sidebar.module.css';
 
 const navItems: ILink[] = [
@@ -14,7 +14,6 @@ const navItems: ILink[] = [
   },
 ];
 
-
 export function Sidebar() {
   return (
     <nav className={`nav flex-column ${styles.sidebar}`}>
@@ -23,9 +22,8 @@ export function Sidebar() {
           <NavLink
             to={item.href}
             key={index}
-            className="nav-link"
-            activeClassName="active"
-            exact={true}>
+            className={({isActive}) => isActive ? `nav-link ${styles.active}` : 'nav-link'}
+          >
             {item.name}
           </NavLink>
         ))
