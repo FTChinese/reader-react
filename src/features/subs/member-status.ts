@@ -1,6 +1,6 @@
 import { parseISO } from 'date-fns';
 import { SubStatus, isInvalidSubStatus } from '../../data/enum';
-import { localizedTier } from '../../data/localization';
+import { localizeTier } from '../../data/localization';
 import { Membership, isMembershipZero } from '../../data/membership';
 import { diffToday, isExpired } from '../../utils/now';
 import { StringPair, rowExpiration, rowSubsSource, rowAutoRenewOn, rowAutoRenewDate, rowAutoRenewOff } from '../../components/list/pair';
@@ -48,7 +48,7 @@ function formatRemainingDays(expiresAt?: Date, subStatus?: SubStatus | null): st
  */
 function onetimeSubsStatus(m: Membership): MemberStatus {
   return {
-    productName: m.tier ? localizedTier(m.tier) : '',
+    productName: m.tier ? localizeTier(m.tier) : '',
     details: [
       rowExpiration(m.expireDate),
     ],
@@ -66,7 +66,7 @@ function onetimeSubsStatus(m: Membership): MemberStatus {
  */
 function b2bMemberStatus(m: Membership): MemberStatus {
   return {
-    productName: m.tier ? localizedTier(m.tier) : '',
+    productName: m.tier ? localizeTier(m.tier) : '',
     details: [
       rowSubsSource(m.payMethod),
       rowExpiration(m.expireDate),
@@ -94,7 +94,7 @@ function b2bMemberStatus(m: Membership): MemberStatus {
  * 到期时间     2021-11-11
  */
 function autoRenewalSubsStatus(m: Membership): MemberStatus {
-  const productName = m.tier ? localizedTier(m.tier) : '';
+  const productName = m.tier ? localizeTier(m.tier) : '';
 
   const expiresAt = m.expireDate ? parseISO(m.expireDate) : undefined;
 
@@ -176,7 +176,7 @@ export function buildMemberStatus(m: Membership): MemberStatus {
     default:
       return {
         reminder: '',
-        productName: m.tier ? localizedTier(m.tier) : '',
+        productName: m.tier ? localizeTier(m.tier) : '',
         details: [],
       }
   }

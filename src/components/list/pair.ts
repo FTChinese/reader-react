@@ -1,7 +1,6 @@
 import { getDate, getMonth } from 'date-fns';
-import { isAccountWxOnly, isMobileDerivedEmail, ReaderAccount } from '../../data/account';
 import { Cycle, PaymentMethod, Tier } from '../../data/enum';
-import { localizedCycle, localizedTier, localizePaymentMethod } from '../../data/localization';
+import { localizeCycle, localizeTier, localizePaymentMethod } from '../../data/localization';
 
 export type StringPair = [string, string];
 
@@ -24,15 +23,15 @@ export function pairEmail(email: string): StringPair {
 function formatAutoRenewMoment(expiresAt: Date, cycle: Cycle): string {
   switch (cycle) {
     case 'year':
-      return `${getMonth(expiresAt)}月${getDate(expiresAt)}日/${localizedCycle(cycle)}`
+      return `${getMonth(expiresAt)}月${getDate(expiresAt)}日/${localizeCycle(cycle)}`
 
     case 'month':
-      return `${getDate(expiresAt)}/${localizedCycle(cycle)}`
+      return `${getDate(expiresAt)}/${localizeCycle(cycle)}`
   }
 }
 
 export function rowTier(tier: Tier | null): StringPair {
-  return ['会员类型', tier ? localizedTier(tier) : '-']
+  return ['会员类型', tier ? localizeTier(tier) : '-']
 }
 
 export function rowSubsSource(pm: PaymentMethod | null): StringPair {
