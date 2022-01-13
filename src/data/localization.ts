@@ -1,13 +1,13 @@
 import { Cycle, PaymentMethod, Tier } from './enum';
-import { Edition } from './paywall';
-import { cycleOfYMD, isDayOnly, isMonthOnly, isYearOnly, YearMonthDay } from './period';
+import { Edition } from './edition';
+import { cycleOfYMD, YearMonthDay } from './period';
 
 const tiers: Record<Tier, string> = {
   standard: '标准会员',
   premium: '高端会员'
 };
 
-export function localizedTier(tier: Tier): string {
+export function localizeTier(tier: Tier): string {
   return tiers[tier];
 }
 
@@ -16,7 +16,7 @@ const cycles: Record<Cycle, string> = {
   year: '年'
 };
 
-export function localizedCycle(c: Cycle): string {
+export function localizeCycle(c: Cycle): string {
   return cycles[c];
 }
 
@@ -37,59 +37,7 @@ export function localizePaymentMethod(m: PaymentMethod | null): string {
 }
 
 export function localizedEdition(e: Edition): string {
-  return `${localizedTier(e.tier)}/${localizedCycle(e.cycle)}`;
-}
-
-
-export function formatYMD(ymd: YearMonthDay): string {
-  const str: string[] = [];
-
-  if (ymd.years > 0) {
-    str.push(`${ymd.years}年}`);
-  }
-
-  if (ymd.months > 0) {
-    str.push(`${ymd.months}个月`);
-  }
-
-
-  if (ymd.days > 0) {
-    str.push(`${ymd.days}天}`);
-  }
-
-  return str.join('');
-}
-
-export function formatTrialPeriod(ymd: YearMonthDay): string {
-  if (isYearOnly(ymd)) {
-    return ymd.years > 1 ? `前${ymd.years}年` : '首年';
-  }
-
-  if (isMonthOnly(ymd)) {
-    return ymd.months > 1 ? `前${ymd.months}` : '首月';
-  }
-
-  if (isDayOnly(ymd)) {
-    return `前${ymd.days}天`;
-  }
-
-  return formatYMD(ymd);
-}
-
-export function formatRegularPeriod(ymd: YearMonthDay): string {
-  if (isYearOnly(ymd)) {
-    return ymd.years > 1 ? `${ymd.years}年` : '年';
-  }
-
-  if (isMonthOnly(ymd)) {
-    return ymd.months > 1 ? `${ymd.months}` : '月';
-  }
-
-  if (isDayOnly(ymd)) {
-    return `${ymd.days}天`;
-  }
-
-  return formatYMD(ymd);
+  return `${localizeTier(e.tier)}/${localizeCycle(e.cycle)}`;
 }
 
 export function formatEdition(t: Tier, ymd: YearMonthDay): string {
@@ -101,9 +49,50 @@ export function formatEdition(t: Tier, ymd: YearMonthDay): string {
 
 export function formatMoney(currency: string, amount: number): string {
   return new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency: currency.toUpperCase(),
-    currencyDisplay: 'narrowSymbol',
-  })
-  .format(amount);
+      style: 'currency',
+      currency: currency.toUpperCase(),
+      currencyDisplay: 'narrowSymbol',
+    })
+    .format(amount);
+}
+
+export type MoneyParts = {
+  symbol: string;
+  integer: string;
+  decimal: string;
+};
+
+export type PriceParts = MoneyParts & {
+  cycle: string;
+}
+
+export function formatMoneyParts(currency: string, amount: number): MoneyParts {
+  return new Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency: currency.toUpperCase(),
+      currencyDisplay: 'narrowSymbol',
+    })
+    .formatToParts(amount)
+    .reduce<MoneyParts>((prev, curr) => {
+      switch (curr.type) {
+        case 'currency':
+          prev.symbol = curr.value;
+          break;
+
+        case 'integer':
+          prev.integer += curr.value;
+          break;
+
+        case 'decimal':
+        case 'fraction':
+          prev.decimal += curr.value;
+          break;
+      }
+
+      return prev;
+    }, {
+      symbol: '',
+      integer: '',
+      decimal: '',
+    })
 }
