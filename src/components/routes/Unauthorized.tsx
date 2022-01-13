@@ -1,16 +1,17 @@
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { sitemap } from '../../data/sitemap';
 
 export function Unauthorized() {
-  return <Redirect
+  return <Navigate
     to={{
       pathname: sitemap.login
     }}
+    replace={true}
   />;
 }
 
 export function GoHome() {
-  return <Redirect
+  return <Navigate
     to={{
       pathname: sitemap.home
     }}
