@@ -1,6 +1,5 @@
-import { link } from 'fs';
 import { useEffect, useState } from 'react';
-import { ReaderAccount, ReaderPassport } from '../../data/account';
+import { ReaderPassport } from '../../data/account';
 import { WxOAuthCodeReq } from '../../data/authentication';
 import { WxOAuthKind } from '../../data/enum';
 import { ResponseError } from '../../repository/response-error';
