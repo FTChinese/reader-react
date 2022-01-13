@@ -42,4 +42,8 @@ export const endpoint = {
   wxLink: `${accountBase}/wx/link`,
   wxUnlink: `${accountBase}/wx/unlink`,
   paywall: paywallBasePath,
+  stripePrices: `${paywallBasePath}/stripes`,
+  stripePriceOf: function(id: string): string {
+    return `${paywallBasePath}/stripes/${id}`;
+  },
 };
