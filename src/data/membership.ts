@@ -1,7 +1,7 @@
 import { parseISO } from 'date-fns';
 import { isExpired } from '../utils/now';
 import { Cycle, OrderKind, PaymentMethod, SubStatus, Tier } from './enum';
-import { Edition } from './paywall';
+import { Edition } from './edition';
 
 export type Membership =  {
   ftcId: string | null;
@@ -21,6 +21,10 @@ export type Membership =  {
   vip: boolean;
 }
 
+export function isMembershipZero(m: Membership): boolean {
+  return m.tier == null && !m.vip;
+}
+
 export function isMemberExpired(m: Membership): boolean {
   if (!m.expireDate) {
     return true;
@@ -29,10 +33,6 @@ export function isMemberExpired(m: Membership): boolean {
   const expireOn = parseISO(m.expireDate);
 
   return isExpired(expireOn) && !m.autoRenew;
-}
-
-export function isMembershipZero(m: Membership): boolean {
-  return m.tier == null && !m.vip;
 }
 
 export function isOneTimePurchase(m: Membership): boolean {
