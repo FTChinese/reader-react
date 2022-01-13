@@ -23,16 +23,14 @@ export function AuthLayout(
 ) {
 
   return (
-    <CenterLayout>
-      <>
-        <h4 className="text-center">{props.title}</h4>
+    <>
+      <h4 className="text-center">{props.title}</h4>
 
-        {props.children}
+      {props.children}
 
-        {props.links && <div className="d-flex justify-content-between mt-3">
-          {props.links}
-        </div>}
-      </>
-    </CenterLayout>
+      {props.links && <div className="d-flex justify-content-between mt-3">
+        {props.links}
+      </div>}
+    </>
   );
 }
