@@ -28,7 +28,7 @@ const paymentMethods: Record<PaymentMethod, string> = {
   b2b: '企业订阅'
 };
 
-export function localizePaymentMethod(m: PaymentMethod | null): string {
+export function localizePaymentMethod(m?: PaymentMethod): string {
   if (!m) {
     return '未知来源';
   }
