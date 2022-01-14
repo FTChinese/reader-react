@@ -6,7 +6,7 @@ import { PaymentMethod, WxUnlinkAnchor } from '../../data/enum';
 import { isMembershipZero, Membership } from '../../data/membership';
 import { ResponseError } from '../../repository/response-error';
 import { wxUnlinkEmail } from '../../repository/wx-auth';
-import ProgressButton from '../../components/buttons/ProgressButton';
+import { ProgressButton } from '../../components/buttons/ProgressButton';
 import { CardList } from '../../components/list/CardList';
 import { StringPair, pairEmail, pairWxName } from '../../components/list/pair';
 import { UnlinkableSubs } from '../subs/UnlinkableSubs';
@@ -182,7 +182,7 @@ function UnlinkableAccountRows(a: ReaderAccount): StringPair[] {
   ];
 }
 
-function isFtcSideOnly(m: PaymentMethod | null): boolean {
+function isFtcSideOnly(m?: PaymentMethod): boolean {
   if (!m) {
     return false;
   }

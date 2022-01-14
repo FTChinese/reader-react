@@ -3,7 +3,7 @@ import Alert from 'react-bootstrap/Alert';
 import { isLinkable, ReaderAccount } from '../../data/account';
 import { ResponseError } from '../../repository/response-error';
 import { wxLinkExistingEmail } from '../../repository/wx-auth';
-import ProgressButton from '../../components/buttons/ProgressButton';
+import { ProgressButton } from '../../components/buttons/ProgressButton';
 import { CardList } from '../../components/list/CardList';
 import { StringPair, rowTier, rowExpiration, pairEmail, pairMobile, pairWxName } from '../../components/list/pair';
 import { OnReaderAccount } from "./OnReaderAccount";
