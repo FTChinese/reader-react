@@ -7,7 +7,9 @@ export default defineConfig({
   plugins: [react(), svgr()],
   server: {
     proxy: {
-      '/api': 'http://localhost:4000/'
+      '/api': 'http://localhost:4000/',
+      // Forward requests for service, like qr image generation
+      '/service': 'http://localhost:4000/'
     }
   },
 });
