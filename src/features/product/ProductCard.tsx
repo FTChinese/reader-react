@@ -4,14 +4,24 @@ import { useRecoilValue } from 'recoil';
 import { ImageRatio } from '../../components/graphics/ImageRatio';
 import { TextLines } from '../../components/list/TextLines';
 import { ReaderPassport } from '../../data/account';
-import { FtcShelfItem } from '../../data/ftc-price';
-import { localizeCycle, MoneyParts } from '../../data/localization';
+import {  } from '../../data/price';
 import { Membership } from '../../data/membership';
-import { Banner, collectStripePriceIDs, ftcShelfItemParams, ftcShelfItems, isPromoValid, Paywall, PaywallProduct, productDesc, ShelfItemParams, stripeShelfItemParams } from '../../data/paywall';
-import { cycleOfYMD } from '../../data/period';
-import { StripeShelfItem } from '../../data/stripe-price';
+import { Banner, isPromoValid, Paywall, PaywallProduct, productDesc } from '../../data/paywall';
+import {
+  FtcShelfItem,
+  StripeShelfItem,
+  buildFtcShelfItems,
+  ShelfItemParams,
+  newFtcShelfItemParams,
+  newStripeShelfItemParams,
+  buildStripeShelfItems,
+} from '../../data/product-shelf';
 import { stripePricesState } from '../../store/useStripePrices';
 import styles from './ProductCard.module.css';
+import { PriceCardBody } from './PriceCard';
+import { HandlePayment, PaymentDialog } from './PaymentDialog';
+import { FtcPayForm, FtcPayFormVal } from '../../components/forms/FtcPayForm';
+import { FormikHelpers } from 'formik';
 
 export function PaywallContent(
   props: {
@@ -72,7 +82,7 @@ function ProductCard(
   }
 ) {
 
-  const ftcItems = ftcShelfItems(props.product, props.member);
+  const ftcItems = buildFtcShelfItems(props.product, props.member);
 
   const [ stripeItems, setStripeItems ] = useState<StripeShelfItem[]>();
 
@@ -83,26 +93,12 @@ function ProductCard(
       return;
     }
 
-    const ids = collectStripePriceIDs(props.product);
-    const trial = ids.trial
-      ? stripePrices.get(ids.trial)
-      : undefined;
+    setStripeItems(buildStripeShelfItems({
+      product: props.product,
+      m: props.member,
+      prices: stripePrices,
+    }));
 
-    const items: StripeShelfItem[] = [];
-
-    for (const id of ids.recurrings) {
-      const p = stripePrices.get(id);
-      if (p) {
-        items.push({
-          recurring: p,
-          trial,
-        });
-      } else {
-        console.error('Stripe price %s missing', id)
-      }
-    }
-
-    setStripeItems(items);
   }, [stripePrices.size]);
 
   return (
@@ -151,10 +147,31 @@ function FtcPriceCard(
   }
 ) {
 
+  const [ show, setShow ] = useState(false);
+
+
+  const params = newFtcShelfItemParams(props.item)
+
   return (
-    <Card className={`h-100 ${styles.itemCard}`}>
-      <PriceCard params={ftcShelfItemParams(props.item)}/>
-    </Card>
+    <>
+      <Card
+        className={`h-100 ${styles.itemCard}`}
+        onClick={() => setShow(true)}
+      >
+        <PriceCard params={newFtcShelfItemParams(props.item)}/>
+      </Card>
+
+      <PaymentDialog
+        show={show}
+        onHide={() => setShow(false)}
+        tier={props.item.price.tier}
+        params={params}
+      >
+        <HandlePayment
+          item={props.item}
+        />
+      </PaymentDialog>
+    </>
   );
 }
 
@@ -164,13 +181,27 @@ function StripePriceCard(
   }
 ) {
 
+  const [ show, setShow ] = useState(false);
+  const params = newStripeShelfItemParams(props.item);
+
   return (
-    <Card
-      className={`h-100 ${styles.itemCard}`}
-      onClick={() => console.log(props.item)}
-    >
-      <PriceCard params={stripeShelfItemParams(props.item)}/>
-    </Card>
+    <>
+      <Card
+        className={`h-100 ${styles.itemCard}`}
+        onClick={() => setShow(true)}
+      >
+        <PriceCard params={params}/>
+      </Card>
+
+      <PaymentDialog
+        show={show}
+        onHide={() => setShow(false)}
+        tier={props.item.recurring.tier}
+        params={params}
+      >
+        <div>Stripe Pay</div>
+      </PaymentDialog>
+    </>
   );
 }
 
@@ -188,53 +219,11 @@ function PriceCard(
         </Card.Header>
       }
 
-      <Card.Body className="text-center">
-        <div className={styles.title}>
-          {props.params.title}
-        </div>
-
-        <div>
-          <PriceHighlighted parts={props.params.payable}/>
-          {props.params.payable.cycle}
-        </div>
-
-        {
-          props.params.crossed &&
-          <div className={`text-muted ${styles.crossed}`}>
-            原价
-            <del>
-              {props.params.crossed}
-            </del>
-          </div>
-        }
-
-        {
-          props.params.offerDesc &&
-          <div>
-            <small>{props.params.offerDesc}</small>
-          </div>
-        }
-      </Card.Body>
+      <PriceCardBody params={props.params} />
     </>
   );
 }
 
-
-
-function PriceHighlighted(
-  props: {
-    parts: MoneyParts;
-  }
-) {
-  return (
-    <>
-      <span>{props.parts.symbol}</span>
-      <span className={styles.large}>
-        {props.parts.integer}{props.parts.decimal}
-      </span>
-    </>
-  );
-}
 
 
 
