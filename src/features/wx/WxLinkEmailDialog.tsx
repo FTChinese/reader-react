@@ -3,7 +3,6 @@ import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { ReaderAccount, ReaderPassport } from '../../data/account';
 import { Credentials, EmailVal, invalidMessages } from '../../data/form-value';
-import { CenterLayout } from '../../components/layout/Layout';
 import { emailExists, emailLogin } from '../../repository/email-auth';
 import { isCodeAlreadyExists, ResponseError } from '../../repository/response-error';
 import { BackButton } from '../../components/buttons/BackButton';
@@ -15,6 +14,7 @@ import { SignUpForm } from '../../components/forms/SignUpForm';
 import { SignupFormVal } from '../../data/authentication';
 import { wxLinkNewEmail } from '../../repository/wx-auth';
 import { emailVerificationUrl } from '../../data/sitemap';
+import { FullscreenSingleCol } from '../../components/layout/FullscreenSingleCol';
 
 /**
  * @description Show a dialog to let a user logged
@@ -78,7 +78,7 @@ export function WxLinkEmailDialog(
         <Modal.Title>绑定邮箱</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <CenterLayout>
+        <FullscreenSingleCol>
           {
             emailChecked ?
             <SignInOrUp
@@ -96,7 +96,7 @@ export function WxLinkEmailDialog(
               btnText="下一步"
             />
           }
-        </CenterLayout>
+        </FullscreenSingleCol>
       </Modal.Body>
     </Modal>
   );
