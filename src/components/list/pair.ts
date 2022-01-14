@@ -30,15 +30,15 @@ function formatAutoRenewMoment(expiresAt: Date, cycle: Cycle): string {
   }
 }
 
-export function rowTier(tier: Tier | null): StringPair {
+export function rowTier(tier?: Tier): StringPair {
   return ['会员类型', tier ? localizeTier(tier) : '-']
 }
 
-export function rowSubsSource(pm: PaymentMethod | null): StringPair {
+export function rowSubsSource(pm?: PaymentMethod): StringPair {
   return ['订阅方式', localizePaymentMethod(pm)];
 }
 
-export function rowExpiration(date: string | null, isVip: boolean = false): StringPair {
+export function rowExpiration(date?: string, isVip: boolean = false): StringPair {
   return [
     '到期时间',
     isVip ? '无限期' : (date || '-')
