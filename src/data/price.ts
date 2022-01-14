@@ -23,6 +23,24 @@ import { YearMonthDay, OptionalPeriod, isValidPeriod, formatPeriods } from './pe
   unitAmount: number;
 } & OptionalPeriod;
 
+export function isIntro(p: Price): boolean {
+  return p.kind === 'one_time';
+}
+
+export function ftcRegularPriceParts(price: Price): PriceParts {
+  return {
+    ...formatMoneyParts(
+      price.currency,
+      price.unitAmount
+    ),
+    cycle: '/' + formatPeriods(price.periodCount, false)
+  };
+}
+
+export function ftcRegularCharge(price: Price): string {
+  return `${formatMoney(price.currency, price.unitAmount)}/${formatPeriods(price.periodCount, false)}`
+}
+
 export type Discount = {
   id: string;
   description?: string;
@@ -82,26 +100,31 @@ export function applicableOfferKinds(m: Membership): OfferKind[] {
   ];
 }
 
-/**
- * @description FtcCartItem represents the item
- * user want to buy.
- */
- export type FtcShelfItem = {
-  price: Price;
-  discount?: Discount;
-  isIntro: boolean;
-};
+export type StripePrice = {
+  id: string;
+  active: boolean;
+  currency: string;
+  isIntroductory: boolean;
+  kind: PriceKind;
+  liveMode: boolean;
+  nickname: string;
+  productId: string;
+  periodCount: YearMonthDay;
+  tier: Tier;
+  unitAmount: number;
+  created: number;
+} & OptionalPeriod;
 
-export function ftcRegularPriceParts(price: Price): PriceParts {
+export function stripeRecurringPriceParts(price: StripePrice): PriceParts {
   return {
     ...formatMoneyParts(
       price.currency,
-      price.unitAmount
+      price.unitAmount / 100,
     ),
-    cycle: '/' + formatPeriods(price.periodCount, false)
+    cycle: '/' + formatPeriods(price.periodCount, true),
   };
 }
 
-export function ftcRegularCharge(price: Price): string {
-  return `${formatMoney(price.currency, price.unitAmount)}/${formatPeriods(price.periodCount, false)}`
+export function stripeRecurringCharge(price: StripePrice): string {
+  return `${formatMoney(price.currency, price.unitAmount / 100)}/${formatPeriods(price.periodCount, true)}`;
 }
