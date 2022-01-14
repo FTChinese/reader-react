@@ -156,7 +156,7 @@ export function buildMemberStatus(m: Membership): MemberStatus {
     return {
       productName: '超级会员',
       details: [
-        rowExpiration(null, true)
+        rowExpiration(undefined, true)
       ],
     };
   }
