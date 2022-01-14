@@ -1,7 +1,7 @@
 import { Link, Navigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuthContext } from '../store/AuthContext';
-import { AuthLayout } from '../components/layout/Layout'
+import { AuthLayout } from '../components/layout/AuthLayout'
 import { sitemap } from '../data/sitemap';
 import { emailLogin } from '../repository/email-auth';
 import { isCodeMissing, ResponseError } from '../repository/response-error';
@@ -14,7 +14,7 @@ import { EmailLoginForm } from '../components/forms/EmailLoginForm';
 import { MobileLoginForm, SMSHelper } from '../components/forms/MobileLoginForm';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import ProgressButton from '../components/buttons/ProgressButton';
+import { ProgressButton } from '../components/buttons/ProgressButton';
 import Alert from 'react-bootstrap/Alert';
 import { ChevronDown, ChevronUp } from '../components/icons';
 import { InitWxOAuth } from '../features/wx/InitWxOAuth';
