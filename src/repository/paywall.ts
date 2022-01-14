@@ -71,7 +71,7 @@ export const paywallRepo = new PaywallRepo();
 
 export function createWxOrder(v: OrderParams, token: string): Promise<WxPayIntent> {
   return axios.post<WxPayIntent, AxiosResponse<WxPayIntent>, OrderParams>(
-      endpoint.aliOrder,
+      endpoint.wxOrder,
       v,
       {
         headers: bearerAuthHeader(token)
