@@ -6,6 +6,7 @@ const mobileAuthBase = `${readerBase}/auth/mobile`;
 const wxAuthBase = `${readerBase}/auth/wx`;
 const pwResetBase = `${readerBase}/auth/password-reset`;
 const accountBase = `${readerBase}/account`;
+const subsBase = `${readerBase}/subs`;
 
 export const endpoint = {
   emailExists: `${emailAuthBase}/exists`,
@@ -41,6 +42,8 @@ export const endpoint = {
   wxSignUp: `${accountBase}/wx/signup`,
   wxLink: `${accountBase}/wx/link`,
   wxUnlink: `${accountBase}/wx/unlink`,
+  aliOrder: `${subsBase}/ali/desktop`,
+  wxOrder: `${subsBase}/wx/desktop`,
   paywall: paywallBasePath,
   stripePrices: `${paywallBasePath}/stripes`,
   stripePriceOf: function(id: string): string {
