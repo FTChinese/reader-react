@@ -10,8 +10,8 @@
     "postversion": "git push && git push --tags",
     "html": "ts-node --project=scripts/tsconfig.json ./scripts/html.prod.ts",
     "copy-static": "ts-node --project=scripts/tsconfig.json ./scripts/copyStaticAssets.ts",
-    "deploy-dev": "pnpm run build && pnpm run html && pnpm run copy-static",
-    "deploy": "pnpm run build && pnpm run html && pnpm run copy-static -- --prod"
+    "deploy-dev": "yarn build && yarn html && yarn copy-static",
+    "deploy": "yarn build && yarn html && yarn copy-static --prod"
   },
   "dependencies": {
     "axios": "^0.24.0",
