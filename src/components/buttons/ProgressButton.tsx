@@ -1,16 +1,14 @@
-interface ButtonProps {
-  disabled: boolean;
-  text: string;
-  isSubmitting: boolean;
-  variant?: 'primary' | 'secondary' | 'outline-primary' | 'outline-secondary';
-  styleClass?: string;
-  inline?: boolean;
-  asButton?: boolean;
-  onClick?: () => void
-}
-
-function ProgressButton(
-  props: ButtonProps
+export function ProgressButton(
+  props: {
+    disabled: boolean;
+    text: string;
+    isSubmitting: boolean;
+    variant?: 'primary' | 'secondary' | 'outline-primary' | 'outline-secondary';
+    styleClass?: string;
+    inline?: boolean;
+    asButton?: boolean;
+    onClick?: () => void
+  }
 ) {
 
   let styleClass = 'primary';
@@ -46,5 +44,3 @@ function ProgressButton(
     </div>
   );
 }
-
-export default ProgressButton;
