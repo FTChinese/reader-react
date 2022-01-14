@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react';
 import { Alert } from 'react-bootstrap';
 import { invalidMessages } from '../../data/form-value';
 import { UpdateNameFormVal } from '../../data/update-account';
-import ProgressButton from '../buttons/ProgressButton';
 import { TextInput } from '../controls/TextInput';
 import * as Yup from 'yup';
+import { SubmitButton } from '../controls/SubmitButton';
 
 export function UserNameForm(
   props: {
@@ -45,22 +45,16 @@ export function UserNameForm(
         })}
         onSubmit={props.onSubmit}
       >
-        { formik => (
-          <Form>
-            <TextInput
-              name="userName"
-              type="text"
-            />
-
-            <ProgressButton
-              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-              text="保存"
-              isSubmitting={formik.isSubmitting}
-              inline={true}
-            />
-
-          </Form>
-        )}
+        <Form>
+          <TextInput
+            name="userName"
+            type="text"
+          />
+          <SubmitButton
+            text="保存"
+            inline={true}
+          />
+        </Form>
       </Formik>
     </>
   );

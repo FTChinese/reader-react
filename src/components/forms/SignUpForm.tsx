@@ -2,10 +2,10 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { invalidMessages, regex } from '../../data/form-value';
 import { TextInput } from '../controls/TextInput';
-import ProgressButton from '../buttons/ProgressButton';
 import Alert from 'react-bootstrap/Alert';
 import { useEffect, useState } from 'react';
 import { SignupFormVal } from '../../data/authentication';
+import { SubmitButton } from '../controls/SubmitButton';
 
 export function SignUpForm(
   props: {
@@ -56,32 +56,28 @@ export function SignUpForm(
         })}
         onSubmit={props.onSubmit}
       >
-        {formik => (
-          <Form>
-            <TextInput
-              label="邮箱"
-              name="email"
-              type="email"
-              placeholder="name@example.com"
-              disabled={!!props.email}
-            />
-            <TextInput
-              label="密码"
-              name="password"
-              type="password"
-            />
-            <TextInput
-              label="确认密码"
-              name="confirmPassword"
-              type="password"
-            />
-            <ProgressButton
-              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-              text="注册"
-              isSubmitting={formik.isSubmitting}
-            />
-          </Form>
-        )}
+        <Form>
+          <TextInput
+            label="邮箱"
+            name="email"
+            type="email"
+            placeholder="name@example.com"
+            disabled={!!props.email}
+          />
+          <TextInput
+            label="密码"
+            name="password"
+            type="password"
+          />
+          <TextInput
+            label="确认密码"
+            name="confirmPassword"
+            type="password"
+          />
+          <SubmitButton
+            text="注册"
+          />
+        </Form>
       </Formik>
     </>
   );

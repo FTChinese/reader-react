@@ -3,13 +3,14 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import { invalidMessages } from '../../data/form-value';
 import * as Yup from 'yup';
 import { TextInput } from '../controls/TextInput';
-import ProgressButton from '../buttons/ProgressButton';
+import { ProgressButton } from '../buttons/ProgressButton';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import { CounterButton } from '../buttons/CounterButton';
 import styles from '../buttons/CounterButton.module.css';
 import Alert from 'react-bootstrap/Alert';
 import { VerifySMSFormVal } from '../../data/mobile';
+import { SubmitButton } from '../controls/SubmitButton';
 
 export interface SMSHelper {
   setProgress: (p: boolean) => void;
@@ -129,12 +130,9 @@ export function MobileLoginForm(
                 ) : null
               }
             </div>
-
-            <ProgressButton
-              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
+            <SubmitButton
               text={props.isLogin ? '登录' : '保存'}
               inline={!props.isLogin}
-              isSubmitting={formik.isSubmitting}
             />
           </Form>
         )}

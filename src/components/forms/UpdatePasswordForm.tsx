@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import { verifyPasswordSchema } from '../../data/form-value';
 import { UpdatePasswordFormVal } from '../../data/update-account';
-import ProgressButton from '../buttons/ProgressButton';
 import { TextInput } from '../controls/TextInput';
 import * as Yup from 'yup';
+import { SubmitButton } from '../controls/SubmitButton';
 
 export function UpdatePasswordForm(
   props: {
@@ -45,32 +45,27 @@ export function UpdatePasswordForm(
         validationSchema={Yup.object(verifyPasswordSchema)}
         onSubmit={props.onSubmit}
       >
-        { formik => (
-          <Form>
-            <TextInput
-              label="当前密码"
-              name="currentPassword"
-              type="password"
-            />
-            <TextInput
-              label="新密码"
-              name="password"
-              type="password"
-            />
-            <TextInput
-              label="确认新密码"
-              name="confirmPassword"
-              type="password"
-            />
-
-            <ProgressButton
-              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-              text="重置"
-              inline={true}
-              isSubmitting={formik.isSubmitting}
-            />
-          </Form>
-        )}
+        <Form>
+          <TextInput
+            label="当前密码"
+            name="currentPassword"
+            type="password"
+          />
+          <TextInput
+            label="新密码"
+            name="password"
+            type="password"
+          />
+          <TextInput
+            label="确认新密码"
+            name="confirmPassword"
+            type="password"
+          />
+          <SubmitButton
+            text="重置"
+            inline={true}
+          />
+        </Form>
       </Formik>
     </>
   );

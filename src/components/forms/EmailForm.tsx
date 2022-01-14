@@ -2,9 +2,9 @@ import { FormikHelpers, Formik, Form } from 'formik';
 import { useState, useEffect } from 'react';
 import { Alert } from 'react-bootstrap';
 import { EmailVal, invalidMessages } from '../../data/form-value';
-import ProgressButton from '../buttons/ProgressButton';
 import { TextInput } from '../controls/TextInput';
 import * as Yup from 'yup';
+import { SubmitButton } from '../controls/SubmitButton';
 
 /**
  * @description An email input form used in multiple places:
@@ -27,7 +27,7 @@ export function EmailForm(
   }
 ) {
 
-  const [errMsg, setErrMsg] = useState('')
+  const [errMsg, setErrMsg] = useState('');
 
   // Sync props error message to state.
   // Must use props.errMsg to detect changes.
@@ -57,23 +57,19 @@ export function EmailForm(
         })}
         onSubmit={props.onSubmit}
       >
-        { formik => (
-          <Form>
-            <TextInput
-              label={props.hideLabel ? undefined : '邮箱'}
-              name="email"
-              type="email"
-              placeholder="yourname@example.org"
-              desc={props.desc}
-            />
+        <Form>
+          <TextInput
+            label={props.hideLabel ? undefined : '邮箱'}
+            name="email"
+            type="email"
+            placeholder="yourname@example.org"
+            desc={props.desc}
+          />
 
-            <ProgressButton
-              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-              text={props.btnText}
-              inline={props.btnInline}
-              isSubmitting={formik.isSubmitting}/>
-          </Form>
-        )}
+          <SubmitButton
+            text={props.btnText}
+          />
+        </Form>
       </Formik>
     </>
   );

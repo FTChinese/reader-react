@@ -4,7 +4,7 @@ import Alert from 'react-bootstrap/Alert';
 import * as Yup from 'yup';
 import { verifyPasswordSchema } from '../../data/form-value';
 import { PasswordResetFormVal } from '../../data/password-reset';
-import ProgressButton from '../buttons/ProgressButton';
+import { SubmitButton } from '../controls/SubmitButton';
 import { TextInput } from '../controls/TextInput';
 
 export function PasswordResetForm(
@@ -60,12 +60,9 @@ export function PasswordResetForm(
               name="confirmPassword"
               type="password"
             />
-            <div className="d-grid">
-              <ProgressButton
-                disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-                text="重置"
-                isSubmitting={formik.isSubmitting}/>
-            </div>
+            <SubmitButton
+            text="重置"
+            />
           </Form>
         </>
       )}
