@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import Alert from 'react-bootstrap/Alert';
 import { Link, useParams } from 'react-router-dom';
-import ProgressButton from '../components/buttons/ProgressButton';
 import { TextInput } from '../components/controls/TextInput';
 import { verifyPasswordSchema } from '../data/form-value';
 import { PasswordResetFormVal, PasswordResetVerified } from '../data/password-reset';
@@ -13,6 +12,7 @@ import { resetPassword, verifyPwToken } from '../repository/password-reset';
 import { cancelSource } from '../repository/cancel';
 import { ErrorBoudary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
+import { SubmitButton } from '../components/controls/SubmitButton';
 
 function ResetPassword(
   props: PasswordResetVerified
@@ -89,12 +89,9 @@ function ResetPassword(
               name="confirmPassword"
               type="password"
             />
-            <div className="d-grid">
-              <ProgressButton
-                disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-                text="重置"
-                isSubmitting={formik.isSubmitting}/>
-            </div>
+            <SubmitButton
+              text="重置"
+            />
           </Form>
         )}
       </Formik>
