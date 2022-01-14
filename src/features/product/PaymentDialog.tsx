@@ -1,9 +1,9 @@
 import Card from 'react-bootstrap/Card';
 import Modal from 'react-bootstrap/Modal';
 import { FullscreenSingleCol } from '../../components/layout/FullscreenSingleCol';
-import { FtcShelfItem, newOrderParams, ShelfItemParams } from '../../data/product-shelf';
+import { FtcShelfItem, newOrderParams, ShelfItemParams, WxPayIntent } from '../../data/product-shelf';
 import { PriceCardBody } from './PriceCard';
-import styles from './PayDialog.module.css';
+import styles from './PaymentDialog.module.css';
 import { localizeTier } from '../../data/localization';
 import { Tier } from '../../data/enum';
 import { FormikHelpers } from 'formik';
@@ -14,6 +14,8 @@ import { useState } from 'react';
 import { createAliOrder, createWxOrder } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { alipayCallback } from '../../data/sitemap';
+import { endpoint } from '../../repository/endpoint';
+import { BackButton } from '../../components/buttons/BackButton';
 
 export function PaymentDialog(
   props: {
@@ -64,6 +66,7 @@ export function HandlePayment(
 ) {
 
   const [ err, setErr ] = useState('');
+  const [ wxPi, setWxPi ] = useState<WxPayIntent>();
 
   const { passport } = useAuthContext();
   if (!passport) {
@@ -102,8 +105,17 @@ export function HandlePayment(
       case 'wechat':
         createWxOrder(newOrderParams(props.item), passport.token)
           .then(pi => {
-            helper.setSubmitting(false);
             console.log(pi);
+            if (pi.params.desktopQr) {
+              helper.setSubmitting(false);
+              setWxPi(pi);
+              return;
+            }
+
+            if (pi.params.mobileRedirect) {
+              window.location.href = pi.params.mobileRedirect;
+              return;
+            }
           })
           .catch((err: ResponseError) => {
             helper.setSubmitting(false);
@@ -114,6 +126,15 @@ export function HandlePayment(
     }
   }
 
+  if (wxPi) {
+    return (
+      <DisplayWxQR
+        url={wxPi.params.desktopQr}
+        onBack={() => setWxPi(undefined)}
+      />
+    );
+  }
+
   return (
     <FtcPayForm
       onSubmit={handleSubmit}
@@ -122,3 +143,21 @@ export function HandlePayment(
   );
 }
 
+function DisplayWxQR(
+  props: {
+    url: string;
+    onBack: () => void;
+  }
+) {
+  return (
+    <div>
+      <BackButton
+        onBack={props.onBack}
+      />
+      <div className="text-center">
+        <h5>微信扫码支付</h5>
+        <img src={endpoint.qrSrc(props.url)}/>
+      </div>
+    </div>
+  )
+}

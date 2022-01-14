@@ -1,5 +1,6 @@
 const paywallBasePath = '/api/paywall';
 const readerBase = '/api/reader';
+const serviceBase = '/service';
 
 const emailAuthBase = `${readerBase}/auth/email`;
 const mobileAuthBase = `${readerBase}/auth/mobile`;
@@ -49,4 +50,11 @@ export const endpoint = {
   stripePriceOf: function(id: string): string {
     return `${paywallBasePath}/stripes/${id}`;
   },
+  qrSrc: function(url: string): string {
+    const query = new URLSearchParams({
+        url,
+      })
+      .toString();
+    return `${serviceBase}/qr?${query}`;
+  }
 };
