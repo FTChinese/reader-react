@@ -1,28 +1,48 @@
-import { parseISO } from 'date-fns';
+import { addYears, isAfter, parseISO } from 'date-fns';
 import { isExpired } from '../utils/now';
 import { Cycle, OrderKind, PaymentMethod, SubStatus, Tier } from './enum';
 import { Edition } from './edition';
 
 export type Membership =  {
-  ftcId: string | null;
-  unionId: string | null;
-  tier: Tier | null;
-  cycle: Cycle | null;
-  expireDate: string | null;
-  payMethod: PaymentMethod | null;
-  ftcPlanId: string | null;
-  stripeSubsId: string | null;
+  ftcId?: string;
+  unionId?: string;
+  tier?: Tier;
+  cycle?: Cycle;
+  expireDate?: string;
+  payMethod?: PaymentMethod;
+  ftcPlanId?: string;
+  stripeSubsId?: string;
   autoRenew: boolean;
-  status: SubStatus | null;
-  appleSubsId: string | null;
-  b2bLicenceId: string | null;
+  status?: SubStatus;
+  appleSubsId?: string;
+  b2bLicenceId?: string;
   standardAddOn: number;
   premiumAddOn: number;
   vip: boolean;
 }
 
+export function normalizePayMethod(m: Membership): PaymentMethod | undefined {
+  if (m.payMethod) {
+    return m.payMethod;
+  }
+
+  if (m.tier) {
+    return 'alipay';
+  }
+
+  return undefined;
+}
+
 export function isMembershipZero(m: Membership): boolean {
   return m.tier == null && !m.vip;
+}
+
+export function isOneTimePurchase(m: Membership): boolean {
+  return m.payMethod === 'alipay' || m.payMethod === 'wechat';
+}
+
+export function isRenewalSubs(m: Membership): boolean {
+  return m.payMethod === 'stripe' || m.payMethod === 'wechat';
 }
 
 export function isMemberExpired(m: Membership): boolean {
@@ -35,12 +55,36 @@ export function isMemberExpired(m: Membership): boolean {
   return isExpired(expireOn) && !m.autoRenew;
 }
 
-export function isOneTimePurchase(m: Membership): boolean {
-  return m.payMethod === 'alipay' || m.payMethod === 'wechat';
+export function isBeyondMaxRenewalPeriod(expireDate?: string): boolean {
+  if (!expireDate) {
+    return true;
+  }
+
+  const expireOn = parseISO(expireDate);
+  const threeYearslater = addYears(new Date(), 3);
+
+  return isAfter(expireOn, threeYearslater);
 }
 
-export function isRenewalSubs(m: Membership): boolean {
-  return m.payMethod === 'stripe' || m.payMethod === 'wechat';
+
+
+/**
+ * @description Manipulate addon
+ */
+function hasAddOn(m: Membership): boolean {
+  return m.standardAddOn > 0 || m.premiumAddOn > 0;
+}
+
+function hasStdAddOn(m: Membership): boolean {
+  return m.standardAddOn > 0;
+}
+
+function hasPrmAddOn(m: Membership): boolean {
+  return m.premiumAddOn > 0;
+}
+
+function shouldUseAddOn(m: Membership): boolean {
+  return isMemberExpired(m) && hasAddOn(m);
 }
 
 export function isConvertableToAddOn(m: Membership): boolean {
