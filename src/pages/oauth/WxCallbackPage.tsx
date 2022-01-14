@@ -1,19 +1,28 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '../../components/hooks/useLocation';
-import { AuthLayout } from '../../components/layout/Layout';
-import { ProgressOrError } from '../../components/ProgressErrorBoundary';
-import { WxOAuthAccess } from '../../features/wx/InitWxOAuth';
+import { AuthLayout } from '../../components/layout/AuthLayout';
 import { validateWxOAuthCode, WxOAuthCodeResp, WxOAuthCodeSession } from '../../data/authentication';
 import { wxCodeSessionStore } from '../../store/keys';
+import { ErrorBoudary } from '../../components/progress/ErrorBoundary';
+import { Loading } from '../../components/progress/Loading';
+import { wxLogin } from '../../repository/wx-auth';
+import { ResponseError } from '../../repository/response-error';
+import { useAuthContext } from '../../store/AuthContext';
+import { GoHome } from '../../components/routes/Unauthorized';
+import { ReaderPassport } from '../../data/account';
+import { OnReaderAccount } from '../../features/wx/OnReaderAccount';
+import { LinkAccounts } from '../../features/wx/LinkAccounts';
 
 export function WxCallbackPage() {
   const query = useQuery();
 
+  // Get reponse data from query parameter.
   const resp: WxOAuthCodeResp = {
     code: query.get('code'),
     state: query.get('state'),
   };
 
+  // Get session data from localstorage.
   const sess = wxCodeSessionStore.load();
 
   return (
@@ -35,8 +44,10 @@ function ProcessCode(
   }
 ) {
 
+  const { setLoggedIn, passport } = useAuthContext();
   const [ errMsg, setErrMsg ] = useState('');
-  const [ code, setCode ]= useState<string | null>(null);
+  const [ progress, setProgress ] = useState(true);
+  const [ wxPassport, setWxPassport ] = useState<ReaderPassport>();
 
     // UI goes from:
   // - Progressing
@@ -45,32 +56,92 @@ function ProcessCode(
   useEffect(() => {
     const errMsg = validateWxOAuthCode(props.resp, props.sess);
     if (errMsg) {
+      setProgress(false);
       setErrMsg(errMsg);
-    } else {
-      setCode(props.resp.code)
+      return;
     }
-  }, []);
 
-  if (errMsg) {
-    return <ProgressOrError errMsg={errMsg} />
-  }
+    // Fetching account, or error.
+    wxLogin(props.resp.code!!)
+      .then(wxPassport => {
+        // We get wechat account data.
+        // Not progress. No error.
+        setErrMsg('');
+        setProgress(false);
+        // If user already logged in, this is a link session; otherwise a login session.
+        setWxPassport(wxPassport);
 
-  if (!props.sess) {
-    return <>Missing session data!</>;
-  }
+        switch (props.sess?.kind) {
+          case 'login':
+            setLoggedIn(wxPassport);
 
-  if (code) {
-    return (
-      <WxOAuthAccess
-        code={code}
-        usage={props.sess.kind}
-      />
-    );
-  }
+          case 'link':
+            setWxPassport(wxPassport);
 
-  return <>Missing code!</>;
+          default:
+            setErrMsg('Oops! Something went wrong');
+        }
+      })
+      .catch((err: ResponseError) => {
+        setProgress(false);
+        setErrMsg(err.message);
+      });
+
+    return function() {
+      wxCodeSessionStore.remove();
+    };
+  }, [props.resp.code]);
+
+  return (
+    <ErrorBoudary
+      errMsg={errMsg}
+    >
+      <Loading
+        loading={progress}
+      >
+        <>
+          {
+            passport && <GoHome/>
+          }
+          {
+            (passport && wxPassport) &&
+            <HandleLink
+              ftcPassport={passport}
+              wxPassport={wxPassport}
+            />
+          }
+        </>
+      </Loading>
+    </ErrorBoudary>
+  );
 }
 
+function HandleLink(
+  props: {
+    ftcPassport: ReaderPassport;
+    wxPassport: ReaderPassport;
+  }
+) {
 
+  const { setLoggedIn } = useAuthContext();
+  const [ linked, setLinked ] = useState(false);
 
+  const handleLinked: OnReaderAccount = (pp) => {
+    setLoggedIn(pp);
+    setLinked(true);
+  }
+
+  if (linked) {
+    return <GoHome/>;
+  }
+
+  return (
+    <LinkAccounts
+      token={props.wxPassport.token}
+      wxAccount={props.wxPassport}
+      ftcAccount={props.ftcPassport}
+      onLinked={handleLinked}
+    />
+  );
+}
 
