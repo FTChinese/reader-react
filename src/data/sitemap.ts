@@ -21,9 +21,13 @@ export const sitemap = {
 };
 
 export function passwordResetUrl(baseUrl: string): string {
-  return `${baseUrl}/reader${sitemap.passwordReset}`;
+  return `${baseUrl}/reader/${siteRoot.passwordReset}`;
 }
 
 export function emailVerificationUrl(baseUrl: string): string {
-  return `${baseUrl}/reader${sitemap.verification}`;
+  return `${baseUrl}/reader/${siteRoot.verification}`;
+}
+
+export function alipayCallback(baseUrl: string): string {
+  return `${baseUrl}/reader/${siteRoot.subs}`;
 }
