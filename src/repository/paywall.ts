@@ -3,7 +3,7 @@ import { bearerAuthHeader } from '../data/account';
 import { OrderParams } from '../data/order';
 import { Paywall } from '../data/paywall';
 import { StripePrice } from '../data/price';
-import { AliPayIntent, WxPayIntent } from '../data/product-shelf';
+import { AliPayIntent, PubKey, WxPayIntent } from '../data/product-shelf';
 import { endpoint } from './endpoint';
 import { ResponseError } from './response-error';
 
@@ -92,6 +92,14 @@ export function createAliOrder(
         headers: bearerAuthHeader(token)
       }
     )
+    .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function loadStripePubKey(token: string): Promise<PubKey> {
+  return axios.get(endpoint.stripePubKey, {
+      headers: bearerAuthHeader(token)
+    })
     .then(resp => resp.data)
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }

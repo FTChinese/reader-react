@@ -456,3 +456,7 @@ export type AliPayIntent = PayIntent & {
     browserRedirect: string;
   };
 };
+
+export type PubKey = {
+  key: string;
+};

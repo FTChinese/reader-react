@@ -45,10 +45,11 @@ export const endpoint = {
   wxUnlink: `${accountBase}/wx/unlink`,
   aliOrder: `${subsBase}/ali/desktop`,
   wxOrder: `${subsBase}/wx/desktop`,
+  stripePubKey: `${subsBase}/stripe/publishable-key`,
   paywall: paywallBasePath,
-  stripePrices: `${paywallBasePath}/stripes`,
+  stripePrices: `${paywallBasePath}/stripe`,
   stripePriceOf: function(id: string): string {
-    return `${paywallBasePath}/stripes/${id}`;
+    return `${paywallBasePath}/stripe/${id}`;
   },
   qrSrc: function(url: string): string {
     const query = new URLSearchParams({
