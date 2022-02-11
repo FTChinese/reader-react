@@ -3,8 +3,7 @@ import Card from 'react-bootstrap/Card';
 import { useRecoilValue } from 'recoil';
 import { ImageRatio } from '../../components/graphics/ImageRatio';
 import { TextLines } from '../../components/list/TextLines';
-import { ReaderPassport } from '../../data/account';
-import {  } from '../../data/price';
+import { ReaderPassport, isEmailAccount } from '../../data/account';
 import { Membership } from '../../data/membership';
 import { Banner, isPromoValid, Paywall, PaywallProduct, productDesc } from '../../data/paywall';
 import {
@@ -19,9 +18,12 @@ import {
 import { stripePricesState } from '../../store/useStripePrices';
 import styles from './ProductCard.module.css';
 import { PriceCardBody } from './PriceCard';
-import { HandlePayment, PaymentDialog } from './PaymentDialog';
-import { FtcPayForm, FtcPayFormVal } from '../../components/forms/FtcPayForm';
-import { FormikHelpers } from 'formik';
+import { PaymentDialog } from './PaymentDialog';
+import { AliWxPay } from './AliWxPay';
+import { CustomerDialog, StripePay } from './StripePay';
+import { useAuthContext } from '../../store/AuthContext';
+import { OnCustomerUpsert } from '../account/OnAccountUpdated';
+import { Customer } from '../../data/stripe';
 
 export function PaywallContent(
   props: {
@@ -167,7 +169,7 @@ function FtcPriceCard(
         tier={props.item.price.tier}
         params={params}
       >
-        <HandlePayment
+        <AliWxPay
           item={props.item}
         />
       </PaymentDialog>
@@ -181,25 +183,55 @@ function StripePriceCard(
   }
 ) {
 
-  const [ show, setShow ] = useState(false);
+  const { passport } = useAuthContext();
+  if (!passport) {
+    return <></>;
+  }
+
+  const [ showPay, setShowPay ] = useState(false);
+  const [ showCustomer, setShowCustomer ] = useState(false);
   const params = newStripeShelfItemParams(props.item);
+
+  const handleClick = () => {
+    if (isEmailAccount(passport)) {
+      setShowPay(true);
+      return;
+    }
+
+    setShowCustomer(true);
+  };
+
+  // After customer created, show the pay dialog.
+  const customerCreated = (cus: Customer) => {
+    console.log(cus);
+    setShowCustomer(false);
+    setShowPay(true);
+  };
 
   return (
     <>
       <Card
         className={`h-100 ${styles.itemCard}`}
-        onClick={() => setShow(true)}
+        onClick={handleClick}
       >
         <PriceCard params={params}/>
       </Card>
 
+      <CustomerDialog
+        passport={passport}
+        show={showCustomer}
+        onHide={() => setShowCustomer(false)}
+        onCreated={customerCreated}
+      />
       <PaymentDialog
-        show={show}
-        onHide={() => setShow(false)}
+        show={showPay}
+        onHide={() => setShowPay(false)}
         tier={props.item.recurring.tier}
         params={params}
       >
-        <div>Stripe Pay</div>
+        <StripePay
+          item={props.item}
+        />
       </PaymentDialog>
     </>
   );
@@ -223,7 +255,5 @@ function PriceCard(
     </>
   );
 }
-
-
 
 
