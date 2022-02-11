@@ -1,9 +1,22 @@
 import 'react-toastify/dist/ReactToastify.min.css';
-import { Outlet } from 'react-router-dom';
+import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { Toolbar } from './components/layout/Toolbar';
+import { RecoilRoot } from 'recoil';
+import { CenterLayout } from './components/layout/CenterLayout';
+import { ContentLayout } from './components/layout/ContentLayout';
+import { siteRoot } from './data/sitemap';
+import { VerificationPage } from './pages/auth/VerificationPage';
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
+import { HomePage } from './pages/HomePage';
+import { LoginPage } from './pages/LoginPage';
+import { MembershipPage } from './pages/MembershipPage';
+import { WxCallbackPage } from './pages/oauth/WxCallbackPage';
+import { PasswordResetPage } from './pages/PasswordResetPage';
+import { SignUpPage } from './pages/SignUpPage';
+import { AuthProvider } from './store/AuthContext';
 
-function App() {
+function Skeleton() {
   return (
     <>
       <Toolbar />
@@ -23,6 +36,34 @@ function App() {
         pauseOnHover
       />
     </>
+  );
+}
+
+function App() {
+  return (
+    <RecoilRoot>
+      <AuthProvider>
+        <BrowserRouter basename="/reader">
+          <Routes>
+            <Route path="/" element={<Skeleton />} >
+              <Route element={<CenterLayout />}>
+                <Route path={siteRoot.login} element={<LoginPage />} />
+                <Route path={siteRoot.signUp} element={<SignUpPage />} />
+                <Route path={siteRoot.forgotPassword} element={<ForgotPasswordPage />} />
+                <Route path={`${siteRoot.passwordReset}/:token`} element={<PasswordResetPage />} />
+                <Route path={`${siteRoot.verification}/:token`} element={<VerificationPage />} />
+                <Route path={siteRoot.authCallback} element={<WxCallbackPage />} />
+              </Route>
+
+              <Route element={<ContentLayout />}>
+                <Route path={siteRoot.membership} element={<MembershipPage />} />
+                <Route index element={<HomePage />} />
+              </Route>
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </RecoilRoot>
   );
 }
 
