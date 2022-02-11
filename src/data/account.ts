@@ -76,6 +76,10 @@ export function isAccountEqual(a: ReaderAccount, b: ReaderAccount): boolean {
   return a.id === b.id;
 }
 
+export function isEmailAccount(a: ReaderAccount): boolean {
+  return !!a.email
+}
+
 type LinkingAccounts = {
   ftc: ReaderAccount;
   wx: ReaderAccount;
