@@ -96,10 +96,8 @@ export function createAliOrder(
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function loadStripePubKey(token: string): Promise<PubKey> {
-  return axios.get(endpoint.stripePubKey, {
-      headers: bearerAuthHeader(token)
-    })
+export function loadStripePubKey(): Promise<PubKey> {
+  return axios.get(endpoint.stripePubKey)
     .then(resp => resp.data)
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
