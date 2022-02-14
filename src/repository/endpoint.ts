@@ -7,7 +7,10 @@ const mobileAuthBase = `${readerBase}/auth/mobile`;
 const wxAuthBase = `${readerBase}/auth/wx`;
 const pwResetBase = `${readerBase}/auth/password-reset`;
 const accountBase = `${readerBase}/account`;
-const subsBase = `${readerBase}/subs`;
+const ftcpayBase = `${readerBase}/ftc-pay`;
+const stripeCusBase = `${readerBase}/stripe/customers`;
+const stripeSubsBase = `${readerBase}/stripe/subs`;
+const stripePMBase = `${readerBase}/stripe/payment-methods`;
 
 export const endpoint = {
   emailExists: `${emailAuthBase}/exists`,
@@ -43,14 +46,47 @@ export const endpoint = {
   wxSignUp: `${accountBase}/wx/signup`,
   wxLink: `${accountBase}/wx/link`,
   wxUnlink: `${accountBase}/wx/unlink`,
-  aliOrder: `${subsBase}/ali/desktop`,
-  wxOrder: `${subsBase}/wx/desktop`,
+  aliOrder: `${ftcpayBase}/ali/desktop`,
+  wxOrder: `${ftcpayBase}/wx/desktop`,
   paywall: paywallBasePath,
+
   stripePubKey: `${paywallBasePath}/stripe/publishable-key`,
   stripePrices: `${paywallBasePath}/stripe/prices`,
   stripePriceOf: function(id: string): string {
     return `${paywallBasePath}/stripe/prices/${id}`;
   },
+
+  stripeCustomers: stripeCusBase,
+  stripeCustomerOf: function(id: string): string {
+    return `${stripeCusBase}/${id}`;
+  },
+  stripeCusDefaultPM: function(id: string): string {
+    return `${stripeCusBase}/${id}/default-payment-method`;
+  },
+
+
+  stripeSubs: stripeSubsBase,
+  stripeSubsOf: function(id: string): string {
+    return `${stripeSubsBase}/${id}`;
+  },
+  stripeRefresh: function(id: string): string {
+    return `${stripeSubsBase}${id}/refresh`;
+  },
+  stripeCancel: function(id: string): string {
+    return `${stripeSubsBase}/${id}/cancel`;
+  },
+  stripeReactivate: function(id: string): string {
+    return `${stripeSubsBase}/${id}/reactivate`;
+  },
+  stripeSubsDefaultPM: function(id: string): string {
+    return `${stripeSubsBase}/${id}/default-payment-method`;
+  },
+
+  stripePaymentMethods: stripePMBase,
+  stripePMOf: function(id: string): string {
+    return `${stripePMBase}/${id}`;
+  },
+
   qrSrc: function(url: string): string {
     const query = new URLSearchParams({
         url,
