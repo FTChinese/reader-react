@@ -7,7 +7,7 @@ import { ResponseError } from '../repository/response-error';
 import { Paywall } from '../data/paywall';
 import { ErrorBoudary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
-import { PaywallContent } from '../features/product/ProductCard';
+import { PaywallContent } from '../features/product/PaywallContent';
 import { stripePricesState } from '../store/useStripePrices';
 import { useRecoilState } from 'recoil';
 
