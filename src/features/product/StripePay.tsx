@@ -7,7 +7,7 @@ import { ErrorBoudary } from '../../components/progress/ErrorBoundary';
 import { Loading } from '../../components/progress/Loading';
 import { ReaderPassport } from '../../data/account';
 import { StripeShelfItem } from '../../data/product-shelf';
-import { loadStripePubKey } from '../../repository/paywall';
+import { loadStripePubKey } from '../../repository/stripe';
 import { useAuthContext } from '../../store/AuthContext';
 import { OnCustomerUpsert } from '../account/OnAccountUpdated';
 

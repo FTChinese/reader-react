@@ -6,7 +6,7 @@ import { Unauthorized } from '../../components/routes/Unauthorized';
 import { FtcShelfItem, WxPayIntent, newOrderParams } from '../../data/product-shelf';
 import { alipayCallback } from '../../data/sitemap';
 import { endpoint } from '../../repository/endpoint';
-import { createAliOrder, createWxOrder } from '../../repository/paywall';
+import { createAliOrder, createWxOrder } from '../../repository/ftcpay';
 import { ResponseError } from '../../repository/response-error';
 import { useAuthContext } from '../../store/AuthContext';
 
