@@ -1,9 +1,5 @@
-import { OrderKind, PaymentMethod, Tier } from './enum';
-
-export type OrderParams = {
-  priceId: string;
-  discountId?: string;
-};
+import { OrderKind, PaymentKind, Tier } from './enum';
+import { Price } from './price';
 
 export type Order = {
   id: string,
@@ -13,7 +9,7 @@ export type Order = {
   kind: OrderKind;
   originalPrice: number;
   payableAmount: number;
-  payMethod: PaymentMethod;
+  payMethod: PaymentKind;
   yearsCount: number;
   monthsCount: number;
   daysCount: number;
@@ -21,3 +17,22 @@ export type Order = {
   startDate?: string;
   endDate?: string;
 }
+
+type PayIntent = {
+  price: Price;
+  order: Order;
+};
+
+
+export type WxPayIntent = PayIntent & {
+  params: {
+    desktopQr: string;
+    mobileRedirect:  string;
+  };
+};
+
+export type AliPayIntent = PayIntent & {
+  params: {
+    browserRedirect: string;
+  };
+};
