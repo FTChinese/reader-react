@@ -1,5 +1,5 @@
 import { getDate, getMonth } from 'date-fns';
-import { Cycle, PaymentMethod, Tier } from '../../data/enum';
+import { Cycle, PaymentKind, Tier } from '../../data/enum';
 import { localizeCycle, localizeTier, localizePaymentMethod } from '../../data/localization';
 
 export type StringPair = [string, string];
@@ -34,7 +34,7 @@ export function rowTier(tier?: Tier): StringPair {
   return ['会员类型', tier ? localizeTier(tier) : '-']
 }
 
-export function rowSubsSource(pm?: PaymentMethod): StringPair {
+export function rowSubsSource(pm?: PaymentKind): StringPair {
   return ['订阅方式', localizePaymentMethod(pm)];
 }
 
