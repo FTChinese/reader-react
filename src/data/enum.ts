@@ -1,5 +1,5 @@
 export type LoginMethod = 'email' | 'mobile' | 'wechat';
-export type PaymentMethod = 'alipay' | 'wechat' | 'stripe' | 'apple' | 'b2b';
+export type PaymentKind = 'alipay' | 'wechat' | 'stripe' | 'apple' | 'b2b';
 export type Tier = 'standard' | 'premium';
 export type Cycle = 'month' | 'year';
 export type Gender = 'M' | 'F';
