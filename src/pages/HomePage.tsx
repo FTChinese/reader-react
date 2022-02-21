@@ -1,4 +1,4 @@
-import { useAuthContext } from '../store/AuthContext';
+import { useAuth } from '../store/useAuth';
 import { Unauthorized } from '../components/routes/Unauthorized';
 import { UserNameRow } from '../features/account/UserNameRow';
 import { DisplayEmail } from '../features/account/EmailRow';
@@ -13,7 +13,7 @@ import { WxAvatar } from '../features/wx/WxAvatar';
 import { OnAccountUpdated } from '../features/account/OnAccountUpdated';
 
 export function HomePage() {
-  const { passport } = useAuthContext();
+  const { passport } = useAuth();
 
   if (!passport) {
     return <Unauthorized />;
@@ -38,7 +38,7 @@ export function HomePage() {
   props: ReaderPassport,
 ) {
 
-  const { setLoggedIn } = useAuthContext();
+  const { setLoggedIn } = useAuth();
 
   const handleUpdated: OnAccountUpdated = (a: BaseAccount) => {
     setLoggedIn({
@@ -81,7 +81,7 @@ export function HomePage() {
 function WechatDetails(
   props: ReaderPassport
 ) {
-  const { setLoggedIn } = useAuthContext();
+  const { setLoggedIn } = useAuth();
   const [showDialog, setShowDialog] = useState(false);
 
   const handleDialog = () => {

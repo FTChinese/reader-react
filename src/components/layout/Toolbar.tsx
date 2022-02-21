@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { getDisplayName } from '../../data/account';
-import { useAuthContext } from '../../store/AuthContext';
+import { useAuth } from '../../store/useAuth';
 import styles from  './Toolbar.module.css';
 
 export function Toolbar() {
-  const { passport, setLoggedOut } = useAuthContext();
+  const { passport, setLoggedOut } = useAuth();
 
   return (
     <div className={`d-flex justify-content-between ${styles.toolbar}`}>

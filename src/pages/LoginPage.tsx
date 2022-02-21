@@ -1,6 +1,6 @@
 import { Link, Navigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useAuthContext } from '../store/AuthContext';
+import { useAuth } from '../store/useAuth';
 import { AuthLayout } from '../components/layout/AuthLayout'
 import { sitemap } from '../data/sitemap';
 import { emailLogin } from '../repository/email-auth';
@@ -31,7 +31,7 @@ function LinkPwResetOrSignUp() {
 }
 
 function EmailLogin() {
-  const { setLoggedIn } = useAuthContext();
+  const { setLoggedIn } = useAuth();
   const [ errMsg, setErrMsg ] = useState('');
 
   const handleSubmit = (
@@ -76,7 +76,7 @@ function AlertMobileNotFound(
     onClose: () => void;
   }
 ) {
-  const { setLoggedIn } = useAuthContext();
+  const { setLoggedIn } = useAuth();
   const [submitting, setSubmitting] = useState(false);
   const [ linkEmail, setLinkEmail ] = useState(false);
 
@@ -147,7 +147,7 @@ function MobileLinkEmail(
     onSubmitting: (yes: boolean) => void
   }
 ) {
-  const { setLoggedIn } = useAuthContext();
+  const { setLoggedIn } = useAuth();
   const [ errMsg, setErrMsg ] = useState('');
 
   const handleSubmit = (
@@ -199,7 +199,7 @@ function MobileLinkEmail(
 }
 
 function MobileLogin() {
-  const { setLoggedIn } = useAuthContext();
+  const { setLoggedIn } = useAuth();
   const [ errMsg, setErrMsg ] = useState('');
   const [ mobile, setMobile ] = useState('');
 
@@ -288,7 +288,7 @@ function MobileLogin() {
 
 export function LoginPage() {
 
-  const { passport } = useAuthContext();
+  const { passport } = useAuth();
 
   if (passport) {
     return <Navigate

@@ -1,6 +1,6 @@
 import { useState} from 'react';
 import { Link } from 'react-router-dom';
-import { useAuthContext } from '../store/AuthContext';
+import { useAuth } from '../store/useAuth';
 import { AuthLayout } from '../components/layout/AuthLayout';
 import { emailVerificationUrl, sitemap } from '../data/sitemap';
 import { emailSignUp } from '../repository/email-auth';
@@ -12,7 +12,7 @@ import { invalidMessages } from '../data/form-value';
 
 export function SignUpPage() {
 
-  const { setLoggedIn } = useAuthContext();
+  const { setLoggedIn } = useAuth();
   const [ errMsg, setErrMsg ] = useState('');
 
   const handleSubmit = (values: SignupFormVal, helper: FormikHelpers<SignupFormVal>) => {

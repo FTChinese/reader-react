@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { isAccountLinked, ReaderPassport } from "../../data/account";
-import { useAuthContext } from '../../store/AuthContext';
+import { useAuth } from '../../store/useAuth';
 import { EmailLinkWxDialog } from '../wx/EmailLinkWxDialog';
 import { OnReaderAccount } from '../wx/OnReaderAccount';
 import { UnlinkDialog } from '../wx/UnlinkDialog';
@@ -37,7 +37,7 @@ function WechatLinked(
   }
 ) {
 
-  const { setLoggedIn } = useAuthContext();
+  const { setLoggedIn } = useAuth();
 
   const [showUnlink, setShowUnlink] = useState(false);
 
@@ -70,7 +70,7 @@ function WechatMissing(
     passport: ReaderPassport
   }
 ) {
-  const { setLoggedIn } = useAuthContext();
+  const { setLoggedIn } = useAuth();
   const [ show, setShow ] = useState(false);
 
   const handleClick = () => {
