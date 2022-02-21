@@ -4,11 +4,11 @@ import { TextLines } from '../../components/list/TextLines';
 import { Membership } from '../../data/membership';
 import { PaywallProduct, productDesc } from '../../data/paywall';
 import {
-  StripeShelfItem,
-  buildFtcShelfItems,
-  buildStripeShelfItems,
-} from '../../data/product-shelf';
-import { stripePricesState } from '../../store/useStripePrices';
+  CartItemStripe,
+  buildFtcCartItems,
+  buildStripeCartItems,
+} from '../../data/shopping-cart';
+import { stripePricesState } from '../../store/recoilState';
 import { FtcPriceCard, StripePriceCard } from './PriceCard';
 
 export function ProductCard(
@@ -18,9 +18,9 @@ export function ProductCard(
   }
 ) {
 
-  const ftcItems = buildFtcShelfItems(props.product, props.member);
+  const ftcItems = buildFtcCartItems(props.product, props.member);
 
-  const [stripeItems, setStripeItems] = useState<StripeShelfItem[]>();
+  const [stripeItems, setStripeItems] = useState<CartItemStripe[]>();
 
   const stripePrices = useRecoilValue(stripePricesState);
 
@@ -29,7 +29,7 @@ export function ProductCard(
       return;
     }
 
-    setStripeItems(buildStripeShelfItems({
+    setStripeItems(buildStripeCartItems({
       product: props.product,
       m: props.member,
       prices: stripePrices,
