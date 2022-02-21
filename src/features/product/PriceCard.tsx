@@ -1,21 +1,21 @@
 import Card from 'react-bootstrap/Card';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MoneyParts } from '../../data/localization';
 import {
-  ShelfItemParams,
-  FtcShelfItem,
-  newFtcShelfItemParams,
-  newStripeShelfItemParams,
-  StripeShelfItem
-} from '../../data/product-shelf';
+  CartItemUIParams,
+  CartItemFtc,
+  newFtcCartItemUIParams,
+  newStripeCartItemParams,
+  CartItemStripe
+} from '../../data/shopping-cart';
 import { Customer } from '../../data/stripe';
-import { useAuthContext } from '../../store/AuthContext';
-import { AliWxPay } from './AliWxPay';
+import { useAuth } from '../../store/useAuth';
 import { CustomerDialog } from './CustomerDialog';
-import { PaymentDialog } from './PaymentDialog';
-import { StripePay } from './StripePay';
 import styles from './PriceCard.module.css';
-import { useState } from 'react';
 import { isEmailAccount } from '../../data/account';
+import { sitemap } from '../../data/sitemap';
+import { useShoppingCart } from '../../store/useShoppingCart';
 
 function PriceHighlight(
   props: {
@@ -40,7 +40,7 @@ function PriceHighlight(
  */
 export function PriceCardBody(
   props: {
-    params: ShelfItemParams;
+    params: CartItemUIParams;
   }
 ) {
   return (
@@ -76,74 +76,73 @@ export function PriceCardBody(
 
 export function FtcPriceCard(
   props: {
-    item: FtcShelfItem
+    item: CartItemFtc
   }
 ) {
 
-  const [ show, setShow ] = useState(false);
+  const navigate = useNavigate();
+  const { putFtcItem } = useShoppingCart();
 
+  const handleClick = () => {
+    putFtcItem(props.item);
+    navigate(sitemap.checkout, { replace: false});
+  }
 
-  const params = newFtcShelfItemParams(props.item)
+  const params = newFtcCartItemUIParams(props.item)
 
   return (
-    <>
-      <Card
-        className={`h-100 ${styles.itemCard}`}
-        onClick={() => setShow(true)}
-      >
-        {
-          params.header &&
-          <Card.Header>
-            {params.header}
-          </Card.Header>
-        }
+    <Card
+      className={`h-100 ${styles.itemCard}`}
+      onClick={handleClick}
+    >
+      {
+        params.header &&
+        <Card.Header>
+          {params.header}
+        </Card.Header>
+      }
 
-        <PriceCardBody params={params} />
-      </Card>
-
-      <PaymentDialog
-        show={show}
-        onHide={() => setShow(false)}
-        tier={props.item.price.tier}
-        params={params}
-      >
-        <AliWxPay
-          item={props.item}
-        />
-      </PaymentDialog>
-    </>
+      <PriceCardBody params={params} />
+    </Card>
   );
 }
 
 export function StripePriceCard(
   props: {
-    item: StripeShelfItem;
+    item: CartItemStripe;
   }
 ) {
 
-  const { passport } = useAuthContext();
+  const { passport } = useAuth();
   if (!passport) {
     return <></>;
   }
 
-  const [ showPay, setShowPay ] = useState(false);
+  const navigate = useNavigate();
+  const { putStripeItem } = useShoppingCart();
+
   const [ showCustomer, setShowCustomer ] = useState(false);
-  const params = newStripeShelfItemParams(props.item);
+  const params = newStripeCartItemParams(props.item);
+
+  const putIntoCart = () => {
+    putStripeItem(props.item);
+    navigate(sitemap.checkout, { replace: false });
+  };
 
   const handleClick = () => {
     if (isEmailAccount(passport)) {
-      setShowPay(true);
+      putIntoCart();
       return;
     }
 
     setShowCustomer(true);
   };
 
-  // After customer created, show the pay dialog.
+  // After customer created, show the got to checkout page.
   const customerCreated = (cus: Customer) => {
     console.log(cus);
     setShowCustomer(false);
-    setShowPay(true);
+    putIntoCart();
   };
 
   return (
@@ -168,16 +167,6 @@ export function StripePriceCard(
         onHide={() => setShowCustomer(false)}
         onCreated={customerCreated}
       />
-      <PaymentDialog
-        show={showPay}
-        onHide={() => setShowPay(false)}
-        tier={props.item.recurring.tier}
-        params={params}
-      >
-        <StripePay
-          item={props.item}
-        />
-      </PaymentDialog>
     </>
   );
 }
