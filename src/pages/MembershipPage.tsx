@@ -1,4 +1,4 @@
-import { useAuthContext } from '../store/AuthContext';
+import { useAuth } from '../store/useAuth';
 import { CurrentSubs } from '../features/subs/CurrentSubs';
 import { Unauthorized } from '../components/routes/Unauthorized';
 import { useEffect, useState } from 'react';
@@ -8,11 +8,12 @@ import { Paywall } from '../data/paywall';
 import { ErrorBoudary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
 import { PaywallContent } from '../features/product/PaywallContent';
-import { stripePricesState } from '../store/useStripePrices';
+import { stripePricesState } from '../store/recoilState';
 import { useRecoilState } from 'recoil';
+import { SingleCenterCol } from '../components/layout/ContentLayout';
 
 export function MembershipPage() {
-  const { passport } = useAuthContext();
+  const { passport } = useAuth();
 
   if (!passport) {
     return <Unauthorized/>;
@@ -39,13 +40,11 @@ export function MembershipPage() {
 
   return (
     <>
-      <div className="row justify-content-center">
-        <div className="col-12 col-lg-8">
-          <CurrentSubs
-            {...passport.membership}
-          />
-        </div>
-      </div>
+      <SingleCenterCol>
+        <CurrentSubs
+          {...passport.membership}
+        />
+      </SingleCenterCol>
 
       <ErrorBoudary errMsg={err}>
         <Loading loading={progress}>
