@@ -1,12 +1,12 @@
 import { FormikHelpers, Formik, Form } from 'formik';
 import { useEffect, useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
-import { PaymentMethod } from '../../data/enum';
+import { PaymentKind } from '../../data/enum';
 import { RadioInput } from '../controls/RadioInput';
 import { SubmitButton } from '../controls/SubmitButton';
 
 export type FtcPayFormVal = {
-  method: PaymentMethod;
+  method: PaymentKind;
 };
 
 export function FtcPayForm(
@@ -38,7 +38,7 @@ export function FtcPayForm(
       }
       <Formik<FtcPayFormVal>
         initialValues={{
-          method: '' as PaymentMethod,
+          method: '' as PaymentKind,
         }}
         onSubmit={props.onSubmit}
       >
