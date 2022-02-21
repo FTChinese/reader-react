@@ -2,16 +2,16 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '../../components/hooks/useLocation';
 import { AuthLayout } from '../../components/layout/AuthLayout';
 import { validateWxOAuthCode, WxOAuthCodeResp, WxOAuthCodeSession } from '../../data/authentication';
-import { wxCodeSessionStore } from '../../store/keys';
 import { ErrorBoudary } from '../../components/progress/ErrorBoundary';
 import { Loading } from '../../components/progress/Loading';
 import { wxLogin } from '../../repository/wx-auth';
 import { ResponseError } from '../../repository/response-error';
-import { useAuthContext } from '../../store/AuthContext';
+import { useAuth } from '../../store/useAuth';
 import { GoHome } from '../../components/routes/Unauthorized';
 import { ReaderPassport } from '../../data/account';
 import { OnReaderAccount } from '../../features/wx/OnReaderAccount';
 import { LinkAccounts } from '../../features/wx/LinkAccounts';
+import { wxOAuthCbSession } from '../../store/wxOAuthCbSession';
 
 export function WxCallbackPage() {
   const query = useQuery();
@@ -23,7 +23,7 @@ export function WxCallbackPage() {
   };
 
   // Get session data from localstorage.
-  const sess = wxCodeSessionStore.load();
+  const sess = wxOAuthCbSession.load();
 
   return (
     <AuthLayout
@@ -44,7 +44,7 @@ function ProcessCode(
   }
 ) {
 
-  const { setLoggedIn, passport } = useAuthContext();
+  const { setLoggedIn, passport } = useAuth();
   const [ errMsg, setErrMsg ] = useState('');
   const [ progress, setProgress ] = useState(true);
   const [ wxPassport, setWxPassport ] = useState<ReaderPassport>();
@@ -88,7 +88,7 @@ function ProcessCode(
       });
 
     return function() {
-      wxCodeSessionStore.remove();
+      wxOAuthCbSession.remove();
     };
   }, [props.resp.code]);
 
@@ -123,7 +123,7 @@ function HandleLink(
   }
 ) {
 
-  const { setLoggedIn } = useAuthContext();
+  const { setLoggedIn } = useAuth();
   const [ linked, setLinked ] = useState(false);
 
   const handleLinked: OnReaderAccount = (pp) => {
