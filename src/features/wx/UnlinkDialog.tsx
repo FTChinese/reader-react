@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import { ReaderPassport, ReaderAccount } from '../../data/account';
-import { PaymentMethod, WxUnlinkAnchor } from '../../data/enum';
+import { PaymentKind, WxUnlinkAnchor } from '../../data/enum';
 import { isMembershipZero, Membership } from '../../data/membership';
 import { ResponseError } from '../../repository/response-error';
 import { wxUnlinkEmail } from '../../repository/wx-auth';
@@ -182,12 +182,12 @@ function UnlinkableAccountRows(a: ReaderAccount): StringPair[] {
   ];
 }
 
-function isFtcSideOnly(m?: PaymentMethod): boolean {
+function isFtcSideOnly(m?: PaymentKind): boolean {
   if (!m) {
     return false;
   }
 
-  const emailOnlyPayMethods: PaymentMethod[] = ['apple', 'stripe', 'b2b'];
+  const emailOnlyPayMethods: PaymentKind[] = ['apple', 'stripe', 'b2b'];
 
   return emailOnlyPayMethods.includes(m);
 }
