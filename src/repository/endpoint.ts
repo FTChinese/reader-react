@@ -11,6 +11,7 @@ const ftcpayBase = `${readerBase}/ftc-pay`;
 const stripeCusBase = `${readerBase}/stripe/customers`;
 const stripeSubsBase = `${readerBase}/stripe/subs`;
 const stripePMBase = `${readerBase}/stripe/payment-methods`;
+const stripeSetupBase = `${readerBase}/stripe/setup-intents`;
 
 export const endpoint = {
   emailExists: `${emailAuthBase}/exists`,
@@ -57,33 +58,40 @@ export const endpoint = {
   },
 
   stripeCustomers: stripeCusBase,
-  stripeCustomerOf: function(id: string): string {
+  customerOf: function(id: string): string {
     return `${stripeCusBase}/${id}`;
   },
-  stripeCusDefaultPM: function(id: string): string {
+  cusPaymentMethods: function(id:  string): string {
+    return `${stripeCusBase}/${id}/payment-methods`;
+  },
+  cusDefaultPayMethod: function(id: string): string {
     return `${stripeCusBase}/${id}/default-payment-method`;
   },
 
+  setupIntent: stripeSetupBase,
+  payMethodOfSetup: function(id: string): string {
+    return `${stripeSetupBase}/${id}/payment-method`;
+  },
 
   stripeSubs: stripeSubsBase,
   stripeSubsOf: function(id: string): string {
     return `${stripeSubsBase}/${id}`;
   },
-  stripeRefresh: function(id: string): string {
+  refreshSubs: function(id: string): string {
     return `${stripeSubsBase}${id}/refresh`;
   },
-  stripeCancel: function(id: string): string {
+  cancelSubs: function(id: string): string {
     return `${stripeSubsBase}/${id}/cancel`;
   },
-  stripeReactivate: function(id: string): string {
+  reactivateSubs: function(id: string): string {
     return `${stripeSubsBase}/${id}/reactivate`;
   },
-  stripeSubsDefaultPM: function(id: string): string {
+  subsDefaultPayMethod: function(id: string): string {
     return `${stripeSubsBase}/${id}/default-payment-method`;
   },
 
-  stripePaymentMethods: stripePMBase,
-  stripePMOf: function(id: string): string {
+  paymentMethods: stripePMBase,
+  paymentMethodOf: function(id: string): string {
     return `${stripePMBase}/${id}`;
   },
 
