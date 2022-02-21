@@ -1,6 +1,6 @@
 import { addYears, isAfter, parseISO } from 'date-fns';
 import { isExpired } from '../utils/now';
-import { Cycle, OrderKind, PaymentMethod, SubStatus, Tier } from './enum';
+import { Cycle, OrderKind, PaymentKind, SubStatus, Tier } from './enum';
 import { Edition } from './edition';
 
 export type Membership =  {
@@ -9,7 +9,7 @@ export type Membership =  {
   tier?: Tier;
   cycle?: Cycle;
   expireDate?: string;
-  payMethod?: PaymentMethod;
+  payMethod?: PaymentKind;
   ftcPlanId?: string;
   stripeSubsId?: string;
   autoRenew: boolean;
@@ -21,7 +21,7 @@ export type Membership =  {
   vip: boolean;
 }
 
-export function normalizePayMethod(m: Membership): PaymentMethod | undefined {
+export function normalizePayMethod(m: Membership): PaymentKind | undefined {
   if (m.payMethod) {
     return m.payMethod;
   }
