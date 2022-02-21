@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { bearerAuthHeader } from '../data/account';
-import { PubKey } from '../data/product-shelf';
-import { Customer, Subs, SubsParams } from '../data/stripe';
+import { PagedList } from '../data/paged-list';
+import { PubKey, SetupIntent, SetupIntentParams } from '../data/stripe';
+import { Customer, PaymentMethod, SubsParams, SubsResult } from '../data/stripe';
 import { endpoint } from './endpoint';
 import { ResponseError } from './response-error';
 
@@ -23,9 +24,9 @@ export function createCustomer(token: string): Promise<Customer> {
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function loadCustomer(token: string, cusID: string): Promise<Customer> {
+export function loadCustomer(token: string, cusId: string): Promise<Customer> {
   return axios.get<Customer>(
-      endpoint.stripeCustomerOf(cusID),
+      endpoint.customerOf(cusId),
       {
         headers: bearerAuthHeader(token)
       }
@@ -34,8 +35,67 @@ export function loadCustomer(token: string, cusID: string): Promise<Customer> {
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function createSubs(token: string, params: SubsParams): Promise<Subs> {
-  return axios.post<Subs>(
+export function loadCusDefaultPayMethod(token: string, cusId: string): Promise<PaymentMethod> {
+  return axios.get<PaymentMethod>(
+      endpoint.cusDefaultPayMethod(cusId),
+      {
+        headers: bearerAuthHeader(token)
+      }
+    )
+    .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function listCusPaymentMethods(token: string, cusId: string): Promise<PagedList<PaymentMethod>> {
+  return axios.get<PagedList<PaymentMethod>>(
+      endpoint.cusPaymentMethods(cusId),
+      {
+        headers: bearerAuthHeader(token)
+      }
+    )
+    .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function createSetupIntent(token: string, p: SetupIntentParams): Promise<SetupIntent> {
+  return axios.post<SetupIntent>(
+      endpoint.setupIntent,
+      p,
+      {
+        headers: bearerAuthHeader(token)
+      }
+    )
+  .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function loadSetupPaymentMethod(token: string, setupId: string): Promise<PaymentMethod> {
+  return axios.get<PaymentMethod>(
+      endpoint.payMethodOfSetup(setupId),
+      {
+        headers: bearerAuthHeader(token),
+        params: {
+          refresh: "true",
+        }
+      }
+    )
+    .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function loadPaymentMethod(token: string, id: string): Promise<PaymentMethod> {
+  return axios.get<PaymentMethod>(
+      endpoint.paymentMethodOf(id),
+      {
+        headers: bearerAuthHeader(token)
+      }
+    )
+    .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function createSubs(token: string, params: SubsParams): Promise<SubsResult> {
+  return axios.post<SubsResult>(
       endpoint.stripeSubs,
       params,
       {
@@ -51,8 +111,8 @@ export function updateSubs(
   params: SubsParams & {
     id: string;
   }
-): Promise<Subs> {
-  return axios.post<Subs>(
+): Promise<SubsResult> {
+  return axios.post<SubsResult>(
       endpoint.stripeSubsOf(params.id),
       params,
       {
@@ -66,9 +126,9 @@ export function updateSubs(
 export function refreshSubs(
   token: string,
   subsId: string,
-): Promise<Subs> {
-  return axios.post<Subs>(
-      endpoint.stripeRefresh(subsId),
+): Promise<SubsResult> {
+  return axios.post<SubsResult>(
+      endpoint.refreshSubs(subsId),
       undefined,
       {
         headers: bearerAuthHeader(token)
@@ -81,9 +141,9 @@ export function refreshSubs(
 export function cancelSubs(
   token: string,
   subsId: string,
-): Promise<Subs> {
-  return axios.post<Subs>(
-      endpoint.stripeCancel(subsId),
+): Promise<SubsResult> {
+  return axios.post<SubsResult>(
+      endpoint.cancelSubs(subsId),
       undefined,
       {
         headers: bearerAuthHeader(token)
@@ -96,9 +156,9 @@ export function cancelSubs(
 export function reactivateSubs(
   token: string,
   subsId: string,
-): Promise<Subs> {
-  return axios.post<Subs>(
-    endpoint.stripeReactivate(subsId),
+): Promise<SubsResult> {
+  return axios.post<SubsResult>(
+    endpoint.reactivateSubs(subsId),
     undefined,
     {
       headers: bearerAuthHeader(token)
@@ -111,9 +171,9 @@ export function reactivateSubs(
 export function loadSubsDefaultPayMethod(
   token: string,
   subsId: string,
-): Promise<Subs> {
-  return axios.post<Subs>(
-    endpoint.stripeSubsDefaultPM(subsId),
+): Promise<PaymentMethod> {
+  return axios.post<PaymentMethod>(
+    endpoint.subsDefaultPayMethod(subsId),
     undefined,
     {
       headers: bearerAuthHeader(token)
