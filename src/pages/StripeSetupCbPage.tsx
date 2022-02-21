@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
 import { SingleCenterCol } from '../components/layout/ContentLayout';
 import { ErrorBoudary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
 import { stripePromise } from '../features/checkout/loadStripe';
 import { useAuth } from '../store/useAuth';
-import { paymentMethodState } from '../store/recoilState';
 import { newSetupCbParams, stripeSetupSession } from '../store/stripeSetupSession';
 import { loadPaymentMethod } from '../repository/stripe';
 import { sitemap } from '../data/sitemap';
 import { ReaderPassport } from '../data/account';
+import { usePaymentSetting } from '../store/usePaymentSetting';
 
 export function StripeSetupCbPage() {
 
@@ -18,7 +17,7 @@ export function StripeSetupCbPage() {
 
   const [ searchParams, _ ] = useSearchParams();
   const navigate = useNavigate();
-  const setPaymentMethod = useSetRecoilState(paymentMethodState);
+  const { selectPaymentMethod } = usePaymentSetting();
 
   const [ progress, setProgress ] = useState(true);
   const [ err, setErr ] = useState('');
@@ -77,7 +76,7 @@ export function StripeSetupCbPage() {
       const pm = await loadPaymentMethod(pp.token, pmId);
 
       setProgress(false);
-      setPaymentMethod(pm);
+      selectPaymentMethod(pm)
       navigate(sitemap.checkout);
     } catch (e) {
       console.log(e);

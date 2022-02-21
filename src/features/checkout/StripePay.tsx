@@ -1,7 +1,5 @@
-import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import Alert from 'react-bootstrap/Alert';
 import Spinner from 'react-bootstrap/Spinner';
 import { toast } from 'react-toastify';
 import { ArrowRight } from '../../components/icons';
@@ -11,16 +9,15 @@ import { Unauthorized } from '../../components/routes/Unauthorized';
 import { ReaderPassport } from '../../data/account';
 import { localizeSubsStatus } from '../../data/localization';
 import { CartItemStripe } from '../../data/shopping-cart';
-import { convertPaymentMthod, PaymentMethod, Subs } from '../../data/stripe';
+import { Subs } from '../../data/stripe';
 import { ResponseError } from '../../repository/response-error';
-import { createSubs, loadCusDefaultPayMethod } from '../../repository/stripe';
+import { createSubs, loadCusDefaultPayMethod, loadCustomer } from '../../repository/stripe';
 import { useAuth } from '../../store/useAuth';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { paymentMethodState } from '../../store/recoilState';
 import { InlineSpinner } from '../../components/progress/InlineSpinner';
 import { IntentKind } from '../../data/chekout-intent';
 import { PaymentMethodDialog } from './PaymentMethodDialog';
 import { BankCard } from './BankCard';
+import { usePaymentSetting } from '../../store/usePaymentSetting';
 
 /**
  * @description Handles Stripe pay actions.
@@ -47,12 +44,9 @@ export function StripePay(
     return <Unauthorized />;
   }
 
-  const paymentMethod = useRecoilValue(paymentMethodState);
-
   return (
     <>
       <p className="text-danger">{props.item.intent.message}</p>
-
 
       <div className="mt-3">
         <DefaultPaymentMethod
@@ -62,7 +56,6 @@ export function StripePay(
         <CreateSubscription
           passport={passport}
           item={props.item}
-          paymentMethod={paymentMethod.id}
         />
       </div>
     </>
@@ -76,29 +69,61 @@ function DefaultPaymentMethod(
 ) {
   const [ progress, setProgress ] = useState(false);
   const [ showForm, setShowForm ] = useState(false);
-  const [paymentMethod, setPaymentMethod ] = useRecoilState(paymentMethodState);
 
+  const { paymentSetting, setCustomer, selectPaymentMethod } = usePaymentSetting
+();
+
+  // Load customer so that we could know if this customer has default payment method.
   useEffect(() => {
+    if (paymentSetting.customer) {
+      return;
+    }
+
+    const cusId = props.passport.stripeId;
+    if (!cusId) {
+      return;
+    }
+
+    loadCustomer(props.passport.token, cusId)
+      .then(customer => {
+        setCustomer(customer);
+      })
+      .catch((err: ResponseError) => {
+        console.log(err);
+      });
+  }, []);
+
+  // If no payment method selected yet, load customer's default payment method.
+  useEffect(() => {
+    if (paymentSetting.selectedMethod) {
+      return;
+    }
+
+    const cusId = props.passport.stripeId;
+    if (!cusId) {
+      return;
+    }
+
     setProgress(true);
 
     loadCusDefaultPayMethod(
         props.passport.token,
-        props.passport.stripeId!!
+        cusId,
       )
       .then(pm => {
         setProgress(false);
-        console.log(pm);
         // Only set payment method if no one exists.
         // It might happen when network is very slow, the data is loaded
         // after user added a new card.
-        if (!paymentMethod) {
-          setPaymentMethod(pm);
+        if (paymentSetting.selectedMethod) {
+          return;
         }
+
+        selectPaymentMethod(pm)
       })
       .catch((err: ResponseError) => {
         setProgress(false);
         if (err.notFound) {
-          // setNotFound(true);
           return;
         }
 
@@ -106,9 +131,13 @@ function DefaultPaymentMethod(
       })
   }, []);
 
+  // When a method is selected to pay, close dialog.
   useEffect(() => {
+    if (!paymentSetting.selectedMethod) {
+      return;
+    }
     setShowForm(false);
-  }, [paymentMethod.id]);
+  }, [paymentSetting.selectedMethod?.id]);
 
   return (
     <div>
@@ -130,7 +159,8 @@ function DefaultPaymentMethod(
           animation="border"
           size="sm"
         /> :
-        <DisplayCard paymentMethod={paymentMethod} />
+        <ShowSelectedPaymentMethod
+       />
       }
 
       <PaymentMethodDialog
@@ -151,122 +181,17 @@ function DefaultPaymentMethod(
  * As long as a payment method exits, it will be displayed.
  * @todo In the future we should list all payment methods.
  */
-function DisplayCard(
-  props: {
-    paymentMethod: PaymentMethod,
-  }
-) {
+function ShowSelectedPaymentMethod() {
 
-  if (!props.paymentMethod.id) {
+  const { paymentSetting } = usePaymentSetting();
+
+  if (!paymentSetting.selectedMethod) {
     return <div className="text-muted">未设置</div>;
   }
 
   return <BankCard
-    paymentMethod={props.paymentMethod}
+    paymentMethod={paymentSetting.selectedMethod}
   />;
-}
-
-/**
- * @description Show CardElement
- */
-function NewCardForm(
-  props: {
-    onCardSaved: () => void;
-  }
-) {
-  const stripe = useStripe();
-  const elements = useElements();
-
-  const [ progress, setProgress ] = useState(false);
-  const [ errMsg, setErrMsg ] = useState('');
-
-  const setPaymentMethod = useSetRecoilState(paymentMethodState);
-
-  const handleSubmit = (event: SyntheticEvent) => {
-    event.preventDefault();
-
-    if (!stripe || !elements) {
-      console.log('Stripe.js not loaded');
-      return;
-    }
-
-    const cardElem = elements.getElement('card');
-    if (!cardElem) {
-      console.error('CardElement not found');
-      return;
-    }
-
-    setErrMsg('');
-    setProgress(true);
-
-    stripe.createPaymentMethod({
-        type: 'card',
-        card: cardElem,
-      })
-      .then(result => {
-        setProgress(false);
-
-        console.log(result);
-
-        if (result.error) {
-          setErrMsg(result.error.message || '');
-          return;
-        }
-
-        setPaymentMethod(convertPaymentMthod(result.paymentMethod));
-        props.onCardSaved();
-      })
-      .catch(err => {
-        setProgress(false);
-        console.error(err);
-        setErrMsg(err.toString());
-      });
-  }
-
-  // See doc https://stripe.com/docs/js/appendix/style
-  // const options: StripeCardElementOptions = {
-  //   style: {
-  //       base: {
-
-  //       }
-  //   }
-  // }
-
-  return (
-    <form onSubmit={handleSubmit} className="mt-3">
-      {
-        errMsg &&
-        <Alert
-          variant="danger"
-          dismissible
-          onClose={() => setErrMsg('')}
-        >
-          {errMsg}
-        </Alert>
-      }
-
-      <CardElement />
-
-      <div className="text-end">
-        <Button
-          size="sm"
-          variant="link"
-          type="submit"
-        >
-          {
-            progress &&
-            <Spinner
-              as="span"
-              animation="border"
-              size="sm"
-            />
-          }
-          保存
-        </Button>
-      </div>
-
-    </form>
-  );
 }
 
 /**
@@ -276,15 +201,10 @@ function CreateSubscription(
   props: {
     passport: ReaderPassport;
     item: CartItemStripe;
-    paymentMethod: string;
   }
 ) {
 
-  const { passport } = useAuth();
-  if (!passport) {
-    return <></>;
-  }
-
+  const { paymentSetting } = usePaymentSetting();
   const [ progress, setProgress ] = useState(false);
   const [ subs, setSubs ] = useState<Subs>();
 
@@ -304,11 +224,16 @@ function CreateSubscription(
   }
 
   const handleClick = () => {
+    if (!paymentSetting.selectedMethod) {
+      console.error('No payment method selected');
+      return;
+    }
+
     setProgress(true);
 
-    createSubs(passport.token, {
+    createSubs(props.passport.token, {
       priceId: props.item.recurring.id,
-      defaultPaymentMethod: props.paymentMethod,
+      defaultPaymentMethod: paymentSetting.selectedMethod.id,
       introductoryPriceId: props.item.trial?.id
     })
     .then(result => {
@@ -327,7 +252,7 @@ function CreateSubscription(
   return (
     <div className="mt-3 d-grid">
       <Button
-        disabled={!props.paymentMethod || progress}
+        disabled={!paymentSetting.selectedMethod || progress}
         variant='primary'
         type="button"
         onClick={handleClick}
@@ -335,7 +260,7 @@ function CreateSubscription(
         <InlineSpinner
           progress={progress}
         >
-          <span>订阅并支付</span>
+          <span>订阅</span>
         </InlineSpinner>
       </Button>
     </div>

@@ -1,7 +1,6 @@
-import { useRecoilState } from 'recoil';
 import { CheckLarge } from '../../components/icons';
 import { PaymentMethod } from '../../data/stripe';
-import { paymentMethodState } from '../../store/recoilState';
+import { usePaymentSetting } from '../../store/usePaymentSetting';
 
 export function BankCard(
   props: {
@@ -9,12 +8,12 @@ export function BankCard(
   }
 ) {
 
-  const [ defaultPM, setDefaultPM ] = useRecoilState(paymentMethodState);
+  const { paymentSetting, selectPaymentMethod } = usePaymentSetting();
 
   const card = props.paymentMethod.card;
 
   const handleClick = () => {
-    setDefaultPM(props.paymentMethod);
+    selectPaymentMethod(props.paymentMethod);
   };
 
   return (
@@ -38,7 +37,7 @@ export function BankCard(
 
       <div className="text-success">
         {
-          (defaultPM.id === props.paymentMethod.id) &&
+          (props.paymentMethod.id === paymentSetting.selectedMethod?.id) &&
           <CheckLarge />
         }
       </div>
