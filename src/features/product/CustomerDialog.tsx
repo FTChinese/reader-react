@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
+import { toast } from 'react-toastify';
 import { ProgressButton } from '../../components/buttons/ProgressButton';
 import { ReaderPassport } from '../../data/account';
+import { ResponseError } from '../../repository/response-error';
+import { createCustomer } from '../../repository/stripe';
+import { useAuth } from '../../store/useAuth';
 import { OnCustomerUpsert } from '../account/OnAccountUpdated';
 
 /**
@@ -18,16 +22,23 @@ export function CustomerDialog(
   }
 ) {
 
+  const { setCustomerId } = useAuth();
   const [progress, setProgress] = useState(false);
 
-  const createCustomer = () => {
-    props.onCreated({
-      id: 'cus_mock',
-      ftcId: 'user-id',
-      created: 123456789,
-      email: 'demo@example.org',
-      liveMode: false,
-    });
+  const handleClick = () => {
+    setProgress(true);
+
+    createCustomer(props.passport.token)
+      .then(cus => {
+        console.log('Stripe customer created');
+        setProgress(false);
+        setCustomerId(cus.id);
+        props.onCreated(cus);
+      })
+      .catch((err: ResponseError) => {
+        setProgress(false);
+        toast.error(err.toString());
+      })
   };
 
   return (
@@ -56,7 +67,7 @@ export function CustomerDialog(
           text="是"
           isSubmitting={progress}
           inline={true}
-          onClick={createCustomer} />
+          onClick={handleClick} />
       </Modal.Footer>
     </Modal>
   );
