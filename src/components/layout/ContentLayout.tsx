@@ -18,3 +18,17 @@ export function ContentLayout() {
     </div>
   );
 }
+
+export function SingleCenterCol(
+  props: {
+    children: JSX.Element
+  }
+) {
+  return (
+    <div className="row justify-content-center">
+      <div className="col-12 col-lg-8">
+        { props.children }
+      </div>
+    </div>
+  );
+}
