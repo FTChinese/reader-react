@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { bearerAuthHeader } from '../data/account';
-import { OrderParams } from '../data/order';
-import { AliPayIntent, WxPayIntent } from '../data/product-shelf';
+import { AliPayIntent, WxPayIntent } from '../data/order';
+import { OrderParams } from '../data/shopping-cart';
 import { endpoint } from './endpoint';
 import { ResponseError } from './response-error';
 
