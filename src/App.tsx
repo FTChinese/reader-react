@@ -14,7 +14,11 @@ import { MembershipPage } from './pages/MembershipPage';
 import { WxCallbackPage } from './pages/oauth/WxCallbackPage';
 import { PasswordResetPage } from './pages/PasswordResetPage';
 import { SignUpPage } from './pages/SignUpPage';
-import { AuthProvider } from './store/AuthContext';
+import { CheckoutPage } from './pages/CheckoutPage';
+import { ScrollToTop } from './components/layout/ScrollToTop';
+import { Elements } from '@stripe/react-stripe-js';
+import { stripePromise } from './features/checkout/loadStripe';
+import { StripeSetupCbPage } from './pages/StripeSetupCbPage';
 
 function Skeleton() {
   return (
@@ -42,8 +46,9 @@ function Skeleton() {
 function App() {
   return (
     <RecoilRoot>
-      <AuthProvider>
+      <Elements stripe={stripePromise}>
         <BrowserRouter basename="/reader">
+          <ScrollToTop />
           <Routes>
             <Route path="/" element={<Skeleton />} >
               <Route element={<CenterLayout />}>
@@ -57,12 +62,15 @@ function App() {
 
               <Route element={<ContentLayout />}>
                 <Route path={siteRoot.membership} element={<MembershipPage />} />
+                <Route path={siteRoot.checkout} element={<CheckoutPage />} />
+                <Route path={siteRoot.stripeSetupCb} element={<StripeSetupCbPage />} />
                 <Route index element={<HomePage />} />
               </Route>
             </Route>
           </Routes>
         </BrowserRouter>
-      </AuthProvider>
+      </Elements>
+
     </RecoilRoot>
   );
 }
