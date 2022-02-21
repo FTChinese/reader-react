@@ -7,6 +7,8 @@ export const siteRoot = {
   verification: 'verification',
   membership: 'membership',
   subs: 'subscription',
+  checkout: 'checkout',
+  stripeSetupCb: 'callback/stripe-setup'
 };
 
 export const sitemap = {
@@ -18,7 +20,17 @@ export const sitemap = {
   verification: `/${siteRoot.verification}`,
   membership: `/${siteRoot.membership}`,
   subs: `/${siteRoot.subs}`,
+  checkout: `/${siteRoot.checkout}`,
+  stripeSetupCb: `/${siteRoot.stripeSetupCb}`,
 };
+
+/**
+ * @description Build the stripe's return_url
+ * @example stripeSetupCbUrl(document.location.origin)
+ */
+export function stripeSetupCbUrl(baseUrl: string): string {
+  return `${baseUrl}/reader/${siteRoot.stripeSetupCb}`
+}
 
 export function passwordResetUrl(baseUrl: string): string {
   return `${baseUrl}/reader/${siteRoot.passwordReset}`;
