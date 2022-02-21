@@ -34,6 +34,20 @@ export function usePaymentSetting() {
     });
   }
 
+  function setCustomerDefaultPayment(id: string) {
+    const cus: Customer | undefined = paymentSetting.customer
+      ? {
+        ...paymentSetting.customer,
+        defaultPaymentMethod: id,
+      }
+      : undefined;
+
+    setPaymentSetting({
+      ...paymentSetting,
+      customer: cus,
+    })
+  }
+
   function selectPaymentMethod(pm: PaymentMethod) {
     setPaymentSetting({
       ...paymentSetting,
@@ -71,6 +85,7 @@ export function usePaymentSetting() {
   return {
     paymentSetting,
     setCustomer,
+    setCustomerDefaultPayment,
     selectPaymentMethod,
     addPaymentMethods,
   };
