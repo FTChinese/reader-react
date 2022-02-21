@@ -1,5 +1,11 @@
+import { PaymentMethod as StripePayMethod } from '@stripe/stripe-js';
 import { Edition } from './edition';
 import { SubStatus } from './enum';
+import { Membership } from './membership';
+
+export type PubKey = {
+  key: string;
+};
 
 export type Customer = {
   id: string;
@@ -20,6 +26,8 @@ export type SubsParams = {
 
 export type Subs = Edition & {
   id: string;
+  currentPeriodStart: string;
+  currentPeriodEnd: string;
   customerId: string;
   defaultPaymentMethodId?: string;
   ftcUserId?: string;
@@ -27,6 +35,23 @@ export type Subs = Edition & {
   liveMode: boolean;
   paymentIntent: PaymentIntent;
   status: SubStatus;
+};
+
+export type SubsResult = {
+  membership: Membership;
+  subs: Subs;
+};
+
+export type SetupIntentParams = {
+  customer: string;
+};
+
+export type SetupIntent = {
+  id: string;
+  clientSecret: string;
+  customerId: string;
+  liveMode: boolean;
+  paymentMethodId?: string;
 };
 
 export type PaymentIntent = {
@@ -41,13 +66,27 @@ export type PaymentIntent = {
 export type PaymentMethod = {
   id: string;
   customerId: string;
-  kind: 'card' | 'card_present' | 'eps' | 'fpx';
-  card: {
-    brand: 'amex' | 'diners' | 'discover' | 'jcb' | 'mastercard' | 'unionpay' | 'unknown' | 'visa';
-    country: string;
-    expMonth: number;
-    expYear: number;
-    fingerprint: string;
-    last4: string;
-  };
+  card: PaymentCard;
 };
+
+export type PaymentCard = {
+  brand: string;
+  country: string;
+  expMonth: number;
+  expYear: number;
+  last4: string;
+};
+
+export function convertPaymentMthod(pm: StripePayMethod): PaymentMethod {
+  return {
+    id: pm.id,
+    customerId: pm.customer || '',
+    card: {
+      brand: pm.card?.brand || 'unknown',
+      country: pm.card?.country || '',
+      expMonth: pm.card?.exp_month || 0,
+      expYear: pm.card?.exp_year || 0,
+      last4: pm.card?.last4 || ''
+    }
+  }
+}
