@@ -1,4 +1,4 @@
-import { Cycle, PaymentMethod, Tier } from './enum';
+import { Cycle, PaymentKind, SubStatus, Tier } from './enum';
 import { Edition } from './edition';
 import { cycleOfYMD, YearMonthDay } from './period';
 
@@ -20,7 +20,7 @@ export function localizeCycle(c: Cycle): string {
   return cycles[c];
 }
 
-const paymentMethods: Record<PaymentMethod, string> = {
+const paymentMethods: Record<PaymentKind, string> = {
   alipay: '支付宝',
   wechat: '微信',
   stripe: 'Stripe订阅',
@@ -28,7 +28,7 @@ const paymentMethods: Record<PaymentMethod, string> = {
   b2b: '企业订阅'
 };
 
-export function localizePaymentMethod(m?: PaymentMethod): string {
+export function localizePaymentMethod(m?: PaymentKind): string {
   if (!m) {
     return '未知来源';
   }
@@ -95,4 +95,19 @@ export function formatMoneyParts(currency: string, amount: number): MoneyParts {
       integer: '',
       decimal: '',
     })
+}
+
+
+const subsStatus: Record<SubStatus, string> = {
+  'active': '活跃',
+  'canceled': '已取消',
+  'incomplete': '待支付',
+  'incomplete_expired': '未支付，已过支付期',
+  'past_due': '未在应付期内支付',
+  'trialing': '试用',
+  'unpaid': '支付失败'
+}
+
+export function localizeSubsStatus(s: SubStatus): string {
+  return subsStatus[s];
 }
