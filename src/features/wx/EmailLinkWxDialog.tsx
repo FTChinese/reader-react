@@ -3,9 +3,9 @@ import Modal from 'react-bootstrap/Modal';
 import { ReaderPassport } from '../../data/account';
 import { ResponseError } from '../../repository/response-error';
 import { getWxOAuthCodeReq } from '../../repository/wx-auth';
-import { wxCodeSessionStore } from '../../store/keys';
 import { ProgressButton } from '../../components/buttons/ProgressButton';
 import { OnReaderAccount } from './OnReaderAccount';
+import { wxOAuthCbSession } from '../../store/wxOAuthCbSession';
 
 /**
  * @description Show a dialog to let a user logged in
@@ -26,7 +26,7 @@ export function EmailLinkWxDialog(
     setSubmitting(true);
     getWxOAuthCodeReq()
       .then(codeReq => {
-        wxCodeSessionStore.save(codeReq, 'link');
+        wxOAuthCbSession.save(codeReq, 'link');
         setSubmitting(false);
         window.location.href = codeReq.redirectTo;
       })

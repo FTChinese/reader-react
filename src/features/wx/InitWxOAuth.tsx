@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { WxOAuthCodeReq } from '../../data/authentication';
 import { getWxOAuthCodeReq } from '../../repository/wx-auth';
-import { wxCodeSessionStore } from '../../store/keys';
+import { wxOAuthCbSession } from '../../store/wxOAuthCbSession';
 
 /**
  * @description WxLogin show a wechat login button and build the link to request a wechat OAuth code.
@@ -25,7 +25,7 @@ export function InitWxOAuth() {
   }
 
   const handleClick = () => {
-    wxCodeSessionStore.save(req, 'login');
+    wxOAuthCbSession.save(req, 'login');
   }
 
   return (
