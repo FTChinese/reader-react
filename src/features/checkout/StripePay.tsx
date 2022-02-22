@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import { toast } from 'react-toastify';
-import { ArrowRight } from '../../components/icons';
 import { DescriptionList } from '../../components/list/DescriptionList';
 import { StringPair } from '../../data/pair';
 import { Unauthorized } from '../../components/routes/Unauthorized';
@@ -15,9 +14,9 @@ import { createSubs, loadCusDefaultPayMethod, loadCustomer } from '../../reposit
 import { useAuth } from '../../components/hooks/useAuth';
 import { InlineSpinner } from '../../components/progress/InlineSpinner';
 import { IntentKind } from '../../data/chekout-intent';
-import { PaymentMethodDialog } from './PaymentMethodDialog';
 import { usePaymentSetting } from '../../components/hooks/usePaymentSetting';
 import { BankCard } from './BankCard';
+import { PaymentMethodTitle } from './PaymentMethodTitle';
 
 /**
  * @description Handles Stripe pay actions.
@@ -68,7 +67,6 @@ function DefaultPaymentMethod(
   }
 ) {
   const [ progress, setProgress ] = useState(false);
-  const [ showForm, setShowForm ] = useState(false);
 
   const { paymentSetting, setCustomer, selectPaymentMethod } = usePaymentSetting
 ();
@@ -131,27 +129,9 @@ function DefaultPaymentMethod(
       })
   }, []);
 
-  // When a method is selected to pay, close dialog.
-  useEffect(() => {
-    if (!paymentSetting.selectedMethod) {
-      return;
-    }
-    setShowForm(false);
-  }, [paymentSetting.selectedMethod?.id]);
-
   return (
     <div>
-      <div className="d-flex justify-content-between border-bottom">
-        <h6>支付方式</h6>
-
-        <Button
-          variant="link"
-          size="sm"
-          onClick={() => setShowForm(!showForm)}
-        >
-          <ArrowRight />
-        </Button>
-      </div>
+      <PaymentMethodTitle/>
 
       {
         progress ?
@@ -162,11 +142,6 @@ function DefaultPaymentMethod(
         <ShowSelectedPaymentMethod
        />
       }
-
-      <PaymentMethodDialog
-        show={showForm}
-        onHide={() => setShowForm(false)}
-      />
     </div>
   );
 }
@@ -186,7 +161,7 @@ function ShowSelectedPaymentMethod() {
   const { paymentSetting } = usePaymentSetting();
 
   if (!paymentSetting.selectedMethod) {
-    return <div className="text-muted">未设置</div>;
+    return <div className="text-black60 scale-down8">未设置</div>;
   }
 
   return <BankCard
