@@ -51,7 +51,7 @@ export function ProductCard(
         ))}
       </div>
 
-      <div className="row row-cols-1 row-cols-xl-2">
+      <div className="row row-cols-1 row-cols-lg-2">
         {stripeItems &&
           stripeItems.map((item, i) => (
             <div className="col mb-3" key={i}>
