@@ -101,6 +101,15 @@ export function usePaymentSetting() {
     })
   }
 
+  function clearPaymentSetting() {
+    setPaymentSetting({
+      customer: undefined,
+      selectedMethod: undefined,
+      methodCandidates: [],
+      setup: undefined,
+    });
+  }
+
   return {
     paymentSetting,
     setCustomer,
@@ -109,5 +118,6 @@ export function usePaymentSetting() {
     addPaymentMethods,
     setSetupIntent,
     removeSetupIntent,
+    clearPaymentSetting,
   };
 }

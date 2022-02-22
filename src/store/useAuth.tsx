@@ -1,8 +1,12 @@
 import { useEffect } from 'react';
 import { atom, useRecoilState } from 'recoil';
 import { isLoginExpired, ReaderPassport } from '../data/account';
+import { Membership } from '../data/membership';
+import { stripeSetupSession } from './stripeSetupSession';
+import { usePaymentSetting } from './usePaymentSetting';
+import { useShoppingCart } from './useShoppingCart';
 
-const storeKeyAccount = 'fta-reader';
+const accountKey = 'fta-reader';
 
 const passportState = atom<ReaderPassport | undefined>({
   key: 'authState',
@@ -15,23 +19,24 @@ interface AuthState {
   setLoggedOut: () => void;
   setDisplayName: (n: string) => void;
   setCustomerId: (id: string) => void;
+  setMembership: (m: Membership) => void;
 }
 
 export function useAuth(): AuthState {
 
   const [passport, setPassport] = useRecoilState(passportState);
+  const { clearCart } = useShoppingCart();
+  const { clearPaymentSetting } = usePaymentSetting();
 
-  async function load() {
+  function load() {
     if (passport) {
       if (isLoginExpired(passport)) {
-        localStorage.removeItem(storeKeyAccount);
-        setPassport(undefined);
+        setLoggedOut();
       }
       return;
     }
 
-    console.log('Loading passport...');
-    const ppStr = localStorage.getItem(storeKeyAccount);
+    const ppStr = localStorage.getItem(accountKey);
 
     if (!ppStr) {
       return;
@@ -40,30 +45,26 @@ export function useAuth(): AuthState {
     try {
       const pp: ReaderPassport = JSON.parse(ppStr);
       if (isLoginExpired(pp)) {
-        localStorage.removeItem(storeKeyAccount);
+        localStorage.removeItem(accountKey);
       }
 
       setPassport(JSON.parse(ppStr));
       console.log('Passport loaded');
     } catch (e) {
-      localStorage.removeItem(storeKeyAccount);
+      localStorage.removeItem(accountKey);
     }
   }
 
-  // Gothas of useEffect dependency:
-  // https://www.benmvp.com/blog/object-array-dependencies-react-useEffect-hook/
-  useEffect(() => {
-    load();
-    // return function cleanup() {};
-  }, [passport?.expiresAt, passport?.token]);
-
   function setLoggedIn(p: ReaderPassport) {
-    localStorage.setItem(storeKeyAccount, JSON.stringify(p));
+    localStorage.setItem(accountKey, JSON.stringify(p));
     setPassport(p);
   }
 
   function setLoggedOut() {
-    localStorage.removeItem(storeKeyAccount);
+    localStorage.removeItem(accountKey);
+    stripeSetupSession.clear();
+    clearCart();
+    clearPaymentSetting();
     setPassport(undefined);
   }
 
@@ -73,7 +74,7 @@ export function useAuth(): AuthState {
         ...passport,
         userName: n,
       };
-      localStorage.setItem(storeKeyAccount, JSON.stringify(newPassport));
+      localStorage.setItem(accountKey, JSON.stringify(newPassport));
       setPassport(newPassport);
     }
   }
@@ -84,10 +85,29 @@ export function useAuth(): AuthState {
         ...passport,
         stripeId: id,
       };
-      localStorage.setItem(storeKeyAccount, JSON.stringify(newPassport));
+      localStorage.setItem(accountKey, JSON.stringify(newPassport));
       setPassport(newPassport);
     }
   }
+
+  function setMembership(m: Membership) {
+    if (passport) {
+      const newPassport: ReaderPassport = {
+        ...passport,
+        membership: m,
+      };
+
+      localStorage.setItems(accountKey, JSON.stringify(newPassport));
+      setPassport(newPassport);
+    }
+  }
+
+  // Gothas of useEffect dependency:
+  // https://www.benmvp.com/blog/object-array-dependencies-react-useEffect-hook/
+  useEffect(() => {
+    load();
+    // return function cleanup() {};
+  }, [passport?.expiresAt, passport?.token]);
 
   return {
     passport,
@@ -95,5 +115,6 @@ export function useAuth(): AuthState {
     setLoggedOut,
     setDisplayName,
     setCustomerId,
+    setMembership,
   };
 }

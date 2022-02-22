@@ -50,9 +50,9 @@ export function useShoppingCart() {
     localStorage.setItem(key, JSON.stringify(data));
   }
 
-  const clear = () => {
-    setCart({});
+  const clearCart = () => {
     localStorage.removeItem(key);
+    setCart({});
   }
 
   return {
@@ -60,6 +60,6 @@ export function useShoppingCart() {
     setCart,
     putFtcItem,
     putStripeItem,
-    clear,
+    clearCart,
   }
 }
