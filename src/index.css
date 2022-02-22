@@ -44,6 +44,62 @@
   --color-teal100: #1AECFF;
 }
 
+.text-teal {
+  color: var(--color-teal);
+}
+
+.bg-teal {
+  background-color: var(--color-teal);
+}
+
+.text-claret {
+  color: var(--color-claret);
+}
+
+.text-wheat {
+  color: var(--color-wheat);
+}
+
+.bg-wheat {
+  background-color: var(--color-wheat);
+}
+
+.text-velvet {
+  color: var(--color-velvet);
+}
+
+.text-mandarin {
+  color: var(--color-mandarin);
+}
+
+.text-crimson {
+  color: var(--color-crimson);
+}
+
+.text-black50 {
+  color: var(--color-black50);
+}
+
+.text-black60 {
+  color: var(--color-black60);
+}
+
+.text-black70 {
+  color: var(--color-black70);
+}
+
+.text-black80 {
+  color: var(--color-black80);
+}
+
+.text-black90 {
+  color: var(--color-black90);
+}
+
+.scale-down8 {
+  font-size: 0.8em;
+}
+
 body {
   font-family: "Helvetica Neue", "Lucida Grande", Verdana, "PingFang SC",
     "PingFang TC", "Hiragino Sans GB", "Heiti SC", "Heiti TC",
