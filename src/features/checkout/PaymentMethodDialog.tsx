@@ -116,6 +116,7 @@ function ListPaymentMethods(
           <BankCard
             key={m.id}
             paymentMethod={m}
+            border={true}
           />
         ))
       }
