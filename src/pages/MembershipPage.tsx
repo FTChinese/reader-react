@@ -1,3 +1,4 @@
+import Card from 'react-bootstrap/Card';
 import { useAuth } from '../components/hooks/useAuth';
 import { Unauthorized } from '../components/routes/Unauthorized';
 import { SingleCenterCol } from '../components/layout/ContentLayout';
@@ -5,6 +6,8 @@ import { buildMemberStatus } from '../features/member/member-status';
 import { Membership } from '../data/membership';
 import { TwoColList } from '../components/list/TwoColList';
 import { ReactivateStripe } from '../features/member/ReactivateStripe';
+import { AddOnOverview } from '../features/member/AddOnOverview';
+import { StripeSettings } from '../features/member/StripeSettings';
 
 export function MembershipPage() {
   const { passport } = useAuth();
@@ -15,36 +18,47 @@ export function MembershipPage() {
 
   return (
     <SingleCenterCol>
-      <CurrentSubs
-        {...passport.membership}
-      />
+      <>
+        <SubsOverview
+          {...passport.membership}
+        />
+
+        <AddOnOverview
+          standard={10}
+          premium={20}
+        />
+
+        <StripeSettings
+
+        />
+      </>
     </SingleCenterCol>
   );
 }
 
-function CurrentSubs(
+function SubsOverview(
   props: Membership
 ) {
 
   const memberStatus = buildMemberStatus(props);
 
   return (
-    <div className="card mb-3">
-      <div className="card-header">我的订阅</div>
-      <div className="card-body">
-        <h5 className="card-title text-center">{memberStatus.productName}</h5>
+    <Card>
+      <Card.Header>我的订阅</Card.Header>
+      <Card.Body className="text-center">
+        <Card.Title>{memberStatus.productName}</Card.Title>
 
         {
           memberStatus.reminder &&
           <p className="text-danger text-center">{memberStatus.reminder}</p>
         }
-      </div>
+      </Card.Body>
       <TwoColList rows={memberStatus.details}/>
 
       {
         memberStatus.reactivateStripe &&
         <ReactivateStripe/>
       }
-    </div>
+    </Card>
   );
 }
