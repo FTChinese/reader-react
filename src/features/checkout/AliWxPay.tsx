@@ -9,7 +9,7 @@ import { alipayCallback } from '../../data/sitemap';
 import { endpoint } from '../../repository/endpoint';
 import { createAliOrder, createWxOrder } from '../../repository/ftcpay';
 import { ResponseError } from '../../repository/response-error';
-import { useAuth } from '../../store/useAuth';
+import { useAuth } from '../../components/hooks/useAuth';
 
 export function AliWxPay(
   props: {

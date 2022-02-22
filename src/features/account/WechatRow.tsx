@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { isAccountLinked, ReaderPassport } from "../../data/account";
-import { useAuth } from '../../store/useAuth';
+import { useAuth } from '../../components/hooks/useAuth';
 import { EmailLinkWxDialog } from '../wx/EmailLinkWxDialog';
 import { OnReaderAccount } from '../wx/OnReaderAccount';
 import { UnlinkDialog } from '../wx/UnlinkDialog';

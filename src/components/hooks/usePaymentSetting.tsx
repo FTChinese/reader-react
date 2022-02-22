@@ -1,5 +1,5 @@
 import { atom, useRecoilState } from 'recoil';
-import { Customer, PaymentMethod, SetupIntent } from '../data/stripe';
+import { Customer, PaymentMethod, SetupIntent } from '../../data/stripe';
 
 /**
  * @description This is the single source of truth

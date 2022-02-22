@@ -1,4 +1,4 @@
-import { useAuth } from '../store/useAuth';
+import { useAuth } from '../components/hooks/useAuth';
 import { Unauthorized } from '../components/routes/Unauthorized';
 import { UserNameRow } from '../features/account/UserNameRow';
 import { DisplayEmail } from '../features/account/EmailRow';

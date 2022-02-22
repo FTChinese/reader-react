@@ -10,12 +10,12 @@ import {
   CartItemStripe
 } from '../../data/shopping-cart';
 import { Customer } from '../../data/stripe';
-import { useAuth } from '../../store/useAuth';
+import { useAuth } from '../../components/hooks/useAuth';
 import { CustomerDialog } from './CustomerDialog';
 import styles from './PriceCard.module.css';
 import { isEmailAccount } from '../../data/account';
 import { sitemap } from '../../data/sitemap';
-import { useShoppingCart } from '../../store/useShoppingCart';
+import { useShoppingCart } from '../../components/hooks/useShoppingCart';
 
 function PriceHighlight(
   props: {

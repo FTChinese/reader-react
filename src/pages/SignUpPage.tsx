@@ -1,6 +1,6 @@
 import { useState} from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../store/useAuth';
+import { useAuth } from '../components/hooks/useAuth';
 import { AuthLayout } from '../components/layout/AuthLayout';
 import { emailVerificationUrl, sitemap } from '../data/sitemap';
 import { emailSignUp } from '../repository/email-auth';

@@ -1,10 +1,14 @@
 import { Link } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
 import { getDisplayName } from '../../data/account';
-import { useAuth } from '../../store/useAuth';
+import { logoutState } from '../hooks/recoilState';
+import { useAuth } from '../hooks/useAuth';
 import styles from  './Toolbar.module.css';
 
 export function Toolbar() {
-  const { passport, setLoggedOut } = useAuth();
+  const setLogout = useSetRecoilState(logoutState);
+
+  const { passport } = useAuth();
 
   return (
     <div className={`d-flex justify-content-between ${styles.toolbar}`}>
@@ -19,7 +23,7 @@ export function Toolbar() {
 
           <button
             className="btn btn-link"
-            onClick={() => setLoggedOut()}
+            onClick={() => setLogout(true)}
           >
             Logout
           </button>

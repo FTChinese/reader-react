@@ -4,12 +4,12 @@ import { SingleCenterCol } from '../components/layout/ContentLayout';
 import { ErrorBoudary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
 import { stripePromise } from '../features/checkout/loadStripe';
-import { useAuth } from '../store/useAuth';
+import { useAuth } from '../components/hooks/useAuth';
 import { newSetupCbParams, stripeSetupSession } from '../store/stripeSetupSession';
-import { loadPaymentMethod } from '../repository/stripe';
 import { sitemap } from '../data/sitemap';
 import { ReaderPassport } from '../data/account';
-import { usePaymentSetting } from '../store/usePaymentSetting';
+import { usePaymentSetting } from '../components/hooks/usePaymentSetting';
+import { loadPaymentMethod } from '../repository/stripe';
 
 export function StripeSetupCbPage() {
 

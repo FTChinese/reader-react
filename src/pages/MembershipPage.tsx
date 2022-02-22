@@ -1,4 +1,4 @@
-import { useAuth } from '../store/useAuth';
+import { useAuth } from '../components/hooks/useAuth';
 import { CurrentSubs } from '../features/subs/CurrentSubs';
 import { Unauthorized } from '../components/routes/Unauthorized';
 import { useEffect, useState } from 'react';
@@ -8,7 +8,7 @@ import { Paywall } from '../data/paywall';
 import { ErrorBoudary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
 import { PaywallContent } from '../features/product/PaywallContent';
-import { stripePricesState } from '../store/recoilState';
+import { stripePricesState } from '../components/hooks/recoilState';
 import { useRecoilState } from 'recoil';
 import { SingleCenterCol } from '../components/layout/ContentLayout';
 

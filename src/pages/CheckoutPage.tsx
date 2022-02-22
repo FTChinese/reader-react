@@ -6,7 +6,7 @@ import { CartItemUIParams, newFtcCartItemUIParams, newStripeCartItemParams } fro
 import { AliWxPay } from '../features/checkout/AliWxPay';
 import { PriceCardBody } from '../features/product/PriceCard';
 import { StripePay } from '../features/checkout/StripePay';
-import { useShoppingCart } from '../store/useShoppingCart';
+import { useShoppingCart } from '../components/hooks/useShoppingCart';
 
 function ChekcoutLayout(
   props: {

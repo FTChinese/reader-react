@@ -8,7 +8,7 @@ import {
   buildFtcCartItems,
   buildStripeCartItems,
 } from '../../data/shopping-cart';
-import { stripePricesState } from '../../store/recoilState';
+import { stripePricesState } from '../../components/hooks/recoilState';
 import { FtcPriceCard, StripePriceCard } from './PriceCard';
 
 export function ProductCard(

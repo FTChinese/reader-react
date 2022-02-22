@@ -5,7 +5,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import { FullscreenSingleCol } from '../../components/layout/FullscreenSingleCol';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { createSetupIntent, listCusPaymentMethods } from '../../repository/stripe';
-import { useAuth } from '../../store/useAuth';
+import { useAuth } from '../../components/hooks/useAuth';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { ResponseError } from '../../repository/response-error';
 import { toast } from 'react-toastify';
@@ -19,7 +19,7 @@ import { ReaderPassport } from '../../data/account';
 import { ErrorBoudary } from '../../components/progress/ErrorBoundary';
 import { Loading } from '../../components/progress/Loading';
 import { BankCard } from './BankCard';
-import { usePaymentSetting } from '../../store/usePaymentSetting';
+import { usePaymentSetting } from '../../components/hooks/usePaymentSetting';
 
 export function PaymentMethodDialog(
   props: {

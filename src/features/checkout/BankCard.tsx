@@ -1,6 +1,6 @@
 import { CheckLarge } from '../../components/icons';
 import { PaymentMethod } from '../../data/stripe';
-import { usePaymentSetting } from '../../store/usePaymentSetting';
+import { usePaymentSetting } from '../../components/hooks/usePaymentSetting';
 
 export function BankCard(
   props: {

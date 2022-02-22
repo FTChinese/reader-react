@@ -12,12 +12,12 @@ import { CartItemStripe } from '../../data/shopping-cart';
 import { Subs } from '../../data/stripe';
 import { ResponseError } from '../../repository/response-error';
 import { createSubs, loadCusDefaultPayMethod, loadCustomer } from '../../repository/stripe';
-import { useAuth } from '../../store/useAuth';
+import { useAuth } from '../../components/hooks/useAuth';
 import { InlineSpinner } from '../../components/progress/InlineSpinner';
 import { IntentKind } from '../../data/chekout-intent';
 import { PaymentMethodDialog } from './PaymentMethodDialog';
+import { usePaymentSetting } from '../../components/hooks/usePaymentSetting';
 import { BankCard } from './BankCard';
-import { usePaymentSetting } from '../../store/usePaymentSetting';
 
 /**
  * @description Handles Stripe pay actions.

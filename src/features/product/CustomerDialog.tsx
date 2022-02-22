@@ -5,7 +5,7 @@ import { ProgressButton } from '../../components/buttons/ProgressButton';
 import { ReaderPassport } from '../../data/account';
 import { ResponseError } from '../../repository/response-error';
 import { createCustomer } from '../../repository/stripe';
-import { useAuth } from '../../store/useAuth';
+import { useAuth } from '../../components/hooks/useAuth';
 import { OnCustomerUpsert } from '../account/OnAccountUpdated';
 
 /**
