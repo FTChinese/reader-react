@@ -47,9 +47,9 @@ function Skeleton() {
 
 function App() {
   return (
-    <RecoilRoot>
-      <Elements stripe={stripePromise}>
-        <BrowserRouter basename="/reader">
+    <Elements stripe={stripePromise}>
+      <BrowserRouter basename="/reader">
+        <RecoilRoot>
           <ScrollToTop />
           <Logout />
           <Routes>
@@ -72,10 +72,9 @@ function App() {
               </Route>
             </Route>
           </Routes>
-        </BrowserRouter>
-      </Elements>
-
-    </RecoilRoot>
+        </RecoilRoot>
+      </BrowserRouter>
+    </Elements>
   );
 }
 
