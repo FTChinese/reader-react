@@ -9,9 +9,13 @@ const navItems: ILink[] = [
     href: sitemap.home,
   },
   {
-    name: '会员订阅',
+    name: '我的订阅',
     href: sitemap.membership,
   },
+  {
+    name: '订阅会员',
+    href: sitemap.subs,
+  }
 ];
 
 export function Sidebar() {

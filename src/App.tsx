@@ -20,6 +20,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { stripePromise } from './features/checkout/loadStripe';
 import { StripeSetupCbPage } from './pages/StripeSetupCbPage';
 import { Logout } from './pages/Logout';
+import { SubsPage } from './pages/SubsPage';
 
 function Skeleton() {
   return (
@@ -64,6 +65,7 @@ function App() {
 
               <Route element={<ContentLayout />}>
                 <Route path={siteRoot.membership} element={<MembershipPage />} />
+                <Route path={siteRoot.subs} element={<SubsPage />} />
                 <Route path={siteRoot.checkout} element={<CheckoutPage />} />
                 <Route path={siteRoot.stripeSetupCb} element={<StripeSetupCbPage />} />
                 <Route index element={<HomePage />} />
