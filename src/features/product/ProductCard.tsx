@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { TextLines } from '../../components/list/TextLines';
+import { TextList } from '../../components/list/TextList';
 import { Membership } from '../../data/membership';
 import { PaywallProduct, productDesc } from '../../data/paywall';
 import {
@@ -64,7 +64,7 @@ export function ProductCard(
         * 自动续订通过<a href="https://stripe.com/" target="_blank">Stripe</a>支付，以英镑计价，需使用支持国际货币的信用卡
       </small>
 
-      <TextLines
+      <TextList
         lines={productDesc(props.product)}
         className="mt-3" />
 
