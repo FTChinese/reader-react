@@ -1,5 +1,5 @@
 import { useAuth } from '../components/hooks/useAuth';
-import { CurrentSubs } from '../features/subs/CurrentSubs';
+import { CurrentSubs } from '../features/member/CurrentSubs';
 import { Unauthorized } from '../components/routes/Unauthorized';
 import { SingleCenterCol } from '../components/layout/ContentLayout';
 

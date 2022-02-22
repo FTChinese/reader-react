@@ -9,7 +9,7 @@ import { wxUnlinkEmail } from '../../repository/wx-auth';
 import { ProgressButton } from '../../components/buttons/ProgressButton';
 import { CardList } from '../../components/list/CardList';
 import { StringPair, pairEmail, pairWxName } from '../../components/list/pair';
-import { UnlinkableSubs } from '../subs/UnlinkableSubs';
+import { UnlinkableSubs } from '../member/UnlinkableSubs';
 import { OnReaderAccount } from './OnReaderAccount';
 
 export function UnlinkDialog(
