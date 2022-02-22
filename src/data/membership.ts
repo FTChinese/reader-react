@@ -66,8 +66,6 @@ export function isBeyondMaxRenewalPeriod(expireDate?: string): boolean {
   return isAfter(expireOn, threeYearslater);
 }
 
-
-
 /**
  * @description Manipulate addon
  */
