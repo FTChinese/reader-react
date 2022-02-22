@@ -3,7 +3,7 @@ import { SubStatus, isInvalidSubStatus } from '../../data/enum';
 import { localizeTier } from '../../data/localization';
 import { Membership, isMembershipZero } from '../../data/membership';
 import { diffToday, isExpired } from '../../utils/now';
-import { StringPair, rowExpiration, rowSubsSource, rowAutoRenewOn, rowAutoRenewDate, rowAutoRenewOff } from '../../data/pair';
+import { StringPair, rowExpiration, rowSubsSource, rowAutoRenewOn, rowAutoRenewDate, rowAutoRenewOff, rowSubsStatus } from '../../data/pair';
 
 /**
  * @description Describes the UI used to present Membership.
@@ -100,8 +100,9 @@ function autoRenewalSubsStatus(m: Membership): MemberStatus {
         details: [
           rowSubsSource(m.payMethod),
           rowAutoRenewOn(),
-          rowExpiration(m.expireDate)
-        ]
+          rowExpiration(m.expireDate),
+          rowSubsStatus(m.status)
+        ],
       };
     }
 
@@ -116,6 +117,7 @@ function autoRenewalSubsStatus(m: Membership): MemberStatus {
       details: [
         rowSubsSource(m.payMethod),
         rowAutoRenewDate(expiresAt, m.cycle),
+        rowSubsStatus(m.status)
       ]
     };
   }
@@ -135,6 +137,7 @@ function autoRenewalSubsStatus(m: Membership): MemberStatus {
       rowSubsSource(m.payMethod),
       rowAutoRenewOff(),
       rowExpiration(m.expireDate),
+      rowSubsStatus(m.status)
     ],
     reminder: formatRemainingDays(expiresAt, m.status),
     // For stripe, if auto renew is off and expiration date is not past.
