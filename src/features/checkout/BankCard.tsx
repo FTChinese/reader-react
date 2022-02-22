@@ -5,6 +5,7 @@ import { usePaymentSetting } from '../../components/hooks/usePaymentSetting';
 export function BankCard(
   props: {
     paymentMethod: PaymentMethod;
+    border?: boolean
   }
 ) {
 
@@ -16,8 +17,13 @@ export function BankCard(
     selectPaymentMethod(props.paymentMethod);
   };
 
+  let className = 'd-flex align-items-center pt-1 pb-1';
+  if (props.border) {
+    className += ' border-bottom';
+  }
+
   return (
-    <div className="d-flex align-items-center border-bottom pt-1 pb-1">
+    <div className={className}>
       <div className="flex-grow-1"
         onClick={handleClick}
       >
@@ -29,13 +35,13 @@ export function BankCard(
             **** {card.last4}
           </span>
         </div>
-        <div className="text-muted">
+        <div className="text-black60 scale-down8">
           <span className="me-2">到期日</span>
           <span>{card.expYear}/{card.expMonth}</span>
         </div>
       </div>
 
-      <div className="text-success">
+      <div className="text-teal">
         {
           (props.paymentMethod.id === paymentSetting.selectedMethod?.id) &&
           <CheckLarge />
