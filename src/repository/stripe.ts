@@ -172,9 +172,8 @@ export function loadSubsDefaultPayMethod(
   token: string,
   subsId: string,
 ): Promise<PaymentMethod> {
-  return axios.post<PaymentMethod>(
+  return axios.get<PaymentMethod>(
     endpoint.subsDefaultPayMethod(subsId),
-    undefined,
     {
       headers: bearerAuthHeader(token)
     }
