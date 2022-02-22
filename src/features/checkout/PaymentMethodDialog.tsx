@@ -19,6 +19,7 @@ import { ReaderPassport } from '../../data/account';
 import { ErrorBoudary } from '../../components/progress/ErrorBoundary';
 import { Loading } from '../../components/progress/Loading';
 import { BankCard } from './BankCard';
+import { usePaymentSetting } from '../../store/usePaymentSetting';
 
 export function PaymentMethodDialog(
   props: {
@@ -132,8 +133,11 @@ function AddPaymentMethod(
 ) {
 
   const [ progress, setProgress ] = useState(false);
-  const [ setupIntent, setSetupIntent ] = useState<SetupIntent>();
+  const { paymentSetting, setSetupIntent } = usePaymentSetting();
 
+  // Handle clicking add payment method button.
+  // To add a new payment method for future use,
+  // you have to ask Stripe to create a setup intent.
   const handleAdd = () => {
     const cusId = props.passport.stripeId;
     if (!cusId) {
@@ -174,7 +178,7 @@ function AddPaymentMethod(
           />
         }
         <Button
-          disabled={!!setupIntent}
+          disabled={!!paymentSetting.setup}
           variant="link"
           size="sm"
           onClick={handleAdd}
@@ -185,15 +189,21 @@ function AddPaymentMethod(
 
       {
         /** Form */
-        setupIntent &&
+        paymentSetting.setup &&
         <DisplayElements
-          setupIntent={setupIntent}
+          setupIntent={paymentSetting.setup}
         />
       }
     </div>
   );
 }
 
+/**
+ * @description Show Stripe's Elements.
+ * Since Elements cannot be modified once setup,
+ * I guess you have to createa a new one instead of
+ * using the top-level one.
+ */
 function DisplayElements(
   props: {
     setupIntent: SetupIntent;

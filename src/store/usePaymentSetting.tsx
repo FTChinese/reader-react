@@ -1,5 +1,5 @@
 import { atom, useRecoilState } from 'recoil';
-import { Customer, PaymentMethod } from '../data/stripe';
+import { Customer, PaymentMethod, SetupIntent } from '../data/stripe';
 
 /**
  * @description This is the single source of truth
@@ -13,6 +13,7 @@ type StripePaymentSetting = {
   customer?: Customer;
   selectedMethod?: PaymentMethod;
   methodCandidates: PaymentMethod[];
+  setup?: SetupIntent;
 }
 
 const paymentSettingState = atom<StripePaymentSetting>({
@@ -21,7 +22,8 @@ const paymentSettingState = atom<StripePaymentSetting>({
     customer: undefined,
     selectedMethod: undefined,
     methodCandidates: [],
-  }
+    setup: undefined,
+  },
 });
 
 export function usePaymentSetting() {
@@ -82,11 +84,30 @@ export function usePaymentSetting() {
     });
   }
 
+  // Keep a setup intent persistent during current session
+  // so that we won't create too much unused setup intent.
+  // Once used, removed it from memory.
+  function setSetupIntent(si: SetupIntent) {
+    setPaymentSetting({
+      ...paymentSetting,
+      setup: si,
+    });
+  }
+
+  function removeSetupIntent() {
+    setPaymentSetting({
+      ...paymentSetting,
+      setup: undefined,
+    })
+  }
+
   return {
     paymentSetting,
     setCustomer,
     setCustomerDefaultPayment,
     selectPaymentMethod,
     addPaymentMethods,
+    setSetupIntent,
+    removeSetupIntent,
   };
 }
