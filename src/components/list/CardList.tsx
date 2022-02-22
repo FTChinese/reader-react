@@ -1,4 +1,4 @@
-import { StringPair } from './pair';
+import { StringPair } from '../../data/pair';
 import { TwoColList } from './TwoColList';
 
 export function CardList(

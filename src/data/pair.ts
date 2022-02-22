@@ -1,6 +1,6 @@
 import { getDate, getMonth } from 'date-fns';
-import { Cycle, PaymentKind, Tier } from '../../data/enum';
-import { localizeCycle, localizeTier, localizePaymentMethod } from '../../data/localization';
+import { Cycle, PaymentKind, Tier } from './enum';
+import { localizeCycle, localizeTier, localizePaymentMethod } from './localization';
 
 export type StringPair = [string, string];
 

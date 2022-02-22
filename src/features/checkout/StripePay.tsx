@@ -4,7 +4,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import { toast } from 'react-toastify';
 import { ArrowRight } from '../../components/icons';
 import { DescriptionList } from '../../components/list/DescriptionList';
-import { StringPair } from '../../components/list/pair';
+import { StringPair } from '../../data/pair';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { ReaderPassport } from '../../data/account';
 import { localizeSubsStatus } from '../../data/localization';

@@ -8,7 +8,7 @@ import { ResponseError } from '../../repository/response-error';
 import { wxUnlinkEmail } from '../../repository/wx-auth';
 import { ProgressButton } from '../../components/buttons/ProgressButton';
 import { CardList } from '../../components/list/CardList';
-import { StringPair, pairEmail, pairWxName } from '../../components/list/pair';
+import { StringPair, pairEmail, pairWxName } from '../../data/pair';
 import { UnlinkableSubs } from '../member/UnlinkableSubs';
 import { OnReaderAccount } from './OnReaderAccount';
 

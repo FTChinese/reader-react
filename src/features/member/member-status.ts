@@ -3,7 +3,7 @@ import { SubStatus, isInvalidSubStatus } from '../../data/enum';
 import { localizeTier } from '../../data/localization';
 import { Membership, isMembershipZero } from '../../data/membership';
 import { diffToday, isExpired } from '../../utils/now';
-import { StringPair, rowExpiration, rowSubsSource, rowAutoRenewOn, rowAutoRenewDate, rowAutoRenewOff } from '../../components/list/pair';
+import { StringPair, rowExpiration, rowSubsSource, rowAutoRenewOn, rowAutoRenewDate, rowAutoRenewOff } from '../../data/pair';
 
 /**
  * @description Describes the UI used to present Membership.
@@ -77,21 +77,9 @@ function b2bMemberStatus(m: Membership): MemberStatus {
 
 /**
  * @description Build a card for stripe or apple like:
- *      标准会员
- * 订阅方式     Stripe订阅 | 苹果App内购
- * 自动续订     xx月xx日/年
  *
- * or if either expireDate or cycle is missing:
- *      标准会员
- * 订阅方式     Stripe订阅 | 苹果App内购
- * 自动续订     已开启
- * 到期时间     2021-11-11
  *
- * or if auto renew is off
- *      标准会员
- * 订阅方式     Stripe订阅 | 苹果App内购
- * 自动续订     已关闭
- * 到期时间     2021-11-11
+
  */
 function autoRenewalSubsStatus(m: Membership): MemberStatus {
   const productName = m.tier ? localizeTier(m.tier) : '';
@@ -99,6 +87,13 @@ function autoRenewalSubsStatus(m: Membership): MemberStatus {
   const expiresAt = m.expireDate ? parseISO(m.expireDate) : undefined;
 
   if (m.autoRenew) {
+    /**
+     * or if either expireDate or cycle is missing:
+     *      标准会员
+     * 订阅方式     Stripe订阅 | 苹果App内购
+     * 自动续订     已开启
+     * 到期时间     2021-11-11
+     */
     if (!expiresAt || !m.cycle) {
       return {
         productName,
@@ -110,6 +105,12 @@ function autoRenewalSubsStatus(m: Membership): MemberStatus {
       };
     }
 
+    /**
+     *   标准会员
+     * 订阅方式     Stripe订阅 | 苹果App内购
+     * 自动续订     xx月xx日/年
+     * 订阅状态     xxxxxx
+     */
     return {
       productName,
       details: [
@@ -119,6 +120,13 @@ function autoRenewalSubsStatus(m: Membership): MemberStatus {
     };
   }
 
+  /**
+   * or if auto renew is off
+   *      标准会员
+   * 订阅方式     Stripe订阅 | 苹果App内购
+   * 自动续订     已关闭
+   * 到期时间     2021-11-11
+   */
   const expired = expiresAt ? isExpired(expiresAt) : true;
 
   return {

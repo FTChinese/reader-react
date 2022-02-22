@@ -4,7 +4,7 @@ import { SingleCenterCol } from '../components/layout/ContentLayout';
 import { buildMemberStatus } from '../features/member/member-status';
 import { Membership } from '../data/membership';
 import { TwoColList } from '../components/list/TwoColList';
-import { ReactivateStripe } from '../features/member/CurrentSubs';
+import { ReactivateStripe } from '../features/member/ReactivateStripe';
 
 export function MembershipPage() {
   const { passport } = useAuth();
@@ -40,6 +40,7 @@ function CurrentSubs(
         }
       </div>
       <TwoColList rows={memberStatus.details}/>
+
       {
         memberStatus.reactivateStripe &&
         <ReactivateStripe/>

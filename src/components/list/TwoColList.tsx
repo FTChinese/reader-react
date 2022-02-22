@@ -1,4 +1,4 @@
-import { StringPair } from './pair';
+import { StringPair } from '../../data/pair';
 
 export function TwoColList(
   props: {
