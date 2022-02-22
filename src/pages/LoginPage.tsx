@@ -1,6 +1,6 @@
 import { Link, Navigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useAuth } from '../store/useAuth';
+import { useAuth } from '../components/hooks/useAuth';
 import { AuthLayout } from '../components/layout/AuthLayout'
 import { sitemap } from '../data/sitemap';
 import { emailLogin } from '../repository/email-auth';

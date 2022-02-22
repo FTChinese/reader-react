@@ -19,6 +19,7 @@ import { ScrollToTop } from './components/layout/ScrollToTop';
 import { Elements } from '@stripe/react-stripe-js';
 import { stripePromise } from './features/checkout/loadStripe';
 import { StripeSetupCbPage } from './pages/StripeSetupCbPage';
+import { Logout } from './pages/Logout';
 
 function Skeleton() {
   return (
@@ -49,6 +50,7 @@ function App() {
       <Elements stripe={stripePromise}>
         <BrowserRouter basename="/reader">
           <ScrollToTop />
+          <Logout />
           <Routes>
             <Route path="/" element={<Skeleton />} >
               <Route element={<CenterLayout />}>
