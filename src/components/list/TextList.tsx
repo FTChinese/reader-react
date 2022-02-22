@@ -1,4 +1,7 @@
-export function TextLines(
+/**
+ * @description Show a list of plain text.
+ */
+export function TextList(
   props: {
     lines: string[];
     className?: string;
