@@ -14,6 +14,7 @@ import { loadPaymentMethod } from '../repository/stripe';
 export function StripeSetupCbPage() {
 
   const { passport } = useAuth();
+  const { removeSetupIntent } = usePaymentSetting();
 
   const [ searchParams, _ ] = useSearchParams();
   const navigate = useNavigate();
@@ -23,13 +24,6 @@ export function StripeSetupCbPage() {
   const [ err, setErr ] = useState('');
 
   useEffect(() => {
-    stripeSetupSession.save({
-      id: 'seti_1KUTIGBzTK0hABgJJNvxooYO',
-      clientSecret: 'seti_1KUTIGBzTK0hABgJJNvxooYO_secret_LAowIrt347LV0X4ZgcRhZhjBZCcuxJB',
-      customerId: 'cus_KXMeDzH46HnpMB',
-      liveMode: false,
-      paymentMethodId: undefined,
-    });
 
     if (!passport) {
       return;
@@ -46,6 +40,8 @@ export function StripeSetupCbPage() {
     getPaymentMethod(params.setupIntentClientSecret, passport);
 
     return function clear() {
+      stripeSetupSession.clear();
+      removeSetupIntent();
     }
   }, [passport?.id]);
 
