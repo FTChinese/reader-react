@@ -7,7 +7,7 @@ import { hasAddOn, isStripe, Membership } from '../data/membership';
 import { TwoColList } from '../components/list/TwoColList';
 import { ReactivateStripe } from '../features/member/ReactivateStripe';
 import { AddOnOverview } from '../features/member/AddOnOverview';
-import { StripeSettings } from '../features/member/StripeSettings';
+import { StripeSettings } from '../features/checkout/StripeSettings';
 
 export function MembershipPage() {
   const { passport } = useAuth();
