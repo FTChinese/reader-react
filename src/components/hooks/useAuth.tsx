@@ -29,7 +29,6 @@ export function useAuth(): AuthState {
     if (passport) {
       if (isLoginExpired(passport)) {
         authSession.clear();
-        setPassport(undefined);
       }
       return;
     }
