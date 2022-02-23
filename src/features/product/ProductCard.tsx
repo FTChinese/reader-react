@@ -37,28 +37,46 @@ export function ProductCard(
 
   }, [stripePrices.size]);
 
+  function colClass(count: number): string {
+    let className = 'mt-3 row row-cols-1';
+    switch (count) {
+      case 1:
+        return className;
+
+      case 2:
+        return className += ' row-cols-lg-2';
+
+      default:
+        return className += ' row-cols-lg-2 row-cols-xl-3'
+    }
+  }
+
   return (
     <div className="h-100 p-3">
       <h5 className="text-center mb-3 pb-3 border-bottom">
         {props.product.heading}
       </h5>
 
-      <div className="row row-cols-1 row-cols-lg-2 row-cols-xl-3 mt-3">
+      <div className={colClass(ftcItems.length)}>
         {ftcItems.map((item, i) => (
-          <div className="col mb-3" key={i}>
+          <div className="col" key={i}>
             <FtcPriceCard item={item} />
           </div>
         ))}
       </div>
 
-      <div className="row row-cols-1 row-cols-lg-2">
-        {stripeItems &&
-          stripeItems.map((item, i) => (
-            <div className="col mb-3" key={i}>
-              <StripePriceCard item={item} />
-            </div>
-          ))}
-      </div>
+      {
+        stripeItems &&
+        <div className={colClass(stripeItems.length)}>
+          {
+            stripeItems.map((item, i) => (
+              <div className="col mb-3" key={i}>
+                <StripePriceCard item={item} />
+              </div>
+            ))
+          }
+        </div>
+      }
 
       <small className="text-muted">
         * 自动续订通过<a href="https://stripe.com/" target="_blank">Stripe</a>支付，以英镑计价，需使用支持国际货币的信用卡
