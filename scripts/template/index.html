@@ -13,12 +13,13 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/{{bootstrapVersion}}/css/bootstrap.min.css" rel="stylesheet">
     <title>用户中心 - FT中文网</title>
     <style>#root { min-height: 100vh;}</style>
+    <script type="module" src="https://js.stripe.com/v3/"></script>
 </head>
 
 <body>
   <div id="root"></div>
   {% include "footer.html" %}
-  <script src="https://js.stripe.com/v3/"></script>
+
   <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>
