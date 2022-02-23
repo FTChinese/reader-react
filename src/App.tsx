@@ -17,6 +17,7 @@ import { CheckoutPage } from './pages/CheckoutPage';
 import { ScrollToTop } from './components/layout/ScrollToTop';
 import { StripeSetupCbPage } from './pages/StripeSetupCbPage';
 import { SubsPage } from './pages/SubsPage';
+import { RequireAuth } from './components/routes/RequireAuth';
 
 function Skeleton() {
   return (
@@ -57,11 +58,44 @@ function App() {
           </Route>
 
           <Route element={<ContentLayout />}>
-            <Route path={siteRoot.membership} element={<MembershipPage />} />
-            <Route path={siteRoot.subs} element={<SubsPage />} />
-            <Route path={siteRoot.checkout} element={<CheckoutPage />} />
-            <Route path={siteRoot.stripeSetupCb} element={<StripeSetupCbPage />} />
-            <Route index element={<HomePage />} />
+            <Route
+              path={siteRoot.membership}
+              element={
+                <RequireAuth>
+                  <MembershipPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path={siteRoot.subs}
+              element={
+                <RequireAuth>
+                  <SubsPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path={siteRoot.checkout}
+              element={
+                <RequireAuth>
+                  <CheckoutPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path={siteRoot.stripeSetupCb}
+              element={
+                <RequireAuth>
+                  <StripeSetupCbPage />
+                </RequireAuth>
+              }
+            />
+            <Route index element={
+                <RequireAuth>
+                  <HomePage />
+                </RequireAuth>
+              }
+            />
           </Route>
         </Route>
       </Routes>
