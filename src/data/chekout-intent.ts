@@ -1,4 +1,5 @@
 import { Tier } from './enum';
+import { localizeSubsStatus } from './localization';
 import { isBeyondMaxRenewalPeriod, Membership, normalizePayMethod } from './membership';
 import { cycleOfYMD } from './period';
 import { Price, StripePrice } from './price';
@@ -165,6 +166,13 @@ export function newOneTimeOrderIntent(m: Membership, p: Price): CheckoutIntent {
 export function newStripeOrderIntent(m: Membership, p: StripePrice): CheckoutIntent {
   if (m.vip) {
     return intentVip;
+  }
+
+  if (m.status&& m.status !== 'active') {
+    return {
+      kind: IntentKind.Forbidden,
+      message: `暂不支持在${localizeSubsStatus(m.status)}状态下升级`
+    };
   }
 
   if (!m.tier) {
