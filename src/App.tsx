@@ -16,8 +16,6 @@ import { PasswordResetPage } from './pages/PasswordResetPage';
 import { SignUpPage } from './pages/SignUpPage';
 import { CheckoutPage } from './pages/CheckoutPage';
 import { ScrollToTop } from './components/layout/ScrollToTop';
-import { Elements } from '@stripe/react-stripe-js';
-import { stripePromise } from './features/checkout/loadStripe';
 import { StripeSetupCbPage } from './pages/StripeSetupCbPage';
 import { Logout } from './pages/Logout';
 import { SubsPage } from './pages/SubsPage';
@@ -47,34 +45,30 @@ function Skeleton() {
 
 function App() {
   return (
-    <Elements stripe={stripePromise}>
-      <BrowserRouter basename="/reader">
-        <RecoilRoot>
-          <ScrollToTop />
-          <Logout />
-          <Routes>
-            <Route path="/" element={<Skeleton />} >
-              <Route element={<CenterLayout />}>
-                <Route path={siteRoot.login} element={<LoginPage />} />
-                <Route path={siteRoot.signUp} element={<SignUpPage />} />
-                <Route path={siteRoot.forgotPassword} element={<ForgotPasswordPage />} />
-                <Route path={`${siteRoot.passwordReset}/:token`} element={<PasswordResetPage />} />
-                <Route path={`${siteRoot.verification}/:token`} element={<VerificationPage />} />
-                <Route path={siteRoot.authCallback} element={<WxCallbackPage />} />
-              </Route>
+    <>
+      <ScrollToTop />
+      <Logout />
+      <Routes>
+        <Route path="/" element={<Skeleton />} >
+          <Route element={<CenterLayout />}>
+            <Route path={siteRoot.login} element={<LoginPage />} />
+            <Route path={siteRoot.signUp} element={<SignUpPage />} />
+            <Route path={siteRoot.forgotPassword} element={<ForgotPasswordPage />} />
+            <Route path={`${siteRoot.passwordReset}/:token`} element={<PasswordResetPage />} />
+            <Route path={`${siteRoot.verification}/:token`} element={<VerificationPage />} />
+            <Route path={siteRoot.authCallback} element={<WxCallbackPage />} />
+          </Route>
 
-              <Route element={<ContentLayout />}>
-                <Route path={siteRoot.membership} element={<MembershipPage />} />
-                <Route path={siteRoot.subs} element={<SubsPage />} />
-                <Route path={siteRoot.checkout} element={<CheckoutPage />} />
-                <Route path={siteRoot.stripeSetupCb} element={<StripeSetupCbPage />} />
-                <Route index element={<HomePage />} />
-              </Route>
-            </Route>
-          </Routes>
-        </RecoilRoot>
-      </BrowserRouter>
-    </Elements>
+          <Route element={<ContentLayout />}>
+            <Route path={siteRoot.membership} element={<MembershipPage />} />
+            <Route path={siteRoot.subs} element={<SubsPage />} />
+            <Route path={siteRoot.checkout} element={<CheckoutPage />} />
+            <Route path={siteRoot.stripeSetupCb} element={<StripeSetupCbPage />} />
+            <Route index element={<HomePage />} />
+          </Route>
+        </Route>
+      </Routes>
+    </>
   );
 }
 
