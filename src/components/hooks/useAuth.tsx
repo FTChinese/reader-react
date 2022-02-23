@@ -86,7 +86,7 @@ export function useAuth(): AuthState {
         membership: m,
       };
 
-      localStorage.setItems(accountKey, JSON.stringify(newPassport));
+      localStorage.setItem(accountKey, JSON.stringify(newPassport));
       setPassport(newPassport);
     }
   }
