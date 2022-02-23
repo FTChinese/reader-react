@@ -2,7 +2,6 @@ import { FormikHelpers } from 'formik';
 import { useState } from 'react';
 import { BackButton } from '../../components/buttons/BackButton';
 import { FtcPayFormVal, FtcPayForm } from '../../components/forms/FtcPayForm';
-import { Unauthorized } from '../../components/routes/Unauthorized';
 import { WxPayIntent } from '../../data/order';
 import { CartItemFtc, newOrderParams } from '../../data/shopping-cart';
 import { alipayCallback } from '../../data/sitemap';
@@ -10,6 +9,8 @@ import { endpoint } from '../../repository/endpoint';
 import { createAliOrder, createWxOrder } from '../../repository/ftcpay';
 import { ResponseError } from '../../repository/response-error';
 import { useAuth } from '../../components/hooks/useAuth';
+import { ReaderPassport } from '../../data/account';
+import { IntentKind } from '../../data/chekout-intent';
 
 export function AliWxPay(
   props: {
@@ -17,13 +18,59 @@ export function AliWxPay(
   }
 ) {
 
-  const [ err, setErr ] = useState('');
-  const [ wxPi, setWxPi ] = useState<WxPayIntent>();
-
   const { passport } = useAuth();
   if (!passport) {
-    return <Unauthorized/>;
+    return null;
   }
+
+  const [ wxPi, setWxPi ] = useState<WxPayIntent>();
+
+  if (wxPi) {
+    return (
+      <DisplayWxQR
+        url={wxPi.params.desktopQr}
+        onBack={() => setWxPi(undefined)}
+      />
+    );
+  }
+
+  const msg = (
+    <p className="scale-down8 text-center">{props.item.intent.message}</p>
+  );
+
+  switch (props.item.intent.kind) {
+    case IntentKind.Create:
+    case IntentKind.Renew:
+    case IntentKind.Upgrade:
+    case IntentKind.AddOn:
+      return (
+        <>
+          {msg}
+
+          <Purchase
+            passport={passport}
+            item={props.item}
+            onWxPayIntent={setWxPi}
+          />
+        </>
+      );
+
+    case IntentKind.Forbidden:
+    case IntentKind.Downgrade:
+    case IntentKind.OneTimeToAutoRenew:
+    case IntentKind.SwitchInterval:
+      return msg;
+  }
+}
+
+function Purchase(
+  props: {
+    passport: ReaderPassport;
+    item: CartItemFtc;
+    onWxPayIntent: (pi: WxPayIntent) => void
+  }
+) {
+  const [ err, setErr ] = useState('');
 
   const handleSubmit = (
     values: FtcPayFormVal,
@@ -40,7 +87,7 @@ export function AliWxPay(
               ...newOrderParams(props.item),
               returnUrl: alipayCallback(document.location.origin),
             },
-            passport.token
+            props.passport.token
           )
           .then(pi => {
             console.log(pi);
@@ -55,12 +102,12 @@ export function AliWxPay(
         break;
 
       case 'wechat':
-        createWxOrder(newOrderParams(props.item), passport.token)
+        createWxOrder(newOrderParams(props.item), props.passport.token)
           .then(pi => {
             console.log(pi);
             if (pi.params.desktopQr) {
               helper.setSubmitting(false);
-              setWxPi(pi);
+              props.onWxPayIntent(pi);
               return;
             }
 
@@ -76,15 +123,6 @@ export function AliWxPay(
 
         break;
     }
-  }
-
-  if (wxPi) {
-    return (
-      <DisplayWxQR
-        url={wxPi.params.desktopQr}
-        onBack={() => setWxPi(undefined)}
-      />
-    );
   }
 
   return (
