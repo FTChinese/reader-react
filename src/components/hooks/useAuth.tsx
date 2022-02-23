@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { atom, useRecoilState, useSetRecoilState } from 'recoil';
 import { isLoginExpired, ReaderPassport } from '../../data/account';
 import { Membership } from '../../data/membership';
+import { authSession } from '../../store/authSession';
 import { logoutState } from './recoilState';
 
 const accountKey = 'fta-reader';
@@ -28,27 +29,20 @@ export function useAuth(): AuthState {
   function load() {
     if (passport) {
       if (isLoginExpired(passport)) {
+        authSession.clear();
         setLogout(true);
       }
       return;
     }
 
-    const ppStr = localStorage.getItem(accountKey);
+    const pp = authSession.load();
 
-    if (!ppStr) {
+    if (!pp) {
       return;
     }
 
-    try {
-      const pp: ReaderPassport = JSON.parse(ppStr);
-      if (isLoginExpired(pp)) {
-        localStorage.removeItem(accountKey);
-      }
-
-      setPassport(JSON.parse(ppStr));
-      console.log('Passport loaded');
-    } catch (e) {
-      localStorage.removeItem(accountKey);
+    if (isLoginExpired(pp)) {
+      authSession.clear();
     }
   }
 
