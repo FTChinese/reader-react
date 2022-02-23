@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
-import { atom, useRecoilState, useSetRecoilState } from 'recoil';
+import { atom, useRecoilState } from 'recoil';
 import { isLoginExpired, ReaderPassport } from '../../data/account';
 import { Membership } from '../../data/membership';
 import { authSession } from '../../store/authSession';
-import { logoutState } from './recoilState';
 
 const accountKey = 'fta-reader';
 
@@ -14,8 +13,9 @@ const passportState = atom<ReaderPassport | undefined>({
 
 interface AuthState {
   passport?: ReaderPassport;
-  setLoggedIn: (p: ReaderPassport) => void;
-  clearAuth: () => void;
+  login: (pp: ReaderPassport, cb: VoidFunction) => void;
+  logout: (cb: VoidFunction) => void;
+  refreshLogin: (pp: ReaderPassport) => void;
   setDisplayName: (n: string) => void;
   setCustomerId: (id: string) => void;
   setMembership: (m: Membership) => void;
@@ -23,14 +23,13 @@ interface AuthState {
 
 export function useAuth(): AuthState {
 
-  const setLogout = useSetRecoilState(logoutState);
   const [passport, setPassport] = useRecoilState(passportState);
 
   function load() {
     if (passport) {
       if (isLoginExpired(passport)) {
         authSession.clear();
-        setLogout(true);
+        setPassport(undefined);
       }
       return;
     }
@@ -46,9 +45,21 @@ export function useAuth(): AuthState {
     }
   }
 
-  function setLoggedIn(p: ReaderPassport) {
-    localStorage.setItem(accountKey, JSON.stringify(p));
-    setPassport(p);
+  function login(pp: ReaderPassport, callback: VoidFunction) {
+    setPassport(pp);
+    authSession.save(pp);
+    callback();
+  }
+
+  function refreshLogin(pp: ReaderPassport) {
+    setPassport(pp);
+    authSession.save(pp);
+  }
+
+  function logout(callback: VoidFunction) {
+    authSession.clear();
+    setPassport(undefined);
+    callback();
   }
 
   function setDisplayName(n: string) {
@@ -85,11 +96,6 @@ export function useAuth(): AuthState {
     }
   }
 
-  function clearAuth() {
-    localStorage.removeItem(accountKey);
-    setPassport(undefined);
-  }
-
   // Gothas of useEffect dependency:
   // https://www.benmvp.com/blog/object-array-dependencies-react-useEffect-hook/
   useEffect(() => {
@@ -99,8 +105,9 @@ export function useAuth(): AuthState {
 
   return {
     passport,
-    setLoggedIn,
-    clearAuth,
+    login,
+    logout,
+    refreshLogin,
     setDisplayName,
     setCustomerId,
     setMembership,
