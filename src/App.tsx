@@ -1,8 +1,7 @@
 import 'react-toastify/dist/ReactToastify.min.css';
-import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
+import { Outlet, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { Toolbar } from './components/layout/Toolbar';
-import { RecoilRoot } from 'recoil';
 import { CenterLayout } from './components/layout/CenterLayout';
 import { ContentLayout } from './components/layout/ContentLayout';
 import { siteRoot } from './data/sitemap';
@@ -17,7 +16,6 @@ import { SignUpPage } from './pages/SignUpPage';
 import { CheckoutPage } from './pages/CheckoutPage';
 import { ScrollToTop } from './components/layout/ScrollToTop';
 import { StripeSetupCbPage } from './pages/StripeSetupCbPage';
-import { Logout } from './pages/Logout';
 import { SubsPage } from './pages/SubsPage';
 
 function Skeleton() {
@@ -47,7 +45,6 @@ function App() {
   return (
     <>
       <ScrollToTop />
-      <Logout />
       <Routes>
         <Route path="/" element={<Skeleton />} >
           <Route element={<CenterLayout />}>
