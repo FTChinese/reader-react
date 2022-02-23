@@ -53,6 +53,7 @@ export function useShoppingCart() {
   const clearCart = () => {
     localStorage.removeItem(key);
     setCart({});
+    console.log('Shopping cart cleared');
   }
 
   return {
