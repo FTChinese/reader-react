@@ -5,8 +5,10 @@ import { localizeTier } from '../data/localization';
 import { CartItemUIParams, newFtcCartItemUIParams, newStripeCartItemParams } from '../data/shopping-cart';
 import { AliWxPay } from '../features/checkout/AliWxPay';
 import { PriceCardBody } from '../features/product/PriceCard';
-import { StripePay } from '../features/checkout/StripePay';
+import { DisplaySubs, StripePay } from '../features/checkout/StripePay';
 import { useShoppingCart } from '../components/hooks/useShoppingCart';
+import { useEffect, useState } from 'react';
+import { Subs } from '../data/stripe';
 
 function ChekcoutLayout(
   props: {
@@ -36,8 +38,22 @@ function ChekcoutLayout(
 }
 
 export function CheckoutPage() {
-  const { cart } = useShoppingCart();
+  const { cart, clearCart } = useShoppingCart();
+  const [ subs, setSubs ] = useState<Subs>();
 
+  const handleSuccess = (subs: Subs) => {
+    setSubs(subs);
+    clearCart();
+  };
+
+  if (subs) {
+    return (
+      <div className="mt-3">
+        <h5 className="text-center">{localizeTier(subs.tier)}订阅成功</h5>
+        <DisplaySubs subs={subs}/>
+      </div>
+    )
+  }
 
   if (cart.ftc) {
     return (
@@ -58,6 +74,7 @@ export function CheckoutPage() {
       >
         <StripePay
           item={cart.stripe}
+          onSuccess={handleSuccess}
         />
       </ChekcoutLayout>
     );
