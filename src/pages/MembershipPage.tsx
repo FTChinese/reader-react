@@ -3,7 +3,7 @@ import { useAuth } from '../components/hooks/useAuth';
 import { Unauthorized } from '../components/routes/Unauthorized';
 import { SingleCenterCol } from '../components/layout/ContentLayout';
 import { buildMemberStatus } from '../features/member/member-status';
-import { Membership } from '../data/membership';
+import { hasAddOn, isStripe, Membership } from '../data/membership';
 import { TwoColList } from '../components/list/TwoColList';
 import { ReactivateStripe } from '../features/member/ReactivateStripe';
 import { AddOnOverview } from '../features/member/AddOnOverview';
@@ -23,14 +23,18 @@ export function MembershipPage() {
           {...passport.membership}
         />
 
-        <AddOnOverview
-          standard={10}
-          premium={20}
-        />
+        {
+          hasAddOn(passport.membership) &&
+          <AddOnOverview
+            standard={passport.membership.standardAddOn}
+            premium={passport.membership.premiumAddOn}
+          />
+        }
 
-        <StripeSettings
-
-        />
+        {
+          isStripe(passport.membership) &&
+          <StripeSettings/>
+        }
       </>
     </SingleCenterCol>
   );
@@ -56,8 +60,8 @@ function SubsOverview(
       <TwoColList rows={memberStatus.details}/>
 
       {
-        memberStatus.reactivateStripe &&
-        <ReactivateStripe/>
+        // memberStatus.reactivateStripe &&
+        // <ReactivateStripe/>
       }
     </Card>
   );
