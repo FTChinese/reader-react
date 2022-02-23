@@ -1,4 +1,4 @@
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuth } from '../components/hooks/useAuth';
 import { AuthLayout } from '../components/layout/AuthLayout'
@@ -20,6 +20,7 @@ import { ChevronDown, ChevronUp } from '../components/icons';
 import { InitWxOAuth } from '../features/wx/InitWxOAuth';
 import { requestMobileLoginSMS, verifyMobileLoginSMS, mobileSignUp, mobileLinkExistingEmail } from '../repository/mobile-auth';
 import { VerifySMSFormVal } from '../data/mobile';
+import { getAuthRedirect } from '../components/routes/RequireAuth';
 
 function LinkPwResetOrSignUp() {
   return (
@@ -31,7 +32,10 @@ function LinkPwResetOrSignUp() {
 }
 
 function EmailLogin() {
-  const { setLoggedIn } = useAuth();
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [ errMsg, setErrMsg ] = useState('');
 
   const handleSubmit = (
@@ -44,7 +48,10 @@ function EmailLogin() {
     emailLogin(values)
       .then(passport => {
         helper.setSubmitting(false);
-        setLoggedIn(passport);
+        login(passport, () => {
+          console.log('Login success');
+          navigate(getAuthRedirect(location), { replace: true });
+        });
       })
       .catch((err: ResponseError) => {
         helper.setSubmitting(false);
@@ -76,7 +83,10 @@ function AlertMobileNotFound(
     onClose: () => void;
   }
 ) {
-  const { setLoggedIn } = useAuth();
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [submitting, setSubmitting] = useState(false);
   const [ linkEmail, setLinkEmail ] = useState(false);
 
@@ -85,7 +95,10 @@ function AlertMobileNotFound(
     mobileSignUp({ mobile: props.mobile })
       .then(passport => {
         setSubmitting(false);
-        setLoggedIn(passport);
+        login(passport, () => {
+          console.log('Login success');
+          navigate(getAuthRedirect(location), { replace: true });
+        });
       })
       .catch((err: ResponseError) => {
         toast.error(err.message);
@@ -147,7 +160,10 @@ function MobileLinkEmail(
     onSubmitting: (yes: boolean) => void
   }
 ) {
-  const { setLoggedIn } = useAuth();
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [ errMsg, setErrMsg ] = useState('');
 
   const handleSubmit = (
@@ -165,7 +181,10 @@ function MobileLinkEmail(
       .then(passport => {
         helper.setSubmitting(false);
         props.onSubmitting(false);
-        setLoggedIn(passport);
+        login(passport, () => {
+          console.log('Login success');
+          navigate(getAuthRedirect(location), { replace: true });
+        });
       })
       .catch((err: ResponseError) => {
         helper.setSubmitting(false);
@@ -199,7 +218,10 @@ function MobileLinkEmail(
 }
 
 function MobileLogin() {
-  const { setLoggedIn } = useAuth();
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [ errMsg, setErrMsg ] = useState('');
   const [ mobile, setMobile ] = useState('');
 
@@ -236,7 +258,10 @@ function MobileLogin() {
     verifyMobileLoginSMS(values)
       .then(passport => {
         helper.setSubmitting(false);
-        setLoggedIn(passport);
+        login(passport, () => {
+          console.log('Login success');
+          navigate(getAuthRedirect(location), { replace: true });
+        });
       })
       .catch((err: ResponseError) => {
         helper.setSubmitting(false);

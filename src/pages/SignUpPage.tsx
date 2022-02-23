@@ -1,5 +1,5 @@
 import { useState} from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../components/hooks/useAuth';
 import { AuthLayout } from '../components/layout/AuthLayout';
 import { emailVerificationUrl, sitemap } from '../data/sitemap';
@@ -9,10 +9,14 @@ import { SignUpForm } from '../components/forms/SignUpForm';
 import { FormikHelpers } from 'formik';
 import { SignupFormVal } from '../data/authentication';
 import { invalidMessages } from '../data/form-value';
+import { getAuthRedirect } from '../components/routes/RequireAuth';
 
 export function SignUpPage() {
 
-  const { setLoggedIn } = useAuth();
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [ errMsg, setErrMsg ] = useState('');
 
   const handleSubmit = (values: SignupFormVal, helper: FormikHelpers<SignupFormVal>) => {
@@ -26,7 +30,10 @@ export function SignUpPage() {
     })
       .then(passport => {
         helper.setSubmitting(false);
-        setLoggedIn(passport);
+        login(passport, () => {
+          console.log('Login success');
+          navigate(getAuthRedirect(location), { replace: true });
+        });
       })
       .catch((err: ResponseError) => {
         helper.setSubmitting(false);
@@ -59,3 +66,4 @@ export function SignUpPage() {
     </AuthLayout>
   );
 }
+

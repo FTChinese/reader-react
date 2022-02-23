@@ -7,11 +7,13 @@ import { Loading } from '../../components/progress/Loading';
 import { wxLogin } from '../../repository/wx-auth';
 import { ResponseError } from '../../repository/response-error';
 import { useAuth } from '../../components/hooks/useAuth';
-import { GoHome } from '../../components/routes/Unauthorized';
 import { ReaderPassport } from '../../data/account';
 import { OnReaderAccount } from '../../features/wx/OnReaderAccount';
 import { LinkAccounts } from '../../features/wx/LinkAccounts';
 import { wxOAuthCbSession } from '../../store/wxOAuthCbSession';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { getAuthRedirect } from '../../components/routes/RequireAuth';
+import { sitemap } from '../../data/sitemap';
 
 export function WxCallbackPage() {
   const query = useQuery();
@@ -44,7 +46,10 @@ function ProcessCode(
   }
 ) {
 
-  const { setLoggedIn, passport } = useAuth();
+  const { login, passport } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [ errMsg, setErrMsg ] = useState('');
   const [ progress, setProgress ] = useState(true);
   const [ wxPassport, setWxPassport ] = useState<ReaderPassport>();
@@ -73,7 +78,10 @@ function ProcessCode(
 
         switch (props.sess?.kind) {
           case 'login':
-            setLoggedIn(wxPassport);
+            login(wxPassport, () => {
+              console.log('Login success');
+              navigate(getAuthRedirect(location), { replace: true });
+            });
 
           case 'link':
             setWxPassport(wxPassport);
@@ -123,11 +131,17 @@ function HandleLink(
   }
 ) {
 
-  const { setLoggedIn } = useAuth();
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [ linked, setLinked ] = useState(false);
 
   const handleLinked: OnReaderAccount = (pp) => {
-    setLoggedIn(pp);
+    login(pp, () => {
+      console.log('Login success');
+      navigate(getAuthRedirect(location), { replace: true });
+    });
     setLinked(true);
   }
 
@@ -145,3 +159,10 @@ function HandleLink(
   );
 }
 
+export function GoHome() {
+  return <Navigate
+    to={{
+      pathname: sitemap.home
+    }}
+  />;
+}

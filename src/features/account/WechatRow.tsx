@@ -37,13 +37,13 @@ function WechatLinked(
   }
 ) {
 
-  const { setLoggedIn } = useAuth();
+  const { refreshLogin } = useAuth();
 
   const [showUnlink, setShowUnlink] = useState(false);
 
   const handleUnlinked: OnReaderAccount = (passport: ReaderPassport) => {
     setShowUnlink(false);
-    setLoggedIn(passport);
+    refreshLogin(passport);
   };
 
   return (
@@ -70,7 +70,7 @@ function WechatMissing(
     passport: ReaderPassport
   }
 ) {
-  const { setLoggedIn } = useAuth();
+  const { refreshLogin } = useAuth();
   const [ show, setShow ] = useState(false);
 
   const handleClick = () => {
@@ -79,7 +79,7 @@ function WechatMissing(
 
   const handleLinked: OnReaderAccount = (passport: ReaderPassport) => {
     setShow(false);
-    setLoggedIn(passport);
+    refreshLogin(passport);
   }
 
   return (

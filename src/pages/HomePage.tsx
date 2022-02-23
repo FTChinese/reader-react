@@ -38,10 +38,10 @@ export function HomePage() {
   props: ReaderPassport,
 ) {
 
-  const { setLoggedIn } = useAuth();
+  const { refreshLogin } = useAuth();
 
   const handleUpdated: OnAccountUpdated = (a: BaseAccount) => {
-    setLoggedIn({
+    refreshLogin({
       ...props,
       ...a
     });
@@ -81,7 +81,7 @@ export function HomePage() {
 function WechatDetails(
   props: ReaderPassport
 ) {
-  const { setLoggedIn } = useAuth();
+  const { refreshLogin } = useAuth();
   const [showDialog, setShowDialog] = useState(false);
 
   const handleDialog = () => {
@@ -90,7 +90,7 @@ function WechatDetails(
 
   const handleLinked: OnReaderAccount = (passsport: ReaderPassport) => {
     setShowDialog(false);
-    setLoggedIn(passsport);
+    refreshLogin(passsport);
   }
 
   return (

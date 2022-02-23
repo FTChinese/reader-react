@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
-import { stripePricesState } from '../components/hooks/recoilState';
+import { stripePricesState } from '../components/hooks/stripePriceState';
 import { useAuth } from '../components/hooks/useAuth';
 import { ErrorBoudary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
