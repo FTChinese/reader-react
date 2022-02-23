@@ -94,7 +94,10 @@ export function loadPaymentMethod(token: string, id: string): Promise<PaymentMet
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function createSubs(token: string, params: SubsParams): Promise<SubsResult> {
+export function createSubs(
+  token: string,
+  params: SubsParams
+): Promise<SubsResult> {
   return axios.post<SubsResult>(
       endpoint.stripeSubs,
       params,
