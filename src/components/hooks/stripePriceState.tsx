@@ -6,8 +6,4 @@ export const stripePricesState = atom<Map<string, StripePrice>>({
   default: new Map(),
 });
 
-export const logoutState = atom<boolean>({
-  key: 'logoutState',
-  default: false,
-});
 
