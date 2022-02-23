@@ -7,7 +7,7 @@ import { AliWxPay } from '../features/checkout/AliWxPay';
 import { PriceCardBody } from '../features/product/PriceCard';
 import { DisplaySubs, StripePay } from '../features/checkout/StripePay';
 import { useShoppingCart } from '../components/hooks/useShoppingCart';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Subs } from '../data/stripe';
 
 function ChekcoutLayout(
