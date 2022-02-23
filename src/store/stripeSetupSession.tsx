@@ -76,5 +76,6 @@ export const stripeSetupSession = {
 
   clear() {
     localStorage.removeItem(key);
+    console.log('Stripe setup session cleared');
   }
 }
