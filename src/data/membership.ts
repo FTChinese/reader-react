@@ -45,6 +45,10 @@ export function isRenewalSubs(m: Membership): boolean {
   return m.payMethod === 'stripe' || m.payMethod === 'wechat';
 }
 
+export function isStripe(m: Membership): boolean {
+  return m.payMethod === 'stripe';
+}
+
 export function isMemberExpired(m: Membership): boolean {
   if (!m.expireDate) {
     return true;
@@ -69,7 +73,7 @@ export function isBeyondMaxRenewalPeriod(expireDate?: string): boolean {
 /**
  * @description Manipulate addon
  */
-function hasAddOn(m: Membership): boolean {
+export function hasAddOn(m: Membership): boolean {
   return m.standardAddOn > 0 || m.premiumAddOn > 0;
 }
 
