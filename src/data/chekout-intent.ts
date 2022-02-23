@@ -93,7 +93,10 @@ export function newOneTimeOrderIntent(m: Membership, p: Price): CheckoutIntent {
   }
 
   if (!m.tier) {
-    return intentNewMember;
+    return {
+      kind: IntentKind.Create,
+      message: '累加一个订阅周期',
+    };
   }
 
   switch (normalizePayMethod(m)) {
@@ -165,7 +168,10 @@ export function newStripeOrderIntent(m: Membership, p: StripePrice): CheckoutInt
   }
 
   if (!m.tier) {
-    return intentNewMember;
+    return {
+      kind: IntentKind.Create,
+      message: '',
+    };
   }
 
   switch (normalizePayMethod(m)) {
