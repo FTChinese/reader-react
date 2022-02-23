@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import Spinner from 'react-bootstrap/Spinner';
 import { toast } from 'react-toastify';
 import { DescriptionList } from '../../components/list/DescriptionList';
 import { StringPair } from '../../data/pair';
@@ -17,6 +16,10 @@ import { IntentKind } from '../../data/chekout-intent';
 import { usePaymentSetting } from '../../components/hooks/usePaymentSetting';
 import { BankCard } from './BankCard';
 import { PaymentMethodTitle } from './PaymentMethodTitle';
+import { ErrorBoudary } from '../../components/progress/ErrorBoundary';
+import { Loading } from '../../components/progress/Loading';
+import { Link } from 'react-router-dom';
+import { sitemap } from '../../data/sitemap';
 
 /**
  * @description Handles Stripe pay actions.
@@ -27,6 +30,7 @@ import { PaymentMethodTitle } from './PaymentMethodTitle';
 export function StripePay(
   props: {
     item: CartItemStripe;
+    onSuccess: (subs: Subs) => void;
   }
 ) {
 
@@ -45,18 +49,17 @@ export function StripePay(
 
   return (
     <>
-      <p className="text-danger">{props.item.intent.message}</p>
+      <p className="scale-down8 text-center">{props.item.intent.message}</p>
 
-      <div className="mt-3">
-        <DefaultPaymentMethod
-          passport={passport}
-        />
+      <DefaultPaymentMethod
+        passport={passport}
+      />
 
-        <CreateSubscription
-          passport={passport}
-          item={props.item}
-        />
-      </div>
+      <CreateSubscription
+        passport={passport}
+        item={props.item}
+        onSuccess={props.onSuccess}
+      />
     </>
   );
 }
@@ -67,6 +70,7 @@ function DefaultPaymentMethod(
   }
 ) {
   const [ progress, setProgress ] = useState(false);
+  const [ err, setErr ] = useState('');
 
   const { paymentSetting, setCustomer, selectPaymentMethod } = usePaymentSetting
 ();
@@ -130,18 +134,13 @@ function DefaultPaymentMethod(
   }, []);
 
   return (
-    <div>
+    <div className="mt-3 mb-3">
       <PaymentMethodTitle/>
-
-      {
-        progress ?
-        <Spinner
-          animation="border"
-          size="sm"
-        /> :
-        <ShowSelectedPaymentMethod
-       />
-      }
+      <ErrorBoudary errMsg={err}>
+        <Loading loading={progress}>
+          <ShowSelectedPaymentMethod/>
+        </Loading>
+      </ErrorBoudary>
     </div>
   );
 }
@@ -176,18 +175,14 @@ function CreateSubscription(
   props: {
     passport: ReaderPassport;
     item: CartItemStripe;
+    onSuccess: (subs: Subs) => void;
   }
 ) {
 
+  const { setMembership } = useAuth();
   const { paymentSetting } = usePaymentSetting();
   const [ progress, setProgress ] = useState(false);
   const [ subs, setSubs ] = useState<Subs>();
-
-  useEffect(() => {
-    return function cleanup() {
-      setSubs(undefined);
-    }
-  });
 
   if (subs) {
     return (
@@ -214,8 +209,9 @@ function CreateSubscription(
     .then(result => {
       // TODO: save membership.
       console.log(result);
+      setMembership(result.membership);
       setProgress(false);
-      setSubs(result.subs);
+      props.onSuccess(result.subs);
     })
     .catch((err: ResponseError) => {
       console.log(err);
@@ -245,17 +241,26 @@ function CreateSubscription(
 /**
  * @description Show details of subscription after success.
  */
-function DisplaySubs(
+export function DisplaySubs(
   props: {
     subs: Subs,
   }
 ) {
 
   const rows: StringPair[] = [
-    ['当前订阅周期', `${props.subs.currentPeriodStart} - ${props.subs.currentPeriodEnd}`],
+    ['本周期开始时间', `${props.subs.currentPeriodStart}`],
+    ['本周期结束时间', props.subs.currentPeriodEnd],
     ['订阅状态', localizeSubsStatus(props.subs.status)]
   ];
 
-  return <DescriptionList rows={rows}/>
+  return (
+    <>
+      <DescriptionList rows={rows}/>
+      <p className="scale-down8 text-muted">*周期结束时将自动续订</p>
+      <div className="text-center">
+        <Link to={sitemap.membership}>返回</Link>
+      </div>
+    </>
+  )
 }
 
