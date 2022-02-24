@@ -41,3 +41,5 @@ Stripe provides two versions of frontend SDK:
 5. 调用Stripe.js的[retrieveSetupIintent](https://stripe.com/docs/js/setup_intents/retrieve_setup_intent)来获取到更新后的Setup Intent，此时它的`payment_method`字段就有值了。注意获取更新后的Setup Intent也可以通过请求我方服务器转发的方式获取，但是这种方式获取的数据可能尚未更新，因此用在前端调用Stripe SDK更稳妥。
 
 6. 用上述`payment_method`，请求我方服务器获取[PaymentMethods](https://stripe.com/docs/api/payment_methods)的数据，可以把本次使用的支付方式显示给用户。
+
+7. 提交服务器创建订阅时一并提交这个Payment Method的id，这个支付方式就成为本次订阅的扣款来源。
