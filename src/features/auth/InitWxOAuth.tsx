@@ -6,6 +6,10 @@ import { wxOAuthCbSession } from '../../store/wxOAuthCbSession';
 /**
  * @description WxLogin show a wechat login button and build the link to request a wechat OAuth code.
  * It is shown at the bottom of the login page.
+ * The `redirect_uri` is not on this site.
+ * We will be redirected to subscription-api, and
+ * then relayed to this app.
+ * @see https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html
  */
 export function InitWxOAuth() {
 
@@ -21,7 +25,7 @@ export function InitWxOAuth() {
   }, []);
 
   if (!req) {
-    return <></>;
+    return null;
   }
 
   const handleClick = () => {

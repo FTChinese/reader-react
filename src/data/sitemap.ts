@@ -1,13 +1,13 @@
 export const siteRoot = {
   login: 'login',
   signUp: 'signup',
-  authCallback: 'oauth/callback',
   forgotPassword: 'forgot-password',
   passwordReset: 'password-reset',
   verification: 'verification',
   membership: 'membership',
   subs: 'subscription',
   checkout: 'checkout',
+  wxOAuthCb: 'callback/wx-oauth', // This is set in the subscription-api.
   stripeSetupCb: 'callback/stripe-setup'
 };
 

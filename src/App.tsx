@@ -54,7 +54,7 @@ function App() {
             <Route path={siteRoot.forgotPassword} element={<ForgotPasswordPage />} />
             <Route path={`${siteRoot.passwordReset}/:token`} element={<PasswordResetPage />} />
             <Route path={`${siteRoot.verification}/:token`} element={<VerificationPage />} />
-            <Route path={siteRoot.authCallback} element={<WxCallbackPage />} />
+            <Route path={siteRoot.wxOAuthCb} element={<WxCallbackPage />} />
           </Route>
 
           <Route element={<ContentLayout />}>
