@@ -51,6 +51,7 @@ function ProcessCode(
 
   const [ errMsg, setErrMsg ] = useState('');
   const [ progress, setProgress ] = useState(true);
+  // Used for link.
   const [ wxPassport, setWxPassport ] = useState<ReaderPassport>();
 
   const handleAccount: OnReaderAccount = (pp) => {
