@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { ResponseError } from '../../repository/response-error';
-import { verifyEmail } from '../../repository/email-auth';
-import { ErrorBoudary } from '../../components/progress/ErrorBoundary';
-import { Loading } from '../../components/progress/Loading';
+import { ResponseError } from '../repository/response-error';
+import { verifyEmail } from '../repository/email-auth';
+import { ErrorBoudary } from '../components/progress/ErrorBoundary';
+import { Loading } from '../components/progress/Loading';
 
 function VerifyToken(
   props: {

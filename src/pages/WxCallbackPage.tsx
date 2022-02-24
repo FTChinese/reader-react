@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
-import { useQuery } from '../../components/hooks/useQuery';
-import { AuthLayout } from '../../components/layout/AuthLayout';
-import { validateWxOAuthCode, WxOAuthCodeResp, WxOAuthCodeSession } from '../../data/authentication';
-import { ErrorBoudary } from '../../components/progress/ErrorBoundary';
-import { Loading } from '../../components/progress/Loading';
-import { wxLogin } from '../../repository/wx-auth';
-import { ResponseError } from '../../repository/response-error';
-import { useAuth } from '../../components/hooks/useAuth';
-import { ReaderPassport } from '../../data/account';
-import { OnReaderAccount } from '../../features/wx/OnReaderAccount';
-import { LinkAccounts } from '../../features/wx/LinkAccounts';
-import { wxOAuthCbSession } from '../../store/wxOAuthCbSession';
+import { useQuery } from '../components/hooks/useQuery';
+import { AuthLayout } from '../components/layout/AuthLayout';
+import { validateWxOAuthCode, WxOAuthCodeResp, WxOAuthCodeSession } from '../data/authentication';
+import { ErrorBoudary } from '../components/progress/ErrorBoundary';
+import { Loading } from '../components/progress/Loading';
+import { wxLogin } from '../repository/wx-auth';
+import { ResponseError } from '../repository/response-error';
+import { useAuth } from '../components/hooks/useAuth';
+import { ReaderPassport } from '../data/account';
+import { OnReaderAccount } from '../features/wx/OnReaderAccount';
+import { LinkAccounts } from '../features/wx/LinkAccounts';
+import { wxOAuthCbSession } from '../store/wxOAuthCbSession';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { getAuthRedirect } from '../../components/routes/RequireAuth';
-import { sitemap } from '../../data/sitemap';
+import { getAuthRedirect } from '../components/routes/RequireAuth';
+import { sitemap } from '../data/sitemap';
 
 export function WxCallbackPage() {
   const query = useQuery();
