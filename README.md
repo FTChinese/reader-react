@@ -20,7 +20,7 @@ Stripe provides two versions of frontend SDK:
 
 [Build a subscription integration](https://stripe.com/docs/billing/subscriptions/build-subscription)描述了在网页中创建订阅的前后端流程。这个流程先创建订阅，但是处于未支付状态，然后通过返回的[Subscription](https://stripe.com/docs/api/subscriptions/object)中的`latest_invoice.payment_intent`字段获取[PaymentIntents](https://stripe.com/docs/api/payment_intents/object)，使用Payment Intents的`client_secret`才能调用Stripe.js的[PaymentElement](https://stripe.com/docs/js/element/payment_element)显示表单要求用户输入支付信息。在用户输入支付信息之前，这个subscription的状态是`incomplete`，这时我们知道用户的状态是未支付的，可以暂时不提供服务。
 
-但是，当我们通过[Combining trials with add_invoice_items](https://stripe.com/docs/billing/subscriptions/trials#combine-trial-add-invoice-items)在subscription中加入付费试用时，由于Stripe默认的试用时免费的，这种状态下创建的订阅不会生成`client_secret`，也就无法收集支付信息，而此时的订阅处于`trialing`状态，而不是`incomplete`。因此，最好在创建订阅前收集到支付信息，这需要用到[SetupIntents](https://stripe.com/docs/api/setup_intents)。Setup Intents的用途就是仅收集支付信息而不支付。Stripe.js中也提供相关的功能。
+但是，当我们通过[Combining trials with add_invoice_items](https://stripe.com/docs/billing/subscriptions/trials#combine-trial-add-invoice-items)在subscription中加入付费试用时，由于Stripe默认的试用是免费的，这种状态下创建的订阅不会生成`client_secret`，也就无法收集支付信息，而此时的订阅处于`trialing`状态，而不是`incomplete`。因此，最好在创建订阅前收集到支付信息，这需要用到[SetupIntents](https://stripe.com/docs/api/setup_intents)。Setup Intents的用途就是仅收集支付信息而不支付。Stripe.js中也提供相关的功能。
 
 此处的实现采用了的流程如下：
 
