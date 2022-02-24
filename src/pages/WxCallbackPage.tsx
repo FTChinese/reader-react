@@ -11,9 +11,8 @@ import { ReaderPassport } from '../data/account';
 import { OnReaderAccount } from '../features/wx/OnReaderAccount';
 import { LinkAccounts } from '../features/wx/LinkAccounts';
 import { wxOAuthCbSession } from '../store/wxOAuthCbSession';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getAuthRedirect } from '../components/routes/RequireAuth';
-import { sitemap } from '../data/sitemap';
 
 export function WxCallbackPage() {
   const query = useQuery();
@@ -54,7 +53,14 @@ function ProcessCode(
   const [ progress, setProgress ] = useState(true);
   const [ wxPassport, setWxPassport ] = useState<ReaderPassport>();
 
-    // UI goes from:
+  const handleAccount: OnReaderAccount = (pp) => {
+    login(pp, () => {
+      console.log('Login success');
+      navigate(getAuthRedirect(location), { replace: true });
+    });
+  }
+
+  // UI goes from:
   // - Progressing
   // - Session found
   // - Session not found
@@ -78,10 +84,7 @@ function ProcessCode(
 
         switch (props.sess?.kind) {
           case 'login':
-            login(wxPassport, () => {
-              console.log('Login success');
-              navigate(getAuthRedirect(location), { replace: true });
-            });
+            handleAccount(wxPassport);
 
           case 'link':
             setWxPassport(wxPassport);
@@ -100,6 +103,8 @@ function ProcessCode(
     };
   }, [props.resp.code]);
 
+
+
   return (
     <ErrorBoudary
       errMsg={errMsg}
@@ -109,13 +114,12 @@ function ProcessCode(
       >
         <>
           {
-            passport && <GoHome/>
-          }
-          {
             (passport && wxPassport) &&
-            <HandleLink
-              ftcPassport={passport}
-              wxPassport={wxPassport}
+            <LinkAccounts
+              token={wxPassport.token}
+              wxAccount={wxPassport}
+              ftcAccount={passport}
+              onLinked={handleAccount}
             />
           }
         </>
@@ -124,45 +128,3 @@ function ProcessCode(
   );
 }
 
-function HandleLink(
-  props: {
-    ftcPassport: ReaderPassport;
-    wxPassport: ReaderPassport;
-  }
-) {
-
-  const { login } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const [ linked, setLinked ] = useState(false);
-
-  const handleLinked: OnReaderAccount = (pp) => {
-    login(pp, () => {
-      console.log('Login success');
-      navigate(getAuthRedirect(location), { replace: true });
-    });
-    setLinked(true);
-  }
-
-  if (linked) {
-    return <GoHome/>;
-  }
-
-  return (
-    <LinkAccounts
-      token={props.wxPassport.token}
-      wxAccount={props.wxPassport}
-      ftcAccount={props.ftcPassport}
-      onLinked={handleLinked}
-    />
-  );
-}
-
-export function GoHome() {
-  return <Navigate
-    to={{
-      pathname: sitemap.home
-    }}
-  />;
-}
