@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import { ButtonVariant } from 'react-bootstrap/types';
 import { useInterval } from '../hooks/useInterval';
 import styles from './CounterButton.module.css';
 
 export function CounterButton(
   props: {
-    variant: 'primary' | 'secondary' | 'outline-primary' | 'outline-secondary';
+    variant: ButtonVariant;
     from: number;
     onFinish: () => void;
   }
@@ -23,11 +25,13 @@ export function CounterButton(
   }, isRunning ? 1000 : null);
 
   return (
-    <button className={`btn btn-${props.variant} ${styles.counter}`}
+    <Button
+      variant={props.variant}
+      className={styles.counter}
       type="button"
       disabled={true}
     >
       {count}s
-    </button>
+    </Button>
   );
 }

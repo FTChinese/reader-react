@@ -105,11 +105,9 @@ export function MobileLoginForm(
                   <ProgressButton
                     disabled={!(formik.touched.mobile && !formik.errors.mobile) || formik.isSubmitting}
                     text="获取"
-                    isSubmitting={requestingSMS}
+                    progress={requestingSMS}
                     variant="outline-secondary"
-                    styleClass={styles.counter}
-                    asButton={true}
-                    inline={true}
+                    className={styles.counter}
                     onClick={() => {
                       props.onRequestSMS(
                         formik.values.mobile,
@@ -132,7 +130,7 @@ export function MobileLoginForm(
             </div>
             <SubmitButton
               text={props.isLogin ? '登录' : '保存'}
-              inline={!props.isLogin}
+              wrapped={props.isLogin ? 'block' : 'end'}
             />
           </Form>
         )}

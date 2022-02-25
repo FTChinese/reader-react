@@ -63,7 +63,7 @@ export function UpdatePasswordForm(
           />
           <SubmitButton
             text="重置"
-            inline={true}
+            wrapped="end"
           />
         </Form>
       </Formik>

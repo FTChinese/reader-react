@@ -156,9 +156,7 @@ function AlertMobileNotFound(
           <ProgressButton
             text="手机号新建账号"
             disabled={submitting}
-            isSubmitting={submitting}
-            inline={true}
-            asButton={true}
+            progress={submitting}
             onClick={handleSignUp}
           />
           <Button

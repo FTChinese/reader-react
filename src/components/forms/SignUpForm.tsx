@@ -76,6 +76,7 @@ export function SignUpForm(
           />
           <SubmitButton
             text="注册"
+            wrapped="block"
           />
         </Form>
       </Formik>

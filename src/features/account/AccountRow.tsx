@@ -1,3 +1,4 @@
+import { Button } from 'react-bootstrap';
 import { XLarge, Pencil } from '../../components/icons';
 
 export function AccountRow(
@@ -11,18 +12,22 @@ export function AccountRow(
 
   return (
     <div className="border-bottom pb-3 pt-3">
-      <div className="d-flex justify-content-between align-items-center">
+      <div
+        className="d-flex justify-content-between align-items-center"
+      >
         <h5>{props.title}</h5>
 
-        {!props.onEdit ||
-          <button className="btn btn-link"
+        {
+          props.onEdit &&
+          <Button
+            variant="link"
             onClick={props.onEdit}
           >
             { props.isEditing ?
               <XLarge /> :
               <Pencil />
             }
-          </button>
+          </Button>
         }
       </div>
 

@@ -61,7 +61,8 @@ export function PasswordResetForm(
               type="password"
             />
             <SubmitButton
-            text="重置"
+              text="重置"
+              wrapped="block"
             />
           </Form>
         </>

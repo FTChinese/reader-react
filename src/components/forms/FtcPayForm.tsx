@@ -57,6 +57,7 @@ export function FtcPayForm(
           />
           <SubmitButton
             text="支付"
+            wrapped="block"
           />
         </Form>
       </Formik>

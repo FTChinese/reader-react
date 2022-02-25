@@ -74,6 +74,7 @@ export function EmailLoginForm(
           />
           <SubmitButton
             text={props.btnText}
+            wrapped="block"
           />
         </Form>
       </Formik>

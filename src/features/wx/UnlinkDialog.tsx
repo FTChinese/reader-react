@@ -94,9 +94,7 @@ export function UnlinkDialog(
         <ProgressButton
           disabled={submitting || !valid}
           text="解除绑定"
-          isSubmitting={submitting}
-          asButton={true}
-          inline={true}
+          progress={submitting}
           onClick={handleSubmit}
         />
       </Modal.Footer>

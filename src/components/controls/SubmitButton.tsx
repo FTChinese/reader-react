@@ -1,10 +1,13 @@
 import { useFormikContext } from 'formik';
-import { ProgressButton } from '../buttons/ProgressButton';
+import Button from 'react-bootstrap/esm/Button';
+import { ButtonVariant } from 'react-bootstrap/types';
+import { LoadIndicator } from '../progress/LoadIndicator';
 
 export function SubmitButton<T>(
   props: {
     text: string;
-    inline?: boolean;
+    variant?: ButtonVariant;
+    wrapped?: 'block' | 'start' | 'end';
   }
 ) {
 
@@ -13,12 +16,51 @@ export function SubmitButton<T>(
   // FormikProps contains all of them.
   const { dirty, isValid, isSubmitting } = useFormikContext<T>();
 
-  return (
-    <ProgressButton
-      disabled={!(dirty && isValid) || isSubmitting}
-      text={props.text}
-      isSubmitting={isSubmitting}
-      inline={props.inline}
+  const indicator = (
+    <LoadIndicator
+      progress={isSubmitting}
+      small={true}
     />
+  );
+
+  let wrapperClass = '';
+  let atEnd = false;
+
+  switch (props.wrapped) {
+    case 'block':
+      wrapperClass = 'd-grid';
+      break;
+
+    case 'start':
+      wrapperClass = 'text-start';
+      break;
+
+    case 'end':
+      wrapperClass = 'text-end';
+      atEnd = true;
+      break;
+  }
+
+  const btn = (
+    <Button
+      disabled={!(dirty && isValid) || isSubmitting}
+      size="sm"
+      variant={props.variant}
+      type="submit"
+    >
+      { atEnd && indicator }
+      <span>{props.text}</span>
+      { !atEnd && indicator }
+    </Button>
+  );
+
+  if (!wrapperClass) {
+    return btn;
+  }
+
+  return (
+    <div className={wrapperClass}>
+      { btn }
+    </div>
   );
 }

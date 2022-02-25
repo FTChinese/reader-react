@@ -10,7 +10,7 @@ import { EmailForm } from '../../components/forms/EmailForm';
 import { AccountRow } from "./AccountRow";
 import { OnAccountUpdated } from './OnAccountUpdated';
 
-export function DisplayEmail(
+export function SetEmail(
   props: {
     token: string;
     email: string;

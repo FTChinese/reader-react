@@ -21,8 +21,8 @@ export function EmailForm(
     errMsg: string;
     email: string;
     btnText: string;
-    desc?: string;
     btnInline?: boolean;
+    desc?: string;
     hideLabel?: boolean;
   }
 ) {
@@ -65,9 +65,10 @@ export function EmailForm(
             placeholder="yourname@example.org"
             desc={props.desc}
           />
-
           <SubmitButton
             text={props.btnText}
+            variant={props.btnInline ? 'link' : 'primary'}
+            wrapped={props.btnInline ? 'end' : 'block'}
           />
         </Form>
       </Formik>

@@ -1,46 +1,52 @@
+import Button from 'react-bootstrap/Button';
+import { ButtonVariant } from 'react-bootstrap/types';
+import { LoadIndicator } from '../progress/LoadIndicator';
+
 export function ProgressButton(
   props: {
     disabled: boolean;
     text: string;
-    isSubmitting: boolean;
-    variant?: 'primary' | 'secondary' | 'outline-primary' | 'outline-secondary';
-    styleClass?: string;
-    inline?: boolean;
-    asButton?: boolean;
+    progress: boolean;
+    variant?: ButtonVariant;
+    className?: string;
+    block?: boolean;
     onClick?: () => void
   }
 ) {
 
   let styleClass = 'primary';
-  if (props.variant) {
-    styleClass = props.variant;
-  }
 
-  if (props.styleClass) {
-    styleClass += ` ${props.styleClass}`;
+  if (props.className) {
+    styleClass += ` ${props.className}`;
   }
 
   const btn = (
-    <button
-      className={`btn btn-${styleClass}`}
-      type={props.asButton ? 'button' : 'submit'}
+    <Button
       disabled={props.disabled}
-      onClick={props.onClick}>
+      variant={props.variant}
+      className={props.className}
+      onClick={props.onClick}
+      size="sm"
+      type="button"
+    >
+      <LoadIndicator
+        progress={props.progress}
+        small={true}
+      />
       {
-        props.isSubmitting
-        ? <span className="spinner-border spinner-border-sm"></span>
-        : props.text
+        !props.progress &&
+         <span>{props.text}</span>
       }
-    </button>
+    </Button>
   );
 
-  if (props.inline) {
-    return btn;
+  if (props.block) {
+    return (
+      <div className="d-grid">
+        {btn}
+      </div>
+    );
   }
 
-  return (
-    <div className="d-grid">
-      {btn}
-    </div>
-  );
+  return btn;
 }

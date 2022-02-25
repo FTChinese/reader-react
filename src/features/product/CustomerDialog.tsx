@@ -65,8 +65,7 @@ export function CustomerDialog(
         <ProgressButton
           disabled={progress}
           text="是"
-          isSubmitting={progress}
-          inline={true}
+          progress={progress}
           onClick={handleClick} />
       </Modal.Footer>
     </Modal>

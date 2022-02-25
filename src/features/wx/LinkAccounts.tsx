@@ -78,8 +78,7 @@ export function LinkAccounts(
         <ProgressButton
           disabled={submitting}
           text="绑定账号"
-          isSubmitting={submitting}
-          asButton={true}
+          progress={submitting}
           onClick={handleSubmit}
         />
       }

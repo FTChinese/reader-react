@@ -53,9 +53,7 @@ export function EmailLinkWxDialog(
         <ProgressButton
           disabled={submitting}
           text="获取微信授权"
-          isSubmitting={submitting}
-          inline={true}
-          asButton={true}
+          progress={submitting}
           onClick={handleClick}
         />
       </Modal.Footer>

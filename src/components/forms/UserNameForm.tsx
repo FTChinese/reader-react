@@ -52,7 +52,7 @@ export function UserNameForm(
           />
           <SubmitButton
             text="保存"
-            inline={true}
+            wrapped="end"
           />
         </Form>
       </Formik>

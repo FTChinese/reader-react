@@ -20,6 +20,7 @@ import { ErrorBoudary } from '../../components/progress/ErrorBoundary';
 import { Loading } from '../../components/progress/Loading';
 import { BankCard } from './BankCard';
 import { usePaymentSetting } from '../../components/hooks/usePaymentSetting';
+import { LoadIndicator } from '../../components/progress/LoadIndicator';
 
 export function PaymentMethodDialog(
   props: {
@@ -308,14 +309,10 @@ function PaymentMethodForm(
           variant="link"
           type="submit"
         >
-          {
-            progress &&
-            <Spinner
-              as="span"
-              animation="border"
-              size="sm"
-            />
-          }
+          <LoadIndicator
+            progress={progress}
+            small={true}
+          />
           保存
         </Button>
       </div>
