@@ -8,7 +8,7 @@ import { createSubs, loadCusDefaultPayMethod, updateSubs } from '../../repositor
 import { useAuth } from '../../components/hooks/useAuth';
 import { IntentKind } from '../../data/chekout-intent';
 import { usePaymentSetting } from '../../components/hooks/usePaymentSetting';
-import { PaymentMethodTitle } from './PaymentMethodTitle';
+import { PaymentMethodSelector } from './PaymentMethodSelector';
 import { StripeDefaultPaymentMethod } from './StripDefaultPaymentMethod';
 import { ProgressButton } from '../../components/buttons/ProgressButton';
 
@@ -92,7 +92,7 @@ function CustomerPaymentMethod(
 
   return (
     <div className="mt-3 mb-3">
-      <PaymentMethodTitle/>
+      <PaymentMethodSelector/>
       <StripeDefaultPaymentMethod
         passport={props.passport}
         load={load}

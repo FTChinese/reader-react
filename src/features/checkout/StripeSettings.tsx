@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import { useAuth } from '../../components/hooks/useAuth';
 import { ChevronDown, ChevronUp } from '../../components/icons';
 import { loadSubsDefaultPayMethod } from '../../repository/stripe';
-import { PaymentMethodTitle } from './PaymentMethodTitle';
+import { PaymentMethodSelector } from './PaymentMethodSelector';
 import { StripeDefaultPaymentMethod } from './StripDefaultPaymentMethod';
 
 export function StripeSettings() {
@@ -40,7 +40,7 @@ function PaymentMethodSetting() {
 
   return (
     <>
-      <PaymentMethodTitle/>
+      <PaymentMethodSelector/>
 
       <div className="d-flex align-items-center">
         <span className="me-1 scale-down8 text-black50">添加或更改当前订阅的支付方式</span>

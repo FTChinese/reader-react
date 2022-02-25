@@ -7,6 +7,12 @@ import { PaymentMethod } from '../../data/stripe';
 import { ResponseError } from '../../repository/response-error';
 import { BankCard } from './BankCard';
 
+/**
+ * @description Loads and display Stripe's default payment method.
+ * They default payment method might comes from customer.invoice_settings
+ * if user is not subscribed yet, or from subscription.default_payment_method
+ * if user is alreayd subscribed.
+ */
 export function StripeDefaultPaymentMethod(
   props: {
     passport: ReaderPassport;

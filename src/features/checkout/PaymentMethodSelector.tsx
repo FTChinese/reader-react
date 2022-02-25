@@ -4,7 +4,13 @@ import { usePaymentSetting } from '../../components/hooks/usePaymentSetting';
 import { ChevronRight } from '../../components/icons';
 import { PaymentMethodDialog } from './PaymentMethodDialog';
 
-export function PaymentMethodTitle() {
+/**
+ * @description Show a title and button to let user to
+ * launch a dialog to select/add payment methods
+ * This is used both by StripePay component
+ * and StripeSettings component.
+ */
+export function PaymentMethodSelector() {
 
   const [ show, setShow ] = useState(false);
   const { paymentSetting } = usePaymentSetting();
