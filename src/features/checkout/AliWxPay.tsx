@@ -1,8 +1,4 @@
-import { FormikHelpers } from 'formik';
 import { useState } from 'react';
-import { BackButton } from '../../components/buttons/BackButton';
-import { FtcPayFormVal, FtcPayForm } from '../../components/forms/FtcPayForm';
-import { WxPayIntent } from '../../data/order';
 import { CartItemFtc, newOrderParams } from '../../data/shopping-cart';
 import { alipayCallback } from '../../data/sitemap';
 import { endpoint } from '../../repository/endpoint';
@@ -11,6 +7,11 @@ import { ResponseError } from '../../repository/response-error';
 import { useAuth } from '../../components/hooks/useAuth';
 import { ReaderPassport } from '../../data/account';
 import { IntentKind } from '../../data/chekout-intent';
+import { FtcPayProvider } from './FtcPayProvider';
+import { ProgressButton } from '../../components/buttons/ProgressButton';
+import { useFtcPay } from '../../components/hooks/useFtcPay';
+import { toast } from 'react-toastify';
+import Modal from 'react-bootstrap/Modal';
 
 export function AliWxPay(
   props: {
@@ -21,17 +22,6 @@ export function AliWxPay(
   const { passport } = useAuth();
   if (!passport) {
     return null;
-  }
-
-  const [ wxPi, setWxPi ] = useState<WxPayIntent>();
-
-  if (wxPi) {
-    return (
-      <DisplayWxQR
-        url={wxPi.params.desktopQr}
-        onBack={() => setWxPi(undefined)}
-      />
-    );
   }
 
   const msg = (
@@ -47,10 +37,10 @@ export function AliWxPay(
         <>
           {msg}
 
-          <Purchase
+          <ListPayMethods />
+          <PayButton
             passport={passport}
             item={props.item}
-            onWxPayIntent={setWxPi}
           />
         </>
       );
@@ -63,91 +53,142 @@ export function AliWxPay(
   }
 }
 
-function Purchase(
+function ListPayMethods() {
+  return (
+    <div className="mb-3">
+      <h6>选择支付方式</h6>
+      <FtcPayProvider method="alipay" />
+      <FtcPayProvider method="wechat" />
+    </div>
+  );
+}
+
+function PayButton(
   props: {
     passport: ReaderPassport;
     item: CartItemFtc;
-    onWxPayIntent: (pi: WxPayIntent) => void
   }
 ) {
-  const [ err, setErr ] = useState('');
+  const { ftcPaySetting, setAliPayIntent, setWxPayIntent } = useFtcPay();
+  const [ progress, setProgress ] = useState(false);
+  const [ showQr, setShowQr ] = useState(false);
 
-  const handleSubmit = (
-    values: FtcPayFormVal,
-    helper: FormikHelpers<FtcPayFormVal>
-  ): void | Promise<any> => {
-    helper.setSubmitting(true);
+  function handleClick() {
+    if (!ftcPaySetting.selectedMethod) {
+      console.error('No payment method seleted');
+      return;
+    }
 
-    console.log(values);
-
-    switch (values.method) {
+    switch (ftcPaySetting.selectedMethod) {
       case 'alipay':
-        createAliOrder(
-            {
-              ...newOrderParams(props.item),
-              returnUrl: alipayCallback(document.location.origin),
-            },
-            props.passport.token
-          )
-          .then(pi => {
-            console.log(pi);
-
-            window.location.href = pi.params.browserRedirect
-          })
-          .catch((err: ResponseError) => {
-            helper.setSubmitting(false);
-            setErr(err.message);
-          });
-
+        getAliIntent();
         break;
 
       case 'wechat':
-        createWxOrder(newOrderParams(props.item), props.passport.token)
-          .then(pi => {
-            console.log(pi);
-            if (pi.params.desktopQr) {
-              helper.setSubmitting(false);
-              props.onWxPayIntent(pi);
-              return;
-            }
-
-            if (pi.params.mobileRedirect) {
-              window.location.href = pi.params.mobileRedirect;
-              return;
-            }
-          })
-          .catch((err: ResponseError) => {
-            helper.setSubmitting(false);
-            setErr(err.message);
-          });
-
+        getWxIntent();
         break;
     }
   }
 
+  function getAliIntent() {
+    setProgress(true);
+
+    createAliOrder(
+        {
+          ...newOrderParams(props.item),
+          returnUrl: alipayCallback(document.location.origin),
+        },
+        props.passport.token
+      )
+      .then(pi => {
+        setProgress(false);
+        setAliPayIntent(pi);
+
+        // Redirect to alipay website.
+        window.location.href = pi.params.browserRedirect;
+
+        // After payment finished, user will
+        // be redirected back to /callback/alipay.
+      })
+      .catch((err: ResponseError) => {
+        setProgress(false);
+        toast.error(err.message);
+      });
+  }
+
+  function getWxIntent() {
+    setProgress(true);
+
+    createWxOrder(
+        newOrderParams(props.item),
+        props.passport.token
+      )
+      .then(pi => {
+        console.log(pi);
+        if (pi.params.desktopQr) {
+          setProgress(false);
+          setWxPayIntent(pi);
+          return;
+        }
+
+        if (pi.params.mobileRedirect) {
+          window.location.href = pi.params.mobileRedirect;
+          return;
+        }
+      })
+      .catch((err: ResponseError) => {
+        setProgress(false);
+        toast.error(err.message);
+      });
+  }
+
   return (
-    <FtcPayForm
-      onSubmit={handleSubmit}
-      errMsg={err}
-    />
+    <>
+      <ProgressButton
+        disabled={!ftcPaySetting.selectedMethod || progress}
+        text="支付"
+        progress={progress}
+        block={true}
+        onClick={handleClick}
+      />
+      <WxQrDialog
+        show={showQr}
+        onHide={() => setShowQr(false)}
+      />
+    </>
   );
 }
 
-function DisplayWxQR(
+function WxQrDialog(
   props: {
-    url: string;
-    onBack: () => void;
+    show: boolean;
+    onHide: () => void;
   }
 ) {
+
+  const { ftcPaySetting } = useFtcPay();
+  if (!ftcPaySetting.wxPayIntent) {
+    return null;
+  }
+
+  if (!ftcPaySetting.wxPayIntent.params.desktopQr) {
+    return null;
+  }
+
   return (
-    <div>
-      <BackButton
-        onBack={props.onBack}
-      />
-      <div className="text-center">
-        <h5>微信扫码支付</h5>
-        <img src={endpoint.qrSrc(props.url)}/>
-      </div>
-    </div>
-  )
+    <Modal
+      show={props.show}
+      onHide={props.onHide}
+    >
+      <Modal.Header closeButton>
+        微信扫码支付
+      </Modal.Header>
+
+      <Modal.Body>
+        <div className="text-center">
+          <img src={endpoint.qrSrc(ftcPaySetting.wxPayIntent.params.desktopQr)} />
+        </div>
+      </Modal.Body>
+    </Modal>
+  );
 }
