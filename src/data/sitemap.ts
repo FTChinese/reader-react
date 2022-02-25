@@ -8,7 +8,9 @@ export const siteRoot = {
   subs: 'subscription',
   checkout: 'checkout',
   wxOAuthCb: 'callback/wx-oauth', // This is set in the subscription-api.
-  stripeSetupCb: 'callback/stripe-setup'
+  stripeSetupCb: 'callback/stripe-setup',
+  alipayCb: 'callback/alipay',
+  wxpayCb: 'callback/wxpay'
 };
 
 export const sitemap = {
@@ -41,5 +43,5 @@ export function emailVerificationUrl(baseUrl: string): string {
 }
 
 export function alipayCallback(baseUrl: string): string {
-  return `${baseUrl}/reader/${siteRoot.subs}`;
+  return `${baseUrl}/reader/${siteRoot.alipayCb}`;
 }
