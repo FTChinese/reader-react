@@ -1,20 +1,19 @@
 import { useAuth } from '../components/hooks/useAuth';
 import { Unauthorized } from '../components/routes/Unauthorized';
 import { UserNameRow } from '../features/account/UserNameRow';
-import { DisplayEmail } from '../features/account/EmailRow';
+import { SetEmail } from '../features/account/SetEmail';
 import { DisplayPassword } from '../features/account/PasswordRow';
 import { DisplayMobile } from '../features/account/MobileRow';
 import { DisplayWechat } from '../features/account/WechatRow';
-import { BaseAccount, isAccountWxOnly, ReaderPassport } from '../data/account';
+import { isAccountWxOnly, ReaderPassport } from '../data/account';
 import { WxLinkEmailDialog } from '../features/wx/WxLinkEmailDialog';
 import { OnReaderAccount } from "../features/wx/OnReaderAccount";
 import { useState } from 'react';
 import { WxAvatar } from '../features/wx/WxAvatar';
-import { OnAccountUpdated } from '../features/account/OnAccountUpdated';
 
 export function HomePage() {
   const { passport } = useAuth();
-
+  console.log('Show home page');
   if (!passport) {
     return <Unauthorized />;
   }
@@ -34,31 +33,24 @@ export function HomePage() {
 /**
  * @description Show details for account with email or mobile
  */
- function FtcDetails(
+function FtcDetails(
   props: ReaderPassport,
 ) {
 
-  const { refreshLogin } = useAuth();
-
-  const handleUpdated: OnAccountUpdated = (a: BaseAccount) => {
-    refreshLogin({
-      ...props,
-      ...a
-    });
-  };
+  const { setBaseAccount } = useAuth();
 
   return (
     <>
-      <DisplayEmail
+      <SetEmail
         token={props.token}
         email={props.email}
         isVerified={props.isVerified}
-        onUpdated={handleUpdated}
+        onUpdated={setBaseAccount}
       />
       <UserNameRow
         token={props.token}
         userName={props.userName}
-        onUpdated={handleUpdated}
+        onUpdated={setBaseAccount}
       />
       <DisplayPassword
         token={props.token}
@@ -66,7 +58,7 @@ export function HomePage() {
       <DisplayMobile
         token={props.token}
         mobile={props.mobile}
-        onUpdated={handleUpdated}
+        onUpdated={setBaseAccount}
       />
       <DisplayWechat
         passport={props}

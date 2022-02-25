@@ -1,24 +1,49 @@
-import { Location, Navigate, Path, To, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Location, Path, useLocation, useNavigate } from 'react-router-dom';
 import { sitemap } from '../../data/sitemap';
+import { authSession } from '../../store/authSession';
 import { useAuth } from '../hooks/useAuth';
+import { Loading } from '../progress/Loading';
 
 export function RequireAuth(
   props: {
     children: JSX.Element;
   }
 ) {
-  let { passport } = useAuth();
+  let { passport, login } = useAuth();
   let location = useLocation();
+  const navigate = useNavigate();
+  const [ loading, setLoading ] = useState(true);
 
-  if (!passport) {
-    return <Navigate
-      to={sitemap.login}
-      state={{ from: location }}
-      replace
-    />
-  }
+  useEffect(() => {
+    if (passport) {
+      setLoading(false);
+      return;
+    }
 
-  return props.children;
+    console.log('Loading auth from localstorage');
+
+    authSession.load()
+      .then(pp => {
+        if (!pp) {
+          navigate(sitemap.login, {
+            state: { from: location },
+            replace: true,
+          });
+          return;
+        }
+
+        login(pp, () => {
+          setLoading(false);
+        });
+      });
+  }, []);
+
+  return (
+    <Loading loading={loading}>
+      {props.children}
+    </Loading>
+  );
 }
 
 type RedirectFrom = {

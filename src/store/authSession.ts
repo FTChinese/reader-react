@@ -1,4 +1,4 @@
-import { ReaderPassport } from '../data/account';
+import { isLoginExpired, ReaderPassport } from '../data/account';
 
 const key = 'fta-reader';
 
@@ -7,19 +7,25 @@ export const authSession = {
     localStorage.setItem(key, JSON.stringify(pp));
   },
 
-  load(): ReaderPassport | null {
+  load(): Promise<ReaderPassport | null> {
     const ppStr = localStorage.getItem(key);
 
     if (!ppStr) {
-      return null;
+      return Promise.resolve(null);
     }
 
     try {
-      return JSON.parse(ppStr) as ReaderPassport;
+      const pp = JSON.parse(ppStr) as ReaderPassport;
+      if (isLoginExpired(pp)) {
+        localStorage.removeItem(key);
+        return Promise.resolve(null);
+      }
+
+      return Promise.resolve(pp);
     } catch (e) {
       localStorage.removeItem(key);
       console.error(e);
-      return null;
+      return Promise.resolve(null);
     }
   },
 

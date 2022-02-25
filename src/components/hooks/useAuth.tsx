@@ -1,10 +1,7 @@
-import { useEffect } from 'react';
 import { atom, useRecoilState } from 'recoil';
-import { isLoginExpired, ReaderPassport } from '../../data/account';
+import { BaseAccount, isLoginExpired, ReaderPassport } from '../../data/account';
 import { Membership } from '../../data/membership';
 import { authSession } from '../../store/authSession';
-
-const accountKey = 'fta-reader';
 
 const passportState = atom<ReaderPassport | undefined>({
   key: 'authState',
@@ -19,30 +16,12 @@ interface AuthState {
   setDisplayName: (n: string) => void;
   setCustomerId: (id: string) => void;
   setMembership: (m: Membership) => void;
+  setBaseAccount: (a: BaseAccount) => void;
 }
 
 export function useAuth(): AuthState {
 
   const [passport, setPassport] = useRecoilState(passportState);
-
-  function load() {
-    if (passport) {
-      if (isLoginExpired(passport)) {
-        authSession.clear();
-      }
-      return;
-    }
-
-    const pp = authSession.load();
-
-    if (!pp) {
-      return;
-    }
-
-    if (isLoginExpired(pp)) {
-      authSession.clear();
-    }
-  }
 
   function login(pp: ReaderPassport, callback: VoidFunction) {
     setPassport(pp);
@@ -63,44 +42,47 @@ export function useAuth(): AuthState {
 
   function setDisplayName(n: string) {
     if (passport) {
-      const newPassport: ReaderPassport = {
+      refreshLogin({
         ...passport,
         userName: n,
-      };
-      localStorage.setItem(accountKey, JSON.stringify(newPassport));
-      setPassport(newPassport);
+      })
     }
   }
 
   function setCustomerId(id: string) {
     if (passport) {
-      const newPassport: ReaderPassport = {
+      refreshLogin({
         ...passport,
         stripeId: id,
-      };
-      localStorage.setItem(accountKey, JSON.stringify(newPassport));
-      setPassport(newPassport);
+      });
     }
   }
 
   function setMembership(m: Membership) {
     if (passport) {
-      const newPassport: ReaderPassport = {
+      refreshLogin({
         ...passport,
         membership: m,
-      };
+      });
+    }
+  }
 
-      localStorage.setItem(accountKey, JSON.stringify(newPassport));
-      setPassport(newPassport);
+  function setBaseAccount(a: BaseAccount) {
+    if (passport) {
+      refreshLogin({
+        ...passport,
+        ...a,
+      })
     }
   }
 
   // Gothas of useEffect dependency:
   // https://www.benmvp.com/blog/object-array-dependencies-react-useEffect-hook/
-  useEffect(() => {
-    load();
-    // return function cleanup() {};
-  }, [passport?.expiresAt, passport?.token]);
+  // useEffect(() => {
+  //   load();
+  //   console.log('Passport loaded');
+  //   // return function cleanup() {};
+  // }, [passport?.expiresAt, passport?.token]);
 
   return {
     passport,
@@ -110,5 +92,6 @@ export function useAuth(): AuthState {
     setDisplayName,
     setCustomerId,
     setMembership,
+    setBaseAccount,
   };
 }
