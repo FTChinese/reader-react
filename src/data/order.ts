@@ -1,5 +1,7 @@
 import { OrderKind, PaymentKind, Tier } from './enum';
+import { formatMoney } from './localization';
 import { Membership } from './membership';
+import { StringPair } from './pair';
 import { Price } from './price';
 
 export type Order = {
@@ -38,10 +40,30 @@ export type AliPayIntent = PayIntent & {
   };
 };
 
+export type PayResult = {
+  paymentState: 'WAIT_BUYER_PAY' | 'TRADE_CLOSED' | 'TRADE_SUCCESS' | 'TRADE_FINISHED' | 'SUCCESS' | 'REFUND' | 'NOTPAY' | 'CLOSED' | 'REVOKED' | 'USERPAYING' | 'PAYERROR';
+  paymentStateDesc: string;
+  totalFee: number;
+  transactionId: string;
+  ftcOrderId: string;
+  paidAt: string;
+}
+
 export type ConfirmationResult = {
+  payment: PayResult;
   membership: Membership;
   order: Order;
 };
+
+export function ftcPayResultRows(payResult: PayResult): StringPair[] {
+  return [
+    ["订单号", payResult.ftcOrderId],
+    ["支付状态", payResult.paymentStateDesc],
+    ["金额", formatMoney('rmb', payResult.totalFee/100)],
+    ["支付宝交易号", payResult.transactionId],
+    ["支付时间", payResult.paidAt]
+  ];
+}
 
 /**
  * @description The query parameter alipay supplied
@@ -86,3 +108,4 @@ export function validateAliPayResp(o: Order, p: AliPayCbParams): string {
 
   return '';
 }
+
