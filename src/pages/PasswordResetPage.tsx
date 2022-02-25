@@ -10,7 +10,7 @@ import { sitemap } from '../data/sitemap';
 import { ResponseError } from '../repository/response-error';
 import { resetPassword, verifyPwToken } from '../repository/password-reset';
 import { cancelSource } from '../repository/cancel';
-import { ErrorBoudary } from '../components/progress/ErrorBoundary';
+import { ErrorBoundary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
 import { SubmitButton } from '../components/controls/SubmitButton';
 
@@ -130,7 +130,7 @@ function VerifyToken(props: {
   }, []);
 
   return (
-    <ErrorBoudary
+    <ErrorBoundary
       errMsg={errMsg}
     >
       <Loading
@@ -149,7 +149,7 @@ function VerifyToken(props: {
           </div>
         }
       </Loading>
-    </ErrorBoudary>
+    </ErrorBoundary>
   );
 }
 

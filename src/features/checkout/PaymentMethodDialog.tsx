@@ -16,7 +16,7 @@ import { PaymentMethod, SetupIntent } from '../../data/stripe';
 import { stripeSetupCbUrl } from '../../data/sitemap';
 import { stripeSetupSession } from '../../store/stripeSetupSession';
 import { ReaderPassport } from '../../data/account';
-import { ErrorBoudary } from '../../components/progress/ErrorBoundary';
+import { ErrorBoundary } from '../../components/progress/ErrorBoundary';
 import { Loading } from '../../components/progress/Loading';
 import { BankCard } from './BankCard';
 import { useStripePaySetting } from '../../components/hooks/useStripePaySetting';
@@ -92,11 +92,11 @@ function LoadPaymentMethods(
 
   return (
     <div className="mb-3">
-      <ErrorBoudary errMsg={err}>
+      <ErrorBoundary errMsg={err}>
         <Loading loading={progress}>
           <ListPaymentMethods methods={methods} />
         </Loading>
-      </ErrorBoudary>
+      </ErrorBoundary>
     </div>
   );
 }

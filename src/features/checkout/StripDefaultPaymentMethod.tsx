@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useStripePaySetting } from '../../components/hooks/useStripePaySetting';
-import { ErrorBoudary } from '../../components/progress/ErrorBoundary';
+import { ErrorBoundary } from '../../components/progress/ErrorBoundary';
 import { Loading } from '../../components/progress/Loading';
 import { ReaderPassport } from '../../data/account';
 import { PaymentMethod } from '../../data/stripe';
@@ -58,13 +58,13 @@ export function StripeDefaultPaymentMethod(
   }, []);
 
   return (
-    <ErrorBoudary errMsg={err}>
+    <ErrorBoundary errMsg={err}>
       <Loading loading={progress}>
         <DisplayPaymentMethod
           paymentMethod={paymentSetting.selectedMethod}
         />
       </Loading>
-    </ErrorBoudary>
+    </ErrorBoundary>
   );
 }
 

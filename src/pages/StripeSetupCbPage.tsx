@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { SingleCenterCol } from '../components/layout/ContentLayout';
-import { ErrorBoudary } from '../components/progress/ErrorBoundary';
+import { ErrorBoundary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
 import { stripePromise } from '../features/checkout/loadStripe';
 import { useAuth } from '../components/hooks/useAuth';
@@ -83,11 +83,11 @@ export function StripeSetupCbPage() {
 
   return (
     <SingleCenterCol>
-      <ErrorBoudary errMsg={err}>
+      <ErrorBoundary errMsg={err}>
         <Loading loading={progress}>
           <div>Payment method setup successfully. Redirecting...</div>
         </Loading>
-      </ErrorBoudary>
+      </ErrorBoundary>
     </SingleCenterCol>
   );
 }

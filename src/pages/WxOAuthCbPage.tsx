@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '../components/hooks/useQuery';
 import { AuthLayout } from '../components/layout/AuthLayout';
 import { validateWxOAuthCode, WxOAuthCodeResp, WxOAuthCodeSession } from '../data/authentication';
-import { ErrorBoudary } from '../components/progress/ErrorBoundary';
+import { ErrorBoundary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
 import { wxLogin } from '../repository/wx-auth';
 import { ResponseError } from '../repository/response-error';
@@ -107,7 +107,7 @@ function ProcessCode(
 
 
   return (
-    <ErrorBoudary
+    <ErrorBoundary
       errMsg={errMsg}
     >
       <Loading
@@ -125,7 +125,7 @@ function ProcessCode(
           }
         </>
       </Loading>
-    </ErrorBoudary>
+    </ErrorBoundary>
   );
 }
 

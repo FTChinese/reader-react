@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { stripePricesState } from '../components/hooks/stripePriceState';
 import { useAuth } from '../components/hooks/useAuth';
-import { ErrorBoudary } from '../components/progress/ErrorBoundary';
+import { ErrorBoundary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
 import { Unauthorized } from '../components/routes/Unauthorized';
 import { Paywall } from '../data/paywall';
@@ -38,7 +38,7 @@ export function SubsPage() {
   }, []);
 
   return (
-    <ErrorBoudary errMsg={err}>
+    <ErrorBoundary errMsg={err}>
       <Loading loading={progress}>
         <>
           {
@@ -51,6 +51,6 @@ export function SubsPage() {
         </>
 
       </Loading>
-    </ErrorBoudary>
+    </ErrorBoundary>
   );
 }
