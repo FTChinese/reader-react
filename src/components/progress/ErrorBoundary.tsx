@@ -1,4 +1,4 @@
-export function ErrorBoudary(
+export function ErrorBoundary(
   props: {
     errMsg: string;
     children: JSX.Element
