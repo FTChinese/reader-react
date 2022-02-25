@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
 import { toast } from 'react-toastify';
 import { ReaderPassport } from '../../data/account';
 import { CartItemStripe } from '../../data/shopping-cart';
@@ -7,11 +6,11 @@ import { Subs, SubsResult } from '../../data/stripe';
 import { ResponseError } from '../../repository/response-error';
 import { createSubs, loadCusDefaultPayMethod, updateSubs } from '../../repository/stripe';
 import { useAuth } from '../../components/hooks/useAuth';
-import { InlineSpinner } from '../../components/progress/InlineSpinner';
 import { IntentKind } from '../../data/chekout-intent';
 import { usePaymentSetting } from '../../components/hooks/usePaymentSetting';
 import { PaymentMethodTitle } from './PaymentMethodTitle';
 import { StripeDefaultPaymentMethod } from './StripDefaultPaymentMethod';
+import { ProgressButton } from '../../components/buttons/ProgressButton';
 
 /**
  * @description Handles Stripe pay actions.
@@ -168,19 +167,12 @@ function SubscribeButton(
   };
 
   return (
-    <div className="mt-3 d-grid">
-      <Button
-        disabled={!paymentSetting.selectedMethod || progress}
-        variant='primary'
-        type="button"
-        onClick={handleClick}
-      >
-        <InlineSpinner
-          progress={progress}
-        >
-          <span>{props.isNew ? '订阅' : '升级'}</span>
-        </InlineSpinner>
-      </Button>
-    </div>
+    <ProgressButton
+      disabled={!paymentSetting.selectedMethod || progress}
+      text={props.isNew ? '订阅' : '升级'}
+      progress={progress}
+      block={true}
+      onClick={handleClick}
+    />
   );
 }
