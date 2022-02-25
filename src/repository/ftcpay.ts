@@ -32,6 +32,14 @@ export function createAliOrder(
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-// export function verifyAliWxPay(): Promise<ConfirmationResult> {
-
-// }
+export function verifyAliWxPay(token: string, id: string): Promise<ConfirmationResult> {
+  return axios.post<ConfirmationResult>(
+      endpoint.verifyOrderOf(id),
+      undefined,
+      {
+        headers: bearerAuthHeader(token)
+      }
+    )
+    .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}

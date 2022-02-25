@@ -49,6 +49,9 @@ export const endpoint = {
   wxUnlink: `${accountBase}/wx/unlink`,
   aliOrder: `${ftcpayBase}/ali/desktop`,
   wxOrder: `${ftcpayBase}/wx/desktop`,
+  verifyOrderOf: function(id: string): string {
+    return `${ftcpayBase}/orders/${id}/verify`;
+  },
   paywall: paywallBasePath,
 
   stripePubKey: `${paywallBasePath}/stripe/publishable-key`,
