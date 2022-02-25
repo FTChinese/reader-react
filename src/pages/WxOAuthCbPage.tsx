@@ -14,7 +14,7 @@ import { wxOAuthCbSession } from '../store/wxOAuthCbSession';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getAuthRedirect } from '../components/routes/RequireAuth';
 
-export function WxCallbackPage() {
+export function WxOAuthCbPage() {
   const query = useQuery();
 
   // Get reponse data from query parameter.

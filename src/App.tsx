@@ -10,7 +10,7 @@ import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
 import { MembershipPage } from './pages/MembershipPage';
-import { WxCallbackPage } from './pages/WxCallbackPage';
+import { WxOAuthCbPage } from './pages/WxOAuthCbPage';
 import { PasswordResetPage } from './pages/PasswordResetPage';
 import { SignUpPage } from './pages/SignUpPage';
 import { CheckoutPage } from './pages/CheckoutPage';
@@ -54,7 +54,7 @@ function App() {
             <Route path={siteRoot.forgotPassword} element={<ForgotPasswordPage />} />
             <Route path={`${siteRoot.passwordReset}/:token`} element={<PasswordResetPage />} />
             <Route path={`${siteRoot.verification}/:token`} element={<VerificationPage />} />
-            <Route path={siteRoot.wxOAuthCb} element={<WxCallbackPage />} />
+            <Route path={siteRoot.wxOAuthCb} element={<WxOAuthCbPage />} />
           </Route>
 
           <Route element={<ContentLayout />}>
