@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { bearerAuthHeader } from '../data/account';
-import { AliPayIntent, WxPayIntent } from '../data/order';
+import { AliPayIntent, ConfirmationResult, WxPayIntent } from '../data/order';
 import { OrderParams } from '../data/shopping-cart';
 import { endpoint } from './endpoint';
 import { ResponseError } from './response-error';
@@ -31,3 +31,7 @@ export function createAliOrder(
     .then(resp => resp.data)
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
+
+// export function verifyAliWxPay(): Promise<ConfirmationResult> {
+
+// }
