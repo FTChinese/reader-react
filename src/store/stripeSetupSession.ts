@@ -2,7 +2,7 @@ import { ReaderPassport } from '../data/account';
 import { SetupIntent } from '../data/stripe';
 import { unixNow } from '../utils/now';
 
-const key = 'stripe_setup_session';
+const key = 'stripe_setup_sessi';
 
 type SetupSession = {
   id: string;
