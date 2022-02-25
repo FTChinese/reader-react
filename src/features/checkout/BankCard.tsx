@@ -1,6 +1,6 @@
 import { CheckLarge } from '../../components/icons';
 import { PaymentMethod } from '../../data/stripe';
-import { usePaymentSetting } from '../../components/hooks/usePaymentSetting';
+import { useStripePaySetting } from '../../components/hooks/useStripePaySetting';
 
 export function BankCard(
   props: {
@@ -9,7 +9,7 @@ export function BankCard(
   }
 ) {
 
-  const { paymentSetting, selectPaymentMethod } = usePaymentSetting();
+  const { paymentSetting, selectPaymentMethod } = useStripePaySetting();
 
   const card = props.paymentMethod.card;
 

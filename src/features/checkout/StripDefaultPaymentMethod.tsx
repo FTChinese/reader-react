@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { usePaymentSetting } from '../../components/hooks/usePaymentSetting';
+import { useStripePaySetting } from '../../components/hooks/useStripePaySetting';
 import { ErrorBoudary } from '../../components/progress/ErrorBoundary';
 import { Loading } from '../../components/progress/Loading';
 import { ReaderPassport } from '../../data/account';
@@ -22,7 +22,7 @@ export function StripeDefaultPaymentMethod(
   const [ err, setErr ] = useState('');
   const [ progress, setProgress ] = useState(false);
 
-  const { paymentSetting, selectPaymentMethod } = usePaymentSetting();
+  const { paymentSetting, selectPaymentMethod } = useStripePaySetting();
 
   // If there's already a default payment method, stop;
   // otherwise load either customer's invoice default payment method,

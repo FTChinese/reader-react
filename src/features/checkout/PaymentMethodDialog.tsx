@@ -19,7 +19,7 @@ import { ReaderPassport } from '../../data/account';
 import { ErrorBoudary } from '../../components/progress/ErrorBoundary';
 import { Loading } from '../../components/progress/Loading';
 import { BankCard } from './BankCard';
-import { usePaymentSetting } from '../../components/hooks/usePaymentSetting';
+import { useStripePaySetting } from '../../components/hooks/useStripePaySetting';
 import { LoadIndicator } from '../../components/progress/LoadIndicator';
 
 export function PaymentMethodDialog(
@@ -135,7 +135,7 @@ function AddPaymentMethod(
 ) {
 
   const [ progress, setProgress ] = useState(false);
-  const { paymentSetting, setSetupIntent } = usePaymentSetting();
+  const { paymentSetting, setSetupIntent } = useStripePaySetting();
 
   // Handle clicking add payment method button.
   // To add a new payment method for future use,

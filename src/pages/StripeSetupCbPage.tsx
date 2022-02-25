@@ -8,17 +8,17 @@ import { useAuth } from '../components/hooks/useAuth';
 import { newSetupCbParams, stripeSetupSession } from '../store/stripeSetupSession';
 import { sitemap } from '../data/sitemap';
 import { ReaderPassport } from '../data/account';
-import { usePaymentSetting } from '../components/hooks/usePaymentSetting';
+import { useStripePaySetting } from '../components/hooks/useStripePaySetting';
 import { loadPaymentMethod } from '../repository/stripe';
 
 export function StripeSetupCbPage() {
 
   const { passport } = useAuth();
-  const { removeSetupIntent } = usePaymentSetting();
+  const { removeSetupIntent } = useStripePaySetting();
 
   const [ searchParams, _ ] = useSearchParams();
   const navigate = useNavigate();
-  const { selectPaymentMethod } = usePaymentSetting();
+  const { selectPaymentMethod } = useStripePaySetting();
 
   const [ progress, setProgress ] = useState(true);
   const [ err, setErr ] = useState('');

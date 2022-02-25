@@ -7,7 +7,7 @@ import { ResponseError } from '../../repository/response-error';
 import { createSubs, loadCusDefaultPayMethod, updateSubs } from '../../repository/stripe';
 import { useAuth } from '../../components/hooks/useAuth';
 import { IntentKind } from '../../data/chekout-intent';
-import { usePaymentSetting } from '../../components/hooks/usePaymentSetting';
+import { useStripePaySetting } from '../../components/hooks/useStripePaySetting';
 import { PaymentMethodSelector } from './PaymentMethodSelector';
 import { StripeDefaultPaymentMethod } from './StripDefaultPaymentMethod';
 import { ProgressButton } from '../../components/buttons/ProgressButton';
@@ -114,7 +114,7 @@ function SubscribeButton(
 ) {
 
   const { setMembership } = useAuth();
-  const { paymentSetting } = usePaymentSetting();
+  const { paymentSetting } = useStripePaySetting();
   const [ progress, setProgress ] = useState(false);
 
   const handleClick = () => {

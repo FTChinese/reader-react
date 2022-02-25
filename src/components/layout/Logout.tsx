@@ -2,7 +2,7 @@ import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 import { sitemap } from '../../data/sitemap';
 import { useAuth } from '../hooks/useAuth';
-import { usePaymentSetting } from '../hooks/usePaymentSetting';
+import { useStripePaySetting } from '../hooks/useStripePaySetting';
 import { useShoppingCart } from '../hooks/useShoppingCart';
 
 export function Logout() {
@@ -10,7 +10,7 @@ export function Logout() {
   const navigate = useNavigate();
   const { logout, passport } = useAuth();
   const { clearCart } = useShoppingCart();
-  const { clearPaymentSetting } = usePaymentSetting();
+  const { clearPaymentSetting } = useStripePaySetting();
 
   const handleLogout = () => {
     logout(() => {

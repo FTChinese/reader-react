@@ -26,7 +26,7 @@ const paymentSettingState = atom<StripePaymentSetting>({
   },
 });
 
-export function usePaymentSetting() {
+export function useStripePaySetting() {
   const [ paymentSetting, setPaymentSetting ] = useRecoilState(paymentSettingState);
 
   function setCustomer(c: Customer) {

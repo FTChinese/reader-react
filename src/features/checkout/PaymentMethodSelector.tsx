@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import { usePaymentSetting } from '../../components/hooks/usePaymentSetting';
+import { useStripePaySetting } from '../../components/hooks/useStripePaySetting';
 import { ChevronRight } from '../../components/icons';
 import { PaymentMethodDialog } from './PaymentMethodDialog';
 
@@ -13,7 +13,7 @@ import { PaymentMethodDialog } from './PaymentMethodDialog';
 export function PaymentMethodSelector() {
 
   const [ show, setShow ] = useState(false);
-  const { paymentSetting } = usePaymentSetting();
+  const { paymentSetting } = useStripePaySetting();
 
   // When a method is selected to pay, close dialog.
   useEffect(() => {
