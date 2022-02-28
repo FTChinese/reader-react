@@ -1,28 +1,17 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from '../components/hooks/useAuth';
 import { useQuery } from '../components/hooks/useQuery';
 import { SingleCenterCol } from '../components/layout/ContentLayout';
-import { HeadTailTable } from '../components/list/HeadTailTable';
-import { ErrorBoundary } from '../components/progress/ErrorBoundary';
-import { Loading } from '../components/progress/Loading';
-import { Unauthorized } from '../components/routes/Unauthorized';
-import { ftcPayResultRows, newAliPayCbParams, PayResult, validateAliPayResp } from '../data/order';
-import { verifyAliWxPay } from '../repository/ftcpay';
-import { ResponseError } from '../repository/response-error';
+import { newAliPayCbParams, validateAliPayResp } from '../data/order';
+import { VerifyFtcPay } from '../features/checkout/VerifyFtcPay';
 import { aliwxPaySession } from '../store/aliwxPaySession';
 
 export function AliPayCbPage() {
 
-  const { passport, setMembership } = useAuth();
   const query = useQuery();
 
   const [ progress, setProgress ] = useState(true);
   const [ err, setErr ] = useState('');
-  const [ payResult, setPayResult ] = useState<PayResult>();
-
-  if (!passport) {
-    return <Unauthorized/>;
-  }
+  const [ orderId, setOrderId ] = useState('');
 
   useEffect(() => {
     const o = aliwxPaySession.load();
@@ -42,32 +31,17 @@ export function AliPayCbPage() {
       return;
     }
 
-    verifyAliWxPay(passport.token, o.id)
-      .then(result => {
-        setMembership(result.membership);
-        setProgress(false);
-      })
-      .catch((err: ResponseError) => {
-        setErr(err.toString());
-        setProgress(false);
-      })
+    setOrderId(o.id);
   }, []);
 
   return (
     <SingleCenterCol>
-      <ErrorBoundary errMsg={err}>
-        <Loading loading={progress}>
-          <>
-            {
-              payResult &&
-              <HeadTailTable
-                caption="支付宝支付结果"
-                rows={ftcPayResultRows(payResult)}
-              />
-            }
-          </>
-        </Loading>
-      </ErrorBoundary>
+      <VerifyFtcPay
+        progress={progress}
+        errMsg={err}
+        orderId={orderId}
+        title="支付宝支付结果"
+      />
     </SingleCenterCol>
   );
 }
