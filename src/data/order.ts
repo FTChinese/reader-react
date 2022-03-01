@@ -19,7 +19,7 @@ export type Order = {
   confirmedAt?: string;
   startDate?: string;
   endDate?: string;
-}
+};
 
 export type PayIntent = {
   price: Price;
