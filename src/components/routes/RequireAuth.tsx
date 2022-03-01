@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Location, Path, useLocation, useNavigate } from 'react-router-dom';
 import { sitemap } from '../../data/sitemap';
-import { authSession } from '../../store/authSession';
 import { useAuth } from '../hooks/useAuth';
 import { Loading } from '../progress/Loading';
 
@@ -10,37 +9,33 @@ export function RequireAuth(
     children: JSX.Element;
   }
 ) {
-  let { passport, login } = useAuth();
+  let { passport, loadingAuth } = useAuth();
   let location = useLocation();
   const navigate = useNavigate();
-  const [ loading, setLoading ] = useState(true);
 
+  // When refreshing page manually, passport will
+  // be loaded from localstorage. This is ususally
+  // slower than building the global state.
+  // We might wait for the loading.
   useEffect(() => {
     if (passport) {
-      setLoading(false);
+      console.log('Passport already exists');
       return;
     }
 
-    console.log('Loading auth from localstorage');
+    if (loadingAuth) {
+      return;
+    }
 
-    authSession.load()
-      .then(pp => {
-        if (!pp) {
-          navigate(sitemap.login, {
-            state: { from: location },
-            replace: true,
-          });
-          return;
-        }
-
-        login(pp, () => {
-          setLoading(false);
-        });
-      });
-  }, []);
+    // If neither passport exists, nor in loading.
+    navigate(sitemap.login, {
+      state: { from: location },
+      replace: true,
+    });
+  }, [loadingAuth]);
 
   return (
-    <Loading loading={loading}>
+    <Loading loading={loadingAuth}>
       {props.children}
     </Loading>
   );

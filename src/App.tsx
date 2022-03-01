@@ -18,6 +18,8 @@ import { ScrollToTop } from './components/layout/ScrollToTop';
 import { StripeSetupCbPage } from './pages/StripeSetupCbPage';
 import { SubsPage } from './pages/SubsPage';
 import { RequireAuth } from './components/routes/RequireAuth';
+import { AliPayCbPage } from './pages/AliPayCbPage';
+import { RequireShoppingCart } from './components/routes/RequireShoopingCart';
 
 function Skeleton() {
   return (
@@ -78,7 +80,17 @@ function App() {
               path={siteRoot.checkout}
               element={
                 <RequireAuth>
-                  <CheckoutPage />
+                  <RequireShoppingCart>
+                    <CheckoutPage />
+                  </RequireShoppingCart>
+                </RequireAuth>
+              }
+            />
+            <Route
+              path={siteRoot.alipayCb}
+              element={
+                <RequireAuth>
+                  <AliPayCbPage />
                 </RequireAuth>
               }
             />
