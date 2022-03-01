@@ -1,20 +1,89 @@
 import {
   Price,
   Discount,
-  applicableOffer,
-  applicableOfferKinds,
   ftcRegularPriceParts,
   ftcRegularCharge,
   StripePrice,
   stripeRecurringCharge,
   stripeRecurringPriceParts,
-  isIntro
+  isIntro,
 } from './price';
 import { formatMoneyParts, localizeCycle, PriceParts } from './localization';
-import { Membership, isMembershipZero } from './membership';
-import { PaywallProduct } from './paywall';
+import { Membership, applicableOfferKinds } from './membership';
+import { applicableOffer, PaywallPrice, PaywallProduct } from './paywall';
 import { cycleOfYMD, formatPeriods, isValidPeriod, isZeroYMD } from './period';
 import { CheckoutIntent, IntentKind, newOneTimeOrderIntent, newStripeOrderIntent } from './chekout-intent';
+
+type StripePriceIDs = {
+  recurrings: string[];
+  trial?: string;
+}
+
+type StripePriceGroup = {
+  recurring: StripePrice;
+  trial?: StripePrice;
+}
+
+type ProductPrices = {
+  ftcPrices: PaywallPrice[];
+  stripeIds: StripePriceIDs;
+}
+/**
+ * @description Collect all prices applicable to
+ * current user.
+ */
+ export function collectPaywallPrices(pp: PaywallProduct, isNewMember: boolean): ProductPrices {
+
+  const stripeRecurIds = pp.prices.map(p => p.stripePriceId);
+
+  if (!pp.introductory || !isValidPeriod(pp.introductory) || !isNewMember) {
+    return {
+      ftcPrices: pp.prices,
+      stripeIds: {
+        recurrings: stripeRecurIds,
+      },
+    };
+  }
+
+  const intro: PaywallPrice = {
+    ...pp.introductory,
+    offers: [],
+  };
+
+  return {
+    ftcPrices: [intro, ...pp.prices], // Put introductory price ahead of daily price.
+    stripeIds: {
+      recurrings: stripeRecurIds,
+      trial: pp.introductory.stripePriceId,
+    }
+  }
+}
+
+export function collectStripePrices(ids: StripePriceIDs, prices: Map<string, StripePrice>): StripePriceGroup[] {
+  if (prices.size == 0) {
+    return [];
+  }
+
+  const trial = ids.trial
+    ? prices.get(ids.trial)
+    : undefined
+
+  const items: StripePriceGroup[] = [];
+
+  for (const id of ids.recurrings) {
+    const p = prices.get(id);
+    if (p) {
+      items.push({
+        recurring: p,
+        trial,
+      });
+    } else {
+      console.error('Stripe price %s missing', id)
+    }
+  }
+
+  return items;
+}
 
 /**
  * @description FtcCartItem represents the item
@@ -27,55 +96,31 @@ export type CartItemFtc = {
   isIntro: boolean;
 };
 
-/**
- * @description Create a new instance of FtcShelfItem
- * for introductory price only.
- */
- function getFtcIntroItem(pp: PaywallProduct, m: Membership): CartItemFtc | undefined {
-  if (!pp.introductory) {
-    return undefined;
-  }
-
-  if (!isValidPeriod(pp.introductory)) {
-    return undefined;
-  }
-
-  if (!isMembershipZero(m)) {
-    return undefined;
+export function newCartItemFtc(p: PaywallPrice, m: Membership): CartItemFtc {
+  if (isIntro(p)) {
+    return {
+      intent: {
+        kind: IntentKind.Create,
+        message: ''
+      },
+      price: p,
+      discount: undefined,
+      isIntro: true,
+    };
   }
 
   return {
-    intent: {
-      kind: IntentKind.Create,
-      message: ''
-    },
-    price: pp.introductory,
-    discount: undefined,
-    isIntro: true,
+    intent: newOneTimeOrderIntent(
+      m,
+      p,
+    ),
+    price: p,
+    discount: applicableOffer(
+      p,
+      applicableOfferKinds(m),
+    ),
+    isIntro: false,
   };
-}
-
-export function buildFtcCartItems(product: PaywallProduct, m: Membership): CartItemFtc[] {
-  const intro = getFtcIntroItem(product, m);
-
-  const recurrings = product.prices.map<CartItemFtc>(price => {
-    return {
-      intent: newOneTimeOrderIntent(
-        m,
-        price,
-      ),
-      price: price,
-      discount: applicableOffer(
-        price,
-        applicableOfferKinds(m),
-      ),
-      isIntro: false,
-    }
-  });
-
-  return intro
-    ? [intro].concat(recurrings)
-    : recurrings;
 }
 
 export type OrderParams = {
@@ -90,18 +135,6 @@ export function newOrderParams(item: CartItemFtc): OrderParams {
   };
 }
 
-type StripePriceIDs = {
-  recurrings: string[];
-  trial?: string;
-}
-
-function gatherStripePriceIDs(pp: PaywallProduct): StripePriceIDs {
-
-  return {
-    recurrings: pp.prices.map(p => p.stripePriceId),
-    trial: pp.introductory ? pp.introductory.stripePriceId : undefined,
-  };
-}
 
 export type CartItemStripe = {
   intent: CheckoutIntent;
@@ -109,37 +142,11 @@ export type CartItemStripe = {
   trial?: StripePrice;
 }
 
-export function buildStripeCartItems({
-  product,
-  m,
-  prices,
-}:{
-  product: PaywallProduct;
-  m: Membership;
-  prices: Map<string, StripePrice>;
-}): CartItemStripe[] {
-  const ids = gatherStripePriceIDs(product);
-
-  const trial = ids.trial
-    ? prices.get(ids.trial)
-    : undefined;
-
-  const items: CartItemStripe[] = [];
-
-  for (const id of ids.recurrings) {
-    const p = prices.get(id);
-    if (p) {
-      items.push({
-        intent: newStripeOrderIntent(m, p),
-        recurring: p,
-        trial,
-      });
-    } else {
-      console.error('Stripe price %s missing', id)
-    }
-  }
-
-  return items;
+export function newCarItemStripe(pg: StripePriceGroup, m: Membership): CartItemStripe {
+  return {
+    intent: newStripeOrderIntent(m, pg.recurring),
+    ...pg,
+  };
 }
 
 export type SubsParams = {
@@ -147,14 +154,6 @@ export type SubsParams = {
   introductoryPriceId?: string;
   defaultPaymentMethod?: string;
 };
-
-function newSubsParams(item: CartItemStripe, paymentMethodId?: string): SubsParams {
-  return {
-    priceId: item.recurring.id,
-    introductoryPriceId: item.trial?.id,
-    defaultPaymentMethod: paymentMethodId,
-  }
-}
 
 export type ShoppingCart = {
   ftc?: CartItemFtc;
@@ -207,7 +206,7 @@ export function newFtcCartItemUIParams(item: CartItemFtc): CartItemUIParams {
 }
 
 export function newStripeCartItemParams(item: CartItemStripe): CartItemUIParams {
-  const header = `连续包${localizeCycle(cycleOfYMD(item.recurring.periodCount))}*`;
+  const header = `连续包${localizeCycle(cycleOfYMD(item.recurring.periodCount))}`;
 
   if (item.trial) {
     return {

@@ -1,7 +1,6 @@
 import { Tier, Cycle, PriceKind, DiscountStatus, OfferKind } from './enum';
 import { formatMoney, formatMoneyParts, PriceParts } from './localization';
-import { Membership, isMembershipZero, isMemberExpired } from './membership';
-import { YearMonthDay, OptionalPeriod, isValidPeriod, formatPeriods } from './period';
+import { YearMonthDay, OptionalPeriod, formatPeriods } from './period';
 
 /**
  * @description Price determines how much a product cost.
@@ -53,52 +52,6 @@ export type Discount = {
   status: DiscountStatus;
 } & OptionalPeriod;
 
-/**
- * @description PaywallPrice contains a price and a list of
- * opitonal discounts.
- */
- export type PaywallPrice = Price & {
-  offers: Discount[];
-};
-
-export function applicableOffer(pp: PaywallPrice, filters: OfferKind[]): Discount | undefined {
-  if (pp.offers.length === 0) {
-    return undefined;
-  }
-
-  const filtered = pp.offers.filter(offer => {
-      return isValidPeriod(offer) && filters.includes(offer.kind);
-    })
-    .sort((a, b) => {
-      return b.priceOff - a.priceOff;
-    });
-
-  if (filtered.length == 0) {
-    return undefined;
-  }
-
-  return filtered[0];
-}
-
-export function applicableOfferKinds(m: Membership): OfferKind[] {
-  if (isMembershipZero(m)) {
-    return [
-      'promotion'
-    ];
-  }
-
-  if (isMemberExpired(m)) {
-    return [
-      'promotion',
-      'win_back'
-    ];
-  }
-
-  return [
-    'promotion',
-    'retention'
-  ];
-}
 
 export type StripePrice = {
   id: string;

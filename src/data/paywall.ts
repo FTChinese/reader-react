@@ -1,5 +1,5 @@
-import { Tier } from './enum';
-import { PaywallPrice, Price } from './price';
+import { OfferKind, Tier } from './enum';
+import { Discount, Price } from './price';
 import { formatMoney } from './localization';
 import { cycleOfYMD, isValidPeriod, OptionalPeriod, totalDaysOfYMD } from './period';
 
@@ -41,14 +41,6 @@ export type Product = {
   tier: Tier;
 };
 
-export interface Paywall {
-  id: number;
-  banner: Banner;
-  liveMode: boolean;
-  promo: Promo;
-  products: PaywallProduct[];
-}
-
 export type Banner = {
   id: string;
   heading: string;
@@ -69,12 +61,43 @@ export function isPromoValid(promo: Promo): Boolean {
 }
 
 /**
+ * @description PaywallPrice contains a price and a list of
+ * opitonal discounts.
+ */
+ export type PaywallPrice = Price & {
+  offers: Discount[];
+};
+
+export function applicableOffer(pp: PaywallPrice, filters: OfferKind[]): Discount | undefined {
+  if (pp.offers.length === 0) {
+    return undefined;
+  }
+
+  const filtered = pp.offers.filter(offer => {
+      return isValidPeriod(offer) && filters.includes(offer.kind);
+    })
+    .sort((a, b) => {
+      return b.priceOff - a.priceOff;
+    });
+
+  if (filtered.length == 0) {
+    return undefined;
+  }
+
+  return filtered[0];
+}
+
+/**
  * @description PaywallProduct contains the human-readable text of a product, and a list of prices attached to it.
  */
 export type PaywallProduct = Product & {
   prices: PaywallPrice[];
 };
 
+/**
+ * @description Turn a product's description into
+ * an array of strings.
+ */
 export function productDesc(product: PaywallProduct): string[] {
   if (!product.description) {
     return [];
@@ -88,6 +111,17 @@ export function productDesc(product: PaywallProduct): string[] {
 
   return desc.split('\n');
 }
+
+export interface Paywall {
+  id: number;
+  banner: Banner;
+  liveMode: boolean;
+  promo: Promo;
+  products: PaywallProduct[];
+}
+
+
+
 
 
 
