@@ -11,6 +11,7 @@ export function LoadIndicator(
 
   if (props.progress) {
     return <Spinner
+      as="span"
       animation="border"
       size={props.small ? 'sm' : undefined}
       variant={props.variant}
