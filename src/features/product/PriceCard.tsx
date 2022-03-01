@@ -12,7 +12,6 @@ import {
 import { Customer } from '../../data/stripe';
 import { useAuth } from '../../components/hooks/useAuth';
 import { CustomerDialog } from './CustomerDialog';
-import styles from './PriceCard.module.css';
 import { isEmailAccount } from '../../data/account';
 import { sitemap } from '../../data/sitemap';
 import { useShoppingCart } from '../../components/hooks/useShoppingCart';
@@ -25,7 +24,7 @@ function PriceHighlight(
   return (
     <>
       <span>{props.parts.symbol}</span>
-      <span className={styles.price}>
+      <span className="scale-up2">
         {props.parts.integer}{props.parts.decimal}
       </span>
     </>
@@ -45,7 +44,7 @@ export function PriceCardBody(
 ) {
   return (
     <Card.Body className="text-center">
-      <div className={styles.title}>
+      <div className="scale-down8">
         {props.params.title}
       </div>
 
@@ -56,7 +55,7 @@ export function PriceCardBody(
 
       {
         props.params.crossed &&
-        <div className={`text-muted ${styles.crossed}`}>
+        <div className="text-black50 scale-down5">
           <span>原价</span>
           <span className="text-decoration-line-through">
             {props.params.crossed}
@@ -93,7 +92,7 @@ export function FtcPriceCard(
 
   return (
     <Card
-      className={`h-100 ${styles.itemCard}`}
+      className="h-100 cursor-pointer"
       onClick={handleClick}
     >
       {
@@ -151,7 +150,7 @@ export function StripePriceCard(
   return (
     <>
       <Card
-        className={`h-100 ${styles.itemCard}`}
+        className="h-100 cursor-pointer"
         onClick={handleClick}
       >
         {

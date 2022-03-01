@@ -105,6 +105,9 @@
 .scale-up2 {
   font-size: 2em;
 }
+.cursor-pointer {
+  cursor: pointer;
+}
 
 body {
   font-family: "Helvetica Neue", "Lucida Grande", Verdana, "PingFang SC",
