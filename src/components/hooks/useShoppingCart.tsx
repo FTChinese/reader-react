@@ -1,8 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { atom, useRecoilState } from 'recoil';
 import { CartItemFtc, CartItemStripe, ShoppingCart } from '../../data/shopping-cart';
-
-const key = "ftc_shopping_cart";
+import { cartSession } from '../../store/cartSession';
 
 const shoppingCartState = atom<ShoppingCart>({
   key: 'shoppingCartState',
@@ -11,25 +10,28 @@ const shoppingCartState = atom<ShoppingCart>({
 
 export function useShoppingCart() {
   const [ cart, setCart] = useRecoilState(shoppingCartState);
+  const [ loadingCart, setLoadingCart ] = useState(true);
 
   useEffect(() => {
     if (cart.ftc || cart.stripe) {
+      setLoadingCart(false);
       return;
     }
 
-    const cached = localStorage.getItem(key);
+    const cached = cartSession.load();
+
     if (!cached) {
+      setLoadingCart(false);
       return;
     }
 
-    try {
-      const data: ShoppingCart = JSON.parse(cached);
-
-      setCart(data);
-    } catch (e) {
-      localStorage.removeItem(key);
-    }
+    setCart(cached);
+    setLoadingCart(false);
   }, []);
+
+  const isEmptyCart = (): boolean => {
+    return !cart.ftc && !cart.stripe;
+  };
 
   const putFtcItem = (item: CartItemFtc) => {
     const data: ShoppingCart = {
@@ -37,7 +39,7 @@ export function useShoppingCart() {
       stripe: undefined,
     }
     setCart(data);
-    localStorage.setItem(key, JSON.stringify(data));
+    cartSession.save(data);
   }
 
   const putStripeItem = (item: CartItemStripe) => {
@@ -47,20 +49,25 @@ export function useShoppingCart() {
     }
 
     setCart(data);
-    localStorage.setItem(key, JSON.stringify(data));
+    cartSession.save(data);
   }
 
+  // Only call clearCart after successful payment.
+  // This means you shouldn't use it in useEffect
+  // of any component you like.
+  // Only cleanup in components showing successful
+  // payment results.
   const clearCart = () => {
-    localStorage.removeItem(key);
+    cartSession.clear();
     setCart({});
-    console.log('Shopping cart cleared');
-  }
+  };
 
   return {
     cart,
-    setCart,
+    loadingCart,
     putFtcItem,
     putStripeItem,
+    isEmptyCart,
     clearCart,
   }
 }
