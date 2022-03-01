@@ -1,6 +1,6 @@
 import { addYears, isAfter, parseISO } from 'date-fns';
 import { isExpired } from '../utils/now';
-import { Cycle, OrderKind, PaymentKind, SubStatus, Tier } from './enum';
+import { Cycle, OfferKind, OrderKind, PaymentKind, SubStatus, Tier } from './enum';
 import { Edition } from './edition';
 
 export type Membership =  {
@@ -91,6 +91,26 @@ function shouldUseAddOn(m: Membership): boolean {
 
 export function isConvertableToAddOn(m: Membership): boolean {
   return isOneTimePurchase(m) && !isMemberExpired(m);
+}
+
+export function applicableOfferKinds(m: Membership): OfferKind[] {
+  if (isMembershipZero(m)) {
+    return [
+      'promotion'
+    ];
+  }
+
+  if (isMemberExpired(m)) {
+    return [
+      'promotion',
+      'win_back'
+    ];
+  }
+
+  return [
+    'promotion',
+    'retention'
+  ];
 }
 
 /**
