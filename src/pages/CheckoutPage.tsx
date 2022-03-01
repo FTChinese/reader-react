@@ -1,10 +1,9 @@
-import Card from 'react-bootstrap/Card';
 import { SingleCenterCol } from '../components/layout/ContentLayout';
 import { Tier } from '../data/enum';
 import { localizeTier } from '../data/localization';
 import { CartItemUIParams, newFtcCartItemUIParams, newStripeCartItemParams } from '../data/shopping-cart';
 import { AliWxPay } from '../features/checkout/AliWxPay';
-import { PriceCardBody } from '../features/product/PriceCard';
+import { PriceCard } from '../features/product/PriceCard';
 import { useShoppingCart } from '../components/hooks/useShoppingCart';
 import { StripePay } from '../features/checkout/StripePay';
 
@@ -18,17 +17,14 @@ function ChekcoutLayout(
   return (
     <SingleCenterCol>
       <>
-        <h2 className="text-center mb-3">订阅FT会员</h2>
+        <h2 className="text-center mb-3">
+          订阅{localizeTier(props.tier)}
+        </h2>
 
-        <Card>
-          <Card.Header>
-            {props.params.header}
-          </Card.Header>
+        <PriceCard
+          params={props.params}
+        />
 
-          <PriceCardBody
-            params={props.params}
-          />
-        </Card>
         {props.children}
       </>
     </SingleCenterCol>
