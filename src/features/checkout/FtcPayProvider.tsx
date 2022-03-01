@@ -1,7 +1,6 @@
 import { useFtcPay } from '../../components/hooks/useFtcPay';
 import { CheckLarge } from '../../components/icons';
 import { PaymentKind } from '../../data/enum';
-import { localizePaymentMethod } from '../../data/localization';
 
 const payIcons: Record<PaymentKind, string> = {
   'alipay': 'https://www.ftacademy.cn/images/alipay-68x24.png',
