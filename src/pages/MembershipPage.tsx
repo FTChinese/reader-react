@@ -8,6 +8,7 @@ import { TwoColList } from '../components/list/TwoColList';
 import { ReactivateStripe } from '../features/member/ReactivateStripe';
 import { AddOnOverview } from '../features/member/AddOnOverview';
 import { StripeSettings } from '../features/checkout/StripeSettings';
+import { CustomerService } from '../features/member/CustomerSerivce';
 
 export function MembershipPage() {
   const { passport } = useAuth();
@@ -35,6 +36,8 @@ export function MembershipPage() {
           isStripe(passport.membership) &&
           <StripeSettings/>
         }
+
+        <CustomerService />
       </>
     </SingleCenterCol>
   );
@@ -56,6 +59,7 @@ function SubsOverview(
           memberStatus.reminder &&
           <p className="text-danger text-center">{memberStatus.reminder}</p>
         }
+
       </Card.Body>
       <TwoColList rows={memberStatus.details}/>
 
