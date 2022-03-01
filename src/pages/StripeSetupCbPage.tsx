@@ -71,8 +71,12 @@ export function StripeSetupCbPage() {
     try {
       const pm = await loadPaymentMethod(pp.token, pmId);
 
+      selectPaymentMethod(pm);
       setProgress(false);
-      selectPaymentMethod(pm)
+      // Navigate back to checkout page.
+      // By now the global stripe payment method
+      // state will have a default payment method
+      // you can display to user on checkout page.
       navigate(sitemap.checkout);
     } catch (e) {
       console.log(e);
@@ -85,7 +89,7 @@ export function StripeSetupCbPage() {
     <SingleCenterCol>
       <ErrorBoundary errMsg={err}>
         <Loading loading={progress}>
-          <div>Payment method setup successfully. Redirecting...</div>
+          <div>Payment method setup successfully.</div>
         </Loading>
       </ErrorBoundary>
     </SingleCenterCol>
