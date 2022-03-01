@@ -11,6 +11,8 @@ import { useStripePaySetting } from '../../components/hooks/useStripePaySetting'
 import { PaymentMethodSelector } from './PaymentMethodSelector';
 import { StripeDefaultPaymentMethod } from './StripDefaultPaymentMethod';
 import { ProgressButton } from '../../components/buttons/ProgressButton';
+import { StripeSubsDetails } from './StripeSubsDetails';
+import { localizeTier } from '../../data/localization';
 
 /**
  * @description Handles Stripe pay actions.
@@ -21,7 +23,6 @@ import { ProgressButton } from '../../components/buttons/ProgressButton';
 export function StripePay(
   props: {
     item: CartItemStripe;
-    onSuccess: (subs: Subs) => void;
   }
 ) {
 
@@ -30,9 +31,23 @@ export function StripePay(
     return null;
   }
 
+  const [ subs, setSubs ] = useState<Subs>();
+
   const msg = (
     <p className="scale-down8 text-center">{props.item.intent.message}</p>
   );
+
+  if (subs) {
+    return (
+      <>
+        {msg}
+        <div className="mt-3">
+          <h5 className="text-center">{localizeTier(subs.tier)}订阅成功</h5>
+          <StripeSubsDetails subs={subs}/>
+        </div>
+      </>
+    );
+  }
 
   let isNewSubs = true;
 
@@ -67,7 +82,7 @@ export function StripePay(
         passport={passport}
         item={props.item}
         isNew={isNewSubs}
-        onSuccess={props.onSuccess}
+        onSuccess={setSubs}
       />
     </>
   );
