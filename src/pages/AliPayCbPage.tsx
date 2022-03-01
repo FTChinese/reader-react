@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '../components/hooks/useQuery';
 import { SingleCenterCol } from '../components/layout/ContentLayout';
 import { newAliPayCbParams, validateAliPayResp } from '../data/order';
-import { VerifyFtcPay } from '../features/checkout/VerifyFtcPay';
+import { FtcPayResult } from '../features/checkout/FtcPayResult';
 import { aliwxPaySession } from '../store/aliwxPaySession';
 
 export function AliPayCbPage() {
@@ -32,15 +32,18 @@ export function AliPayCbPage() {
     }
 
     setOrderId(o.id);
+
+    return function clean() {
+      aliwxPaySession.clear();
+    }
   }, []);
 
   return (
     <SingleCenterCol>
-      <VerifyFtcPay
+      <FtcPayResult
         progress={progress}
         errMsg={err}
         orderId={orderId}
-        title="支付宝支付结果"
       />
     </SingleCenterCol>
   );
