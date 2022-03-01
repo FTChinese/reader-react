@@ -57,10 +57,10 @@ export function PriceCardBody(
       {
         props.params.crossed &&
         <div className={`text-muted ${styles.crossed}`}>
-          原价
-          <del>
+          <span>原价</span>
+          <span className="text-decoration-line-through">
             {props.params.crossed}
-          </del>
+          </span>
         </div>
       }
 
@@ -70,13 +70,14 @@ export function PriceCardBody(
           <small>{props.params.offerDesc}</small>
         </div>
       }
+
     </Card.Body>
   );
 }
 
 export function FtcPriceCard(
   props: {
-    item: CartItemFtc
+    item: CartItemFtc;
   }
 ) {
 
@@ -103,6 +104,8 @@ export function FtcPriceCard(
       }
 
       <PriceCardBody params={params} />
+
+      <p className="text-center text-black50 scale-down8">* 仅限支付宝或微信支付</p>
     </Card>
   );
 }
@@ -159,6 +162,8 @@ export function StripePriceCard(
         }
 
         <PriceCardBody params={params} />
+
+        <p className="text-center text-black50 scale-down8">* 仅限Stripe支付</p>
       </Card>
 
       <CustomerDialog
