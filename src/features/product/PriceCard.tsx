@@ -1,7 +1,7 @@
 import Card from 'react-bootstrap/Card';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MoneyParts } from '../../data/localization';
+import { PriceParts } from '../../data/localization';
 import {
   CartItemUIParams,
   CartItemFtc,
@@ -18,7 +18,7 @@ import { useShoppingCart } from '../../components/hooks/useShoppingCart';
 
 function PriceHighlight(
   props: {
-    parts: MoneyParts;
+    parts: PriceParts;
   }
 ) {
   return (
@@ -26,6 +26,52 @@ function PriceHighlight(
       <span>{props.parts.symbol}</span>
       <span className="scale-up2">
         {props.parts.integer}{props.parts.decimal}
+      </span>
+      <span>{props.parts.cycle}</span>
+    </>
+  );
+}
+
+function PriceCrossed(
+  props: {
+    parts?: PriceParts;
+  }
+) {
+  if (!props.parts) {
+    return null;
+  }
+
+  return (
+    <>
+      <span>原价</span>
+      <del>
+        {props.parts.symbol}
+        {props.parts.integer}
+        {props.parts.decimal}
+        {props.parts.cycle}
+      </del>
+    </>
+  );
+}
+
+function PriceAutoRenewed(
+  props: {
+    parts?: PriceParts;
+  }
+) {
+
+  if (!props.parts) {
+    return null;
+  }
+
+  return (
+    <>
+      <span>试用结束后自动续订</span>
+      <span>
+        {props.parts.symbol}
+        {props.parts.integer}
+        {props.parts.decimal}
+        {props.parts.cycle}
       </span>
     </>
   );
@@ -37,40 +83,58 @@ function PriceHighlight(
  * - In product card
  * - In payment dialog
  */
-export function PriceCardBody(
+export function PriceCard(
   props: {
     params: CartItemUIParams;
+    onClick?: () => void;
   }
 ) {
+
+  const className = props.onClick
+    ? 'h-100 cursor-pointer'
+    : undefined;
+
   return (
-    <Card.Body className="text-center">
-      <div className="scale-down8">
-        {props.params.title}
-      </div>
+    <Card
+      className={className}
+      onClick={props.onClick}
+    >
+     <Card.Header>
+        {props.params.header}
+      </Card.Header>
 
-      <div>
-        <PriceHighlight parts={props.params.payable}/>
-        {props.params.payable.cycle}
-      </div>
-
-      {
-        props.params.crossed &&
-        <div className="text-black50 scale-down5">
-          <span>原价</span>
-          <span className="text-decoration-line-through">
-            {props.params.crossed}
-          </span>
+      <Card.Body className="text-center">
+        <div className="scale-down8">
+          {props.params.title}
         </div>
-      }
 
-      {
-        props.params.offerDesc &&
         <div>
-          <small>{props.params.offerDesc}</small>
+          <PriceHighlight
+            parts={props.params.payable}
+          />
         </div>
-      }
 
-    </Card.Body>
+        <div className="text-black60 scale-down5">
+          {
+            props.params.isAutoRenew ?
+            <PriceAutoRenewed
+              parts={props.params.original}
+            /> :
+            <PriceCrossed
+              parts={props.params.original}
+            />
+          }
+        </div>
+      </Card.Body>
+
+      <p className="text-center text-black50 scale-down5">
+        {
+          props.params.isAutoRenew ?
+          '* 仅限Stripe支付' :
+          '* 仅限支付宝或微信支付'
+        }
+      </p>
+    </Card>
   );
 }
 
@@ -91,21 +155,10 @@ export function FtcPriceCard(
   const params = newFtcCartItemUIParams(props.item)
 
   return (
-    <Card
-      className="h-100 cursor-pointer"
+    <PriceCard
+      params={params}
       onClick={handleClick}
-    >
-      {
-        params.header &&
-        <Card.Header>
-          {params.header}
-        </Card.Header>
-      }
-
-      <PriceCardBody params={params} />
-
-      <p className="text-center text-black50 scale-down8">* 仅限支付宝或微信支付</p>
-    </Card>
+    />
   );
 }
 
@@ -149,21 +202,10 @@ export function StripePriceCard(
 
   return (
     <>
-      <Card
-        className="h-100 cursor-pointer"
+      <PriceCard
+        params={params}
         onClick={handleClick}
-      >
-        {
-          params.header &&
-          <Card.Header>
-            {params.header}
-          </Card.Header>
-        }
-
-        <PriceCardBody params={params} />
-
-        <p className="text-center text-black50 scale-down8">* 仅限Stripe支付</p>
-      </Card>
+      />
 
       <CustomerDialog
         passport={passport}

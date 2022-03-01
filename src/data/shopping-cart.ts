@@ -1,11 +1,7 @@
 import {
   Price,
   Discount,
-  ftcRegularPriceParts,
-  ftcRegularCharge,
   StripePrice,
-  stripeRecurringCharge,
-  stripeRecurringPriceParts,
   isIntro,
 } from './price';
 import { formatMoneyParts, localizeCycle, PriceParts } from './localization';
@@ -135,7 +131,6 @@ export function newOrderParams(item: CartItemFtc): OrderParams {
   };
 }
 
-
 export type CartItemStripe = {
   intent: CheckoutIntent;
   recurring: StripePrice;
@@ -167,11 +162,12 @@ export type CartItemUIParams = {
   header: string;
   title: string;
   payable: PriceParts;
-  crossed?: string;
-  offerDesc?: string;
+  original?: PriceParts;
+  isAutoRenew: boolean
 };
 
 export function newFtcCartItemUIParams(item: CartItemFtc): CartItemUIParams {
+
   const header = isIntro(item.price)
     ? '试用'
     : `包${localizeCycle(cycleOfYMD(item.price.periodCount))}`;
@@ -183,30 +179,44 @@ export function newFtcCartItemUIParams(item: CartItemFtc): CartItemUIParams {
 
     return {
       header,
-      title: item.discount.description || '',
+      title: item.discount.description || '新会员首次试用',
       payable: {
         ...formatMoneyParts(
           item.price.currency,
           item.price.unitAmount - item.discount.priceOff,
         ),
-        cycle: '/' + formatPeriods(period, false)
+        cycle: '/' + formatPeriods(period, false),
       },
-      crossed: ftcRegularCharge(item.price),
-      offerDesc: undefined,
+      original: {
+        ...formatMoneyParts(item.price.currency, item.price.unitAmount),
+        cycle: '/' + formatPeriods(item.price.periodCount, false),
+      },
+      isAutoRenew: false,
     };
   }
 
   return {
     header,
     title: item.price.title || '',
-    payable: ftcRegularPriceParts(item.price),
-    crossed: undefined,
-    offerDesc: undefined,
+    payable: {
+      ...formatMoneyParts(item.price.currency, item.price.unitAmount),
+      cycle: '/' + formatPeriods(item.price.periodCount, false),
+    },
+    isAutoRenew: false,
   };
 }
 
 export function newStripeCartItemParams(item: CartItemStripe): CartItemUIParams {
+
   const header = `连续包${localizeCycle(cycleOfYMD(item.recurring.periodCount))}`;
+
+  const recurPriceParts: PriceParts = {
+    ...formatMoneyParts(
+      item.recurring.currency,
+      item.recurring.unitAmount / 100,
+    ),
+    cycle: '/' + formatPeriods(item.recurring.periodCount, true),
+  };
 
   if (item.trial) {
     return {
@@ -222,17 +232,17 @@ export function newStripeCartItemParams(item: CartItemStripe): CartItemUIParams 
           false
         ),
       },
-      crossed: '',
-      offerDesc: `试用结束后自动续订${stripeRecurringCharge(item.recurring)}`
+      original: recurPriceParts,
+      isAutoRenew: true,
     };
   }
 
   return {
     header,
     title: '',
-    payable: stripeRecurringPriceParts(item.recurring),
-    crossed: undefined,
-    offerDesc: undefined,
+    payable: recurPriceParts,
+    original: undefined,
+    isAutoRenew: true,
   };
 }
 

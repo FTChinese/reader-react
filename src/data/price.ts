@@ -26,20 +26,6 @@ export function isIntro(p: Price): boolean {
   return p.kind === 'one_time';
 }
 
-export function ftcRegularPriceParts(price: Price): PriceParts {
-  return {
-    ...formatMoneyParts(
-      price.currency,
-      price.unitAmount
-    ),
-    cycle: '/' + formatPeriods(price.periodCount, false)
-  };
-}
-
-export function ftcRegularCharge(price: Price): string {
-  return `${formatMoney(price.currency, price.unitAmount)}/${formatPeriods(price.periodCount, false)}`
-}
-
 export type Discount = {
   id: string;
   description?: string;
@@ -68,16 +54,4 @@ export type StripePrice = {
   created: number;
 } & OptionalPeriod;
 
-export function stripeRecurringPriceParts(price: StripePrice): PriceParts {
-  return {
-    ...formatMoneyParts(
-      price.currency,
-      price.unitAmount / 100,
-    ),
-    cycle: '/' + formatPeriods(price.periodCount, true),
-  };
-}
 
-export function stripeRecurringCharge(price: StripePrice): string {
-  return `${formatMoney(price.currency, price.unitAmount / 100)}/${formatPeriods(price.periodCount, true)}`;
-}
