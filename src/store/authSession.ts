@@ -7,25 +7,26 @@ export const authSession = {
     localStorage.setItem(key, JSON.stringify(pp));
   },
 
-  load(): Promise<ReaderPassport | null> {
+  load(): ReaderPassport | null {
     const ppStr = localStorage.getItem(key);
 
     if (!ppStr) {
-      return Promise.resolve(null);
+      return null;
     }
 
     try {
       const pp = JSON.parse(ppStr) as ReaderPassport;
       if (isLoginExpired(pp)) {
         localStorage.removeItem(key);
-        return Promise.resolve(null);
+        return null;
       }
 
-      return Promise.resolve(pp);
+      return pp;
     } catch (e) {
-      localStorage.removeItem(key);
       console.error(e);
-      return Promise.resolve(null);
+      localStorage.removeItem(key);
+
+      return null;
     }
   },
 
