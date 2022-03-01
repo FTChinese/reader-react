@@ -13,6 +13,7 @@ import { StripeDefaultPaymentMethod } from './StripDefaultPaymentMethod';
 import { ProgressButton } from '../../components/buttons/ProgressButton';
 import { StripeSubsDetails } from './StripeSubsDetails';
 import { localizeTier } from '../../data/localization';
+import { StripePayLink } from '../product/StripePayLink';
 
 /**
  * @description Handles Stripe pay actions.
@@ -182,12 +183,16 @@ function SubscribeButton(
   };
 
   return (
-    <ProgressButton
-      disabled={!paymentSetting.selectedMethod || progress}
-      text={props.isNew ? '订阅' : '升级'}
-      progress={progress}
-      block={true}
-      onClick={handleClick}
-    />
+    <>
+      <ProgressButton
+        disabled={!paymentSetting.selectedMethod || progress}
+        text={props.isNew ? '订阅' : '升级'}
+        progress={progress}
+        block={true}
+        onClick={handleClick}
+      />
+      <StripePayLink />
+    </>
+
   );
 }

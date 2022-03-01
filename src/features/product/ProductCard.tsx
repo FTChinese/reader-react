@@ -10,6 +10,7 @@ import {
 import { FtcPriceCard, StripePriceCard } from './PriceCard';
 import { paywallStripeState } from '../../components/hooks/usePaywall';
 import { useRecoilValue } from 'recoil';
+import { StripePayLink } from './StripePayLink';
 
 export function ProductCard(
   props: {
@@ -68,9 +69,7 @@ export function ProductCard(
         }
       </div>
 
-      <small className="text-muted">
-        * 自动续订通过<a href="https://stripe.com/" target="_blank">Stripe</a>支付，以英镑计价，需使用支持国际货币的信用卡
-      </small>
+      <StripePayLink />
 
       <TextList
         lines={productDesc(props.product)}
@@ -82,5 +81,4 @@ export function ProductCard(
     </div>
   );
 }
-
 
