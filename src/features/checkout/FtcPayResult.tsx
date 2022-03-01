@@ -94,7 +94,7 @@ export function FtcPayDetails(
   // Cleanup only after this component is used.
   useEffect(() => {
     return function cleanup() {
-      // clearCart();
+      clearCart();
     };
   }, []);
 
