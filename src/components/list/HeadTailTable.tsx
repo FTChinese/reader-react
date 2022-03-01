@@ -7,7 +7,7 @@ export function HeadTailTable(
   }
 ) {
   return (
-    <table className="table">
+    <table className="table caption-top">
       <caption className="text-center">{props.caption}</caption>
       <tbody>
         {
