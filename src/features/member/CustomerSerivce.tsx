@@ -1,7 +1,12 @@
+import { BorderHeader } from '../../components/header/BorderHeader';
+
 export function CustomerService() {
   return (
     <div className="mt-3">
-      <h6>联系客服</h6>
+      <BorderHeader
+        text="联系客服"
+        level={5}
+      />
       <dl>
         {/* <dt>电话</dt>
         <dd>010-xxxxxx</dd> */}

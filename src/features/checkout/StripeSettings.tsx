@@ -5,11 +5,15 @@ import { ChevronDown, ChevronUp } from '../../components/graphics/icons';
 import { loadSubsDefaultPayMethod } from '../../repository/stripe';
 import { PaymentMethodSelector } from './PaymentMethodSelector';
 import { StripeDefaultPaymentMethod } from './StripDefaultPaymentMethod';
+import { BorderHeader } from '../../components/header/BorderHeader';
 
 export function StripeSettings() {
   return (
     <div className="mt-4">
-      <h5 className="border-bottom text-black60">Stripe设置</h5>
+      <BorderHeader
+        text="Stripe设置"
+        level={5}
+      />
 
       <div className="border-bottom pt-2 pb-2">
         <PaymentMethodSetting/>
