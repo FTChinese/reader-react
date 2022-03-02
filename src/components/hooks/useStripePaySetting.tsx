@@ -1,5 +1,5 @@
 import { atom, useRecoilState } from 'recoil';
-import { Customer, PaymentMethod, SetupIntent } from '../../data/stripe';
+import { Customer, PaymentMethod, SetupIntent, Subs } from '../../data/stripe';
 
 /**
  * @description This is the single source of truth
@@ -11,6 +11,7 @@ import { Customer, PaymentMethod, SetupIntent } from '../../data/stripe';
  */
 type StripePaymentSetting = {
   customer?: Customer;
+  subs?: Subs;
   selectedMethod?: PaymentMethod;
   methodCandidates: PaymentMethod[];
   setup?: SetupIntent;
