@@ -7,6 +7,8 @@ const mobileAuthBase = `${readerBase}/auth/mobile`;
 const wxAuthBase = `${readerBase}/auth/wx`;
 const pwResetBase = `${readerBase}/auth/password-reset`;
 const accountBase = `${readerBase}/account`;
+const memberBase = `${readerBase}/membership`;
+const iapBase = `${readerBase}/apple`;
 const ftcpayBase = `${readerBase}/ftc-pay`;
 const stripeCusBase = `${readerBase}/stripe/customers`;
 const stripeSubsBase = `${readerBase}/stripe/subs`;
@@ -47,12 +49,20 @@ export const endpoint = {
   wxSignUp: `${accountBase}/wx/signup`,
   wxLink: `${accountBase}/wx/link`,
   wxUnlink: `${accountBase}/wx/unlink`,
+
+  membership: memberBase,
+  memberAddon: `${memberBase}/addons`,
+
   aliOrder: `${ftcpayBase}/ali/desktop`,
   wxOrder: `${ftcpayBase}/wx/desktop`,
   verifyOrderOf: function(id: string): string {
     return `${ftcpayBase}/orders/${id}/verify`;
   },
   paywall: paywallBasePath,
+
+  iapSubsOf: function(id: string): string {
+    return `${iapBase}/subs/${id}`;
+  },
 
   stripePubKey: `${paywallBasePath}/stripe/publishable-key`,
   stripePrices: `${paywallBasePath}/stripe/prices`,
@@ -81,7 +91,7 @@ export const endpoint = {
     return `${stripeSubsBase}/${id}`;
   },
   refreshSubs: function(id: string): string {
-    return `${stripeSubsBase}${id}/refresh`;
+    return `${stripeSubsBase}/${id}/refresh`;
   },
   cancelSubs: function(id: string): string {
     return `${stripeSubsBase}/${id}/cancel`;

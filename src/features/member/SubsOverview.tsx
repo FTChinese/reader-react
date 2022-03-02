@@ -7,11 +7,13 @@ import { ArrowClockwise } from '../../components/graphics/icons';
 import { useAuth } from '../../components/hooks/useAuth';
 import { TwoColList } from '../../components/list/TwoColList';
 import { LoadIndicator } from '../../components/progress/LoadIndicator';
-import { ReaderPassport } from '../../data/account';
-import { hasAddOn, Membership } from '../../data/membership';
+import { PassportProp, ReaderPassport } from '../../data/account';
+import { hasAddOn, isOneTimePurchase, Membership } from '../../data/membership';
 import { StringPair } from '../../data/pair';
+import { refreshIAP } from '../../repository/apple';
+import { reloadMembership } from '../../repository/membership';
 import { ResponseError } from '../../repository/response-error';
-import { reactivateSubs } from '../../repository/stripe';
+import { redoStripeSubsCancel, refreshStripeSubs } from '../../repository/stripe';
 import { buildMemberStatus } from './member-status';
 
 export function SubsOverview(
@@ -26,7 +28,7 @@ export function SubsOverview(
     <Card>
       <Card.Header className="d-flex justify-content-between align-content-center">
         <span>我的订阅</span>
-        <RefreshMembership/>
+        <RefreshMembership />
       </Card.Header>
       <Card.Body className="text-center">
         <Card.Title>{memberStatus.productName}</Card.Title>
@@ -48,11 +50,84 @@ export function SubsOverview(
 
 function RefreshMembership() {
 
+  const { passport, setMembership } = useAuth();
   const [ progress, setProgress ] = useState(false);
 
   const handleClick = () => {
+    if (!passport) {
+      return;
+    }
+
+    toast.info('更新订阅信息')
     setProgress(true);
+
+    switch (passport.membership.payMethod) {
+      case 'stripe':
+        refreshStripe(passport.token);
+        break;
+
+      case 'apple':
+        refreshApple(passport.token);
+        break;
+
+      default:
+        case 'alipay':
+        case 'wechat':
+          refreshFtc(passport.token);
+          break;
+    }
   };
+
+  function refreshFtc(token: string) {
+    reloadMembership(token)
+      .then(m => {
+        console.log(m);
+        setProgress(false);
+        setMembership(m);
+      })
+      .catch((err: ResponseError) => {
+        console.error(err);
+        setProgress(false);
+        toast.error(err.message)
+      });
+  }
+
+  function refreshStripe(token: string) {
+    const subsId = passport?.membership.stripeSubsId;
+    if (!subsId) {
+      return;
+    }
+
+    refreshStripeSubs(token, subsId)
+      .then(result => {
+        console.log(result)
+        setProgress(false);
+        setMembership(result.membership);
+      })
+      .catch((err: ResponseError) => {
+        console.error(err);
+        setProgress(false);
+        toast.error(err.message)
+      });
+  }
+
+  function refreshApple(token: string) {
+    const txId = passport?.membership.appleSubsId;
+    if (!txId) {
+      return;
+    }
+
+    refreshIAP(token, txId)
+      .then(result => {
+        console.log(result);
+        setProgress(false);
+        setMembership(result.membership);
+      })
+      .catch((err: ResponseError) => {
+        setProgress(false);
+        toast.error(err.message)
+      });
+  }
 
   return (
     <Button
@@ -95,7 +170,7 @@ function ReactivateStripe(
 
     setProgress(true);
 
-    reactivateSubs(passport.token, subsId)
+    redoStripeSubsCancel(passport.token, subsId)
       .then(result => {
         console.log(result);
         setProgress(false)

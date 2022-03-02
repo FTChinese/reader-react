@@ -4,7 +4,7 @@ import { ReaderPassport } from '../../data/account';
 import { CartItemStripe } from '../../data/shopping-cart';
 import { Subs, SubsResult } from '../../data/stripe';
 import { ResponseError } from '../../repository/response-error';
-import { createSubs, loadCusDefaultPayMethod, updateSubs } from '../../repository/stripe';
+import { createStripeSubs, loadCusDefaultPayMethod, updateStripeSubs } from '../../repository/stripe';
 import { useAuth } from '../../components/hooks/useAuth';
 import { IntentKind } from '../../data/chekout-intent';
 import { useStripePaySetting } from '../../components/hooks/useStripePaySetting';
@@ -142,7 +142,7 @@ function SubscribeButton(
     let startPromise: Promise<SubsResult>;
 
     if (props.isNew) {
-      startPromise = createSubs(
+      startPromise = createStripeSubs(
         props.passport.token,
         {
           priceId: props.item.recurring.id,
@@ -155,7 +155,7 @@ function SubscribeButton(
         return;
       }
 
-      startPromise = updateSubs(
+      startPromise = updateStripeSubs(
         props.passport.token,
         {
           priceId: props.item.recurring.id,

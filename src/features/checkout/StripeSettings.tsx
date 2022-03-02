@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import { useAuth } from '../../components/hooks/useAuth';
 import { ChevronDown, ChevronUp } from '../../components/graphics/icons';
-import { cancelSubs, loadSubsDefaultPayMethod } from '../../repository/stripe';
+import { cancelStripeSubs, loadSubsDefaultPayMethod } from '../../repository/stripe';
 import { PaymentMethodSelector } from './PaymentMethodSelector';
 import { StripeDefaultPaymentMethod } from './StripDefaultPaymentMethod';
 import { BorderHeader } from '../../components/header/BorderHeader';
@@ -143,7 +143,7 @@ function CancelSubsDialog(
     }
 
     setProgress(true);
-    cancelSubs(passport.token, subsId)
+    cancelStripeSubs(passport.token, subsId)
       .then( result => {
         console.log(result);
         props.onHide();

@@ -94,7 +94,7 @@ export function loadPaymentMethod(token: string, id: string): Promise<PaymentMet
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function createSubs(
+export function createStripeSubs(
   token: string,
   params: SubsParams
 ): Promise<SubsResult> {
@@ -109,7 +109,7 @@ export function createSubs(
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function updateSubs(
+export function updateStripeSubs(
   token: string,
   params: SubsParams & {
     id: string;
@@ -126,7 +126,7 @@ export function updateSubs(
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function refreshSubs(
+export function refreshStripeSubs(
   token: string,
   subsId: string,
 ): Promise<SubsResult> {
@@ -141,7 +141,7 @@ export function refreshSubs(
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function cancelSubs(
+export function cancelStripeSubs(
   token: string,
   subsId: string,
 ): Promise<SubsResult> {
@@ -156,7 +156,7 @@ export function cancelSubs(
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function reactivateSubs(
+export function redoStripeSubsCancel(
   token: string,
   subsId: string,
 ): Promise<SubsResult> {
