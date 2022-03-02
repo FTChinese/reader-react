@@ -6,6 +6,7 @@ import { loadSubsDefaultPayMethod } from '../../repository/stripe';
 import { PaymentMethodSelector } from './PaymentMethodSelector';
 import { StripeDefaultPaymentMethod } from './StripDefaultPaymentMethod';
 import { BorderHeader } from '../../components/header/BorderHeader';
+import { RowContainer } from '../../components/list/RowCotainer';
 
 export function StripeSettings() {
   return (
@@ -15,9 +16,9 @@ export function StripeSettings() {
         level={5}
       />
 
-      <div className="border-bottom pt-2 pb-2">
+      <RowContainer>
         <PaymentMethodSetting/>
-      </div>
+      </RowContainer>
     </div>
   );
 }
