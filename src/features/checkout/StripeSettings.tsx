@@ -52,22 +52,23 @@ function PaymentMethodSetting() {
       <>
         <PaymentMethodSelector/>
 
-        <div className="d-flex align-items-center scale-down8 text-black50">
-          <span className="me-1">添加或更改当前订阅的支付方式</span>
-          <Button
-            variant="link"
-            onClick={() => setShow(!show)}
-          >
-            <span className="scale-down8">详情</span>
-            {
-              show ?
-              <ChevronUp/> :
-              <ChevronDown/>
-            }
+        <RowSecondary className='d-flex align-items-center'>
+          <>
+            <span className="me-1">添加或更改当前订阅的支付方式</span>
+            <Button
+              variant="link"
+              onClick={() => setShow(!show)}
+            >
+              <span className="scale-down8">详情</span>
+              {
+                show ?
+                <ChevronUp/> :
+                <ChevronDown/>
+              }
 
-          </Button>
-        </div>
-
+            </Button>
+          </>
+        </RowSecondary>
         {
           show &&
           <StripeDefaultPaymentMethod
