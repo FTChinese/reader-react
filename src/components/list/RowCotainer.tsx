@@ -22,7 +22,7 @@ export function RowSecondary(
 ) {
   let className = 'scale-down8 text-black50';
   if (props.className) {
-    className += props.className;
+    className +=  ` ${props.className}`;
   }
 
   return (
