@@ -1,9 +1,12 @@
 import { useState } from 'react';
+import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { toast } from 'react-toastify';
 import { ProgressButton } from '../../components/buttons/ProgressButton';
+import { ArrowClockwise } from '../../components/graphics/icons';
 import { useAuth } from '../../components/hooks/useAuth';
 import { TwoColList } from '../../components/list/TwoColList';
+import { LoadIndicator } from '../../components/progress/LoadIndicator';
 import { ReaderPassport } from '../../data/account';
 import { hasAddOn, Membership } from '../../data/membership';
 import { StringPair } from '../../data/pair';
@@ -21,7 +24,10 @@ export function SubsOverview(
 
   return (
     <Card>
-      <Card.Header>我的订阅</Card.Header>
+      <Card.Header className="d-flex justify-content-between align-content-center">
+        <span>我的订阅</span>
+        <RefreshMembership/>
+      </Card.Header>
       <Card.Body className="text-center">
         <Card.Title>{memberStatus.productName}</Card.Title>
 
@@ -40,33 +46,27 @@ export function SubsOverview(
   );
 }
 
-export function AddOnOverview(
-  props: {
-    member: Membership;
-  }
-) {
+function RefreshMembership() {
 
-  if (!hasAddOn(props.member)) {
-    return null;
-  }
+  const [ progress, setProgress ] = useState(false);
 
-  const rows: StringPair[] = [
-    ['高端版', `${props.member.premiumAddOn}天`],
-    ['标准版', `${props.member.standardAddOn}天`],
-  ];
+  const handleClick = () => {
+    setProgress(true);
+  };
 
   return (
-    <Card className="mt-3">
-      <Card.Body className="text-center">
-        <Card.Title>
-          待启用订阅时长
-        </Card.Title>
-        <p className="text-danger scale-down8">以下订阅时间将在当前订阅到期后使用</p>
-      </Card.Body>
-      <TwoColList
-        rows={rows}
-      />
-    </Card>
+    <Button
+      variant="light"
+      size="sm"
+      disabled={progress}
+      onClick={handleClick}
+    >
+      {
+        progress ?
+        <LoadIndicator progress={progress} small={true} /> :
+        <ArrowClockwise/>
+      }
+    </Button>
   );
 }
 
@@ -119,3 +119,35 @@ function ReactivateStripe(
     </Card.Footer>
   );
 }
+
+export function AddOnOverview(
+  props: {
+    member: Membership;
+  }
+) {
+
+  if (!hasAddOn(props.member)) {
+    return null;
+  }
+
+  const rows: StringPair[] = [
+    ['高端版', `${props.member.premiumAddOn}天`],
+    ['标准版', `${props.member.standardAddOn}天`],
+  ];
+
+  return (
+    <Card className="mt-3">
+      <Card.Body className="text-center">
+        <Card.Title>
+          待启用订阅时长
+        </Card.Title>
+        <p className="text-danger scale-down8">以下订阅时间将在当前订阅到期后使用</p>
+      </Card.Body>
+      <TwoColList
+        rows={rows}
+      />
+    </Card>
+  );
+}
+
+
