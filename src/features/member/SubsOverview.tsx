@@ -1,8 +1,14 @@
+import { useState } from 'react';
 import Card from 'react-bootstrap/Card';
+import { toast } from 'react-toastify';
+import { ProgressButton } from '../../components/buttons/ProgressButton';
+import { useAuth } from '../../components/hooks/useAuth';
 import { TwoColList } from '../../components/list/TwoColList';
 import { ReaderPassport } from '../../data/account';
 import { hasAddOn, Membership } from '../../data/membership';
 import { StringPair } from '../../data/pair';
+import { ResponseError } from '../../repository/response-error';
+import { reactivateSubs } from '../../repository/stripe';
 import { buildMemberStatus } from './member-status';
 
 export function SubsOverview(
@@ -27,10 +33,9 @@ export function SubsOverview(
       </Card.Body>
       <TwoColList rows={memberStatus.details}/>
 
-      {
-        // memberStatus.reactivateStripe &&
-        // <ReactivateStripe/>
-      }
+      <ReactivateStripe
+        show={memberStatus.reactivateStripe || false}
+      />
     </Card>
   );
 }
@@ -62,5 +67,55 @@ export function AddOnOverview(
         rows={rows}
       />
     </Card>
+  );
+}
+
+function ReactivateStripe(
+  props: {
+    show: boolean
+  }
+) {
+
+  if (!props.show) {
+    return null;
+  }
+
+  const { passport, setMembership } = useAuth();
+  const [ progress, setProgress ] = useState(false);
+
+  const handleClick = () => {
+    if (!passport) {
+      return;
+    }
+
+    const subsId = passport.membership.stripeSubsId;
+    if (!subsId) {
+      return;
+    }
+
+    setProgress(true);
+
+    reactivateSubs(passport.token, subsId)
+      .then(result => {
+        console.log(result);
+        setProgress(false)
+        setMembership(result.membership);
+      })
+      .catch((err: ResponseError) => {
+        console.error(err);
+        toast.error(err.message);
+        setProgress(false);
+      });
+  };
+
+  return (
+    <Card.Footer className="text-end">
+      <ProgressButton
+        disabled={progress}
+        progress={progress}
+        text="打开自动续订"
+        onClick={handleClick}
+      />
+    </Card.Footer>
   );
 }
