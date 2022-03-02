@@ -113,6 +113,10 @@ export interface ReaderPassport extends ReaderAccount {
   token: string;
 }
 
+export type PassportProp = {
+  passport: ReaderPassport;
+};
+
 export function authHeader(p: ReaderPassport): { [key: string]: string } {
   return {
     'Authorization': `Bearer ${p.token}`,

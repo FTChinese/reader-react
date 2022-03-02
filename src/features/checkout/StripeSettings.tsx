@@ -12,8 +12,15 @@ import Modal from 'react-bootstrap/Modal';
 import { ProgressButton } from '../../components/buttons/ProgressButton';
 import Alert from 'react-bootstrap/Alert';
 import { ResponseError } from '../../repository/response-error';
+import { isStripe } from '../../data/membership';
+import { PassportProp } from '../../data/account';
 
-export function StripeSettings() {
+export function StripeSettings(props: PassportProp) {
+
+  if (!isStripe(props.passport.membership)) {
+    return null;
+  }
+
   return (
     <div className="mt-4">
       <BorderHeader
@@ -21,29 +28,26 @@ export function StripeSettings() {
         level={5}
       />
 
-      <PaymentMethodSetting/>
-      <StripeCancelSubs/>
+      <PaymentMethodSetting
+        passport={props.passport}
+      />
+      <StripeCancelSubs />
     </div>
   );
 }
 
-function PaymentMethodSetting() {
+function PaymentMethodSetting(props: PassportProp) {
 
-  const { passport } = useAuth();
   const [ show, setShow ] = useState(false);
 
-  if (!passport) {
-    return null;
-  }
-
-  const subsId = passport.membership.stripeSubsId;
+  const subsId = props.passport.membership.stripeSubsId;
   if (!subsId) {
     console.error('Stripe subscription id not found');
     return null;
   }
 
   const load = () => loadSubsDefaultPayMethod(
-    passport.token,
+    props.passport.token,
     subsId
   );
 
@@ -72,7 +76,7 @@ function PaymentMethodSetting() {
         {
           show &&
           <StripeDefaultPaymentMethod
-            passport={passport}
+            passport={props.passport}
             load={load}
           />
         }
