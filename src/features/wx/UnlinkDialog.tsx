@@ -1,5 +1,6 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-import { Alert } from 'react-bootstrap';
+import Alert from 'react-bootstrap/Alert';
+import Card from 'react-bootstrap/Card';
 import Modal from 'react-bootstrap/Modal';
 import { ReaderPassport, ReaderAccount } from '../../data/account';
 import { PaymentKind, WxUnlinkAnchor } from '../../data/enum';
@@ -7,10 +8,10 @@ import { isMembershipZero, Membership } from '../../data/membership';
 import { ResponseError } from '../../repository/response-error';
 import { wxUnlinkEmail } from '../../repository/wx-auth';
 import { ProgressButton } from '../../components/buttons/ProgressButton';
-import { CardList } from '../../components/list/CardList';
 import { StringPair, pairEmail, pairWxName } from '../../data/pair';
 import { UnlinkableSubs } from '../member/UnlinkableSubs';
 import { OnReaderAccount } from './OnReaderAccount';
+import { TwoColList } from '../../components/list/TwoColList';
 
 export function UnlinkDialog(
   props: {
@@ -67,11 +68,12 @@ export function UnlinkDialog(
       </Modal.Header>
       <Modal.Body>
         <>
-          <CardList
-            header="已关联账号"
-            className="mb-3"
-            rows={UnlinkableAccountRows(props.passport)}
-          />
+          <Card className="mb-3">
+            <Card.Header>已关联账号</Card.Header>
+            <TwoColList
+              rows={UnlinkableAccountRows(props.passport)}
+            />
+          </Card>
           { !notMember &&
             <UnlinkAnchor
               member={props.passport.membership}

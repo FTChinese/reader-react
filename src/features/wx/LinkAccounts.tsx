@@ -4,9 +4,10 @@ import { isLinkable, ReaderAccount } from '../../data/account';
 import { ResponseError } from '../../repository/response-error';
 import { wxLinkExistingEmail } from '../../repository/wx-auth';
 import { ProgressButton } from '../../components/buttons/ProgressButton';
-import { CardList } from '../../components/list/CardList';
 import { StringPair, rowTier, rowExpiration, pairEmail, pairMobile, pairWxName } from '../../data/pair';
 import { OnReaderAccount } from "./OnReaderAccount";
+import Card from 'react-bootstrap/Card';
+import { TwoColList } from '../../components/list/TwoColList';
 
 /**
  * @description Display the two accounts to be linked and a button
@@ -53,16 +54,19 @@ export function LinkAccounts(
         denied &&
         <p className="text-danger text-center">{denied}</p>
       }
-      <CardList
-        rows={linkableAccountRows(props.ftcAccount)}
-        header="邮箱/手机账号"
-        className="mt-3"
-      />
-      <CardList
-        rows={linkableAccountRows(props.wxAccount)}
-        header="微信账号"
-        className="mt-3 mb-3"
-      />
+      <Card className="mt-3">
+        <Card.Header>邮箱/手机账号</Card.Header>
+        <TwoColList
+          rows={linkableAccountRows(props.ftcAccount)}
+        />
+      </Card>
+
+      <Card className="mt-3 mb-3">
+        <Card.Header>微信账号</Card.Header>
+        <TwoColList
+          rows={linkableAccountRows(props.wxAccount)}
+        />
+      </Card>
       {
         errMsg &&
         <Alert
