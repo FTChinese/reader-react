@@ -84,7 +84,7 @@ export function isOneTimePurchase(m: Membership): boolean {
 }
 
 export function isRenewalSubs(m: Membership): boolean {
-  return m.payMethod === 'stripe' || m.payMethod === 'wechat';
+  return m.payMethod === 'stripe' || m.payMethod === 'apple';
 }
 
 export function isStripe(m: Membership): boolean {
