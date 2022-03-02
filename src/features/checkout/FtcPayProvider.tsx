@@ -1,5 +1,5 @@
 import { useFtcPay } from '../../components/hooks/useFtcPay';
-import { CheckLarge } from '../../components/icons';
+import { CheckLarge } from '../../components/graphics/icons';
 import { PaymentKind } from '../../data/enum';
 
 const payIcons: Record<PaymentKind, string> = {

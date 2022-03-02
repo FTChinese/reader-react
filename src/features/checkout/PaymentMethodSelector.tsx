@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import { useStripePaySetting } from '../../components/hooks/useStripePaySetting';
-import { ChevronRight } from '../../components/icons';
+import { ChevronRight } from '../../components/graphics/icons';
 import { PaymentMethodDialog } from './PaymentMethodDialog';
 
 /**

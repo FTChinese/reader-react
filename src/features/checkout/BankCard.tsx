@@ -1,4 +1,4 @@
-import { CheckLarge } from '../../components/icons';
+import { CheckLarge } from '../../components/graphics/icons';
 import { PaymentMethod } from '../../data/stripe';
 import { useStripePaySetting } from '../../components/hooks/useStripePaySetting';
 

@@ -9,7 +9,7 @@ import { ProgressButton } from '../../components/buttons/ProgressButton';
 import { EmailLoginForm } from '../../components/forms/EmailLoginForm';
 import { SMSHelper, MobileLoginForm } from '../../components/forms/MobileLoginForm';
 import { useAuth } from '../../components/hooks/useAuth';
-import { ChevronUp, ChevronDown } from '../../components/icons';
+import { ChevronUp, ChevronDown } from '../../components/graphics/icons';
 import { getAuthRedirect } from '../../components/routes/RequireAuth';
 import { Credentials } from '../../data/form-value';
 import { VerifySMSFormVal } from '../../data/mobile';

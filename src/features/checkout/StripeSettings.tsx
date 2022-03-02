@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import { useAuth } from '../../components/hooks/useAuth';
-import { ChevronDown, ChevronUp } from '../../components/icons';
+import { ChevronDown, ChevronUp } from '../../components/graphics/icons';
 import { loadSubsDefaultPayMethod } from '../../repository/stripe';
 import { PaymentMethodSelector } from './PaymentMethodSelector';
 import { StripeDefaultPaymentMethod } from './StripDefaultPaymentMethod';

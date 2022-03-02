@@ -1,4 +1,4 @@
-import { ArrowLeft } from '../icons';
+import { ArrowLeft } from '../graphics/icons';
 
 export function BackButton(
   props: {

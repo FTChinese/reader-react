@@ -1,5 +1,5 @@
 import { Button } from 'react-bootstrap';
-import { XLarge, Pencil } from '../../components/icons';
+import { XLarge, Pencil } from '../../components/graphics/icons';
 
 export function AccountRow(
   props: {
