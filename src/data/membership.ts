@@ -2,6 +2,7 @@ import { addYears, isAfter, parseISO } from 'date-fns';
 import { isExpired } from '../utils/now';
 import { Cycle, OfferKind, OrderKind, PaymentKind, SubStatus, Tier } from './enum';
 import { Edition } from './edition';
+import { localizeCycle } from './localization';
 
 export type Membership =  {
   ftcId?: string;
@@ -19,6 +20,47 @@ export type Membership =  {
   standardAddOn: number;
   premiumAddOn: number;
   vip: boolean;
+};
+
+export type AutoRenewMoment = {
+  year: string;
+  month: string;
+  date: string;
+  cycle: Cycle;
+};
+
+export function parseAutoRenewMoment(m: Membership): AutoRenewMoment | null {
+  if (!m.expireDate) {
+    return null;
+  }
+
+  if (!m.cycle) {
+    return null;
+  }
+
+  const parts = m.expireDate.split('-');
+  if (parts.length < 3) {
+    return null;
+  }
+
+  return {
+    year: parts[0],
+    month: parts[1],
+    date: parts[2],
+    cycle: m.cycle,
+  };
+}
+
+export function concatAutoRenewMoment(m: AutoRenewMoment): string {
+  const dateCycle = `${m.date}日/${localizeCycle(m.cycle)}`;
+
+  switch (m.cycle) {
+    case 'year':
+      return `${m.month}月${dateCycle}`;
+
+    case 'month':
+      return dateCycle;
+  }
 }
 
 export function normalizePayMethod(m: Membership): PaymentKind | undefined {

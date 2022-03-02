@@ -24,4 +24,8 @@ export function isInvalidSubStatus(s: SubStatus): boolean {
   return false;
 }
 
+export function isTrialing(s: SubStatus): boolean {
+  return s === 'trialing';
+}
+
 

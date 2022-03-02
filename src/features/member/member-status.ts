@@ -1,9 +1,9 @@
 import { parseISO } from 'date-fns';
-import { SubStatus, isInvalidSubStatus } from '../../data/enum';
-import { localizeTier } from '../../data/localization';
-import { Membership, isMembershipZero } from '../../data/membership';
+import { SubStatus, isInvalidSubStatus, PaymentKind, Tier, isTrialing } from '../../data/enum';
+import { localizePaymentMethod, localizeSubsStatus, localizeTier } from '../../data/localization';
+import { Membership, isMembershipZero, concatAutoRenewMoment, parseAutoRenewMoment } from '../../data/membership';
 import { diffToday, isExpired } from '../../utils/now';
-import { StringPair, rowExpiration, rowSubsSource, rowAutoRenewOn, rowAutoRenewDate, rowAutoRenewOff, rowSubsStatus } from '../../data/pair';
+import { StringPair } from '../../data/pair';
 
 /**
  * @description Describes the UI used to present Membership.
@@ -41,6 +41,35 @@ function formatRemainingDays(expiresAt?: Date, subStatus?: SubStatus | null): st
   return undefined;
 }
 
+function rowSubsSource(pm?: PaymentKind): StringPair {
+  return ['订阅方式', localizePaymentMethod(pm)];
+}
+
+function rowSubsStatus(m: Membership): StringPair {
+  const head = '订阅状态';
+
+  if (!m.status) {
+    return [head, '-'];
+  }
+
+  if (isTrialing(m.status)) {
+    return [head, `${localizeSubsStatus(m.status)}(${m.expireDate}结束)`];
+  }
+
+  return [head, localizeSubsStatus(m.status)]
+}
+
+export function rowExpiration(date?: string, isVip: boolean = false): StringPair {
+  return [
+    '到期时间',
+    isVip ? '无限期' : (date || '-')
+  ];
+}
+
+export function rowTier(tier?: Tier): StringPair {
+  return ['会员类型', tier ? localizeTier(tier) : '-']
+}
+
 /**
  * @description Build card like:
  *        标准会员
@@ -75,18 +104,16 @@ function b2bMemberStatus(m: Membership): MemberStatus {
   };
 }
 
-/**
- * @description Build a card for stripe or apple like:
- *
- *
 
+/**
+ * @description Build a card for stripe or apple subscription
  */
 function autoRenewalSubsStatus(m: Membership): MemberStatus {
   const productName = m.tier ? localizeTier(m.tier) : '';
 
-  const expiresAt = m.expireDate ? parseISO(m.expireDate) : undefined;
-
   if (m.autoRenew) {
+    const renewMoment = parseAutoRenewMoment(m);
+
     /**
      * or if either expireDate or cycle is missing:
      *      标准会员
@@ -94,14 +121,14 @@ function autoRenewalSubsStatus(m: Membership): MemberStatus {
      * 自动续订     已开启
      * 到期时间     2021-11-11
      */
-    if (!expiresAt || !m.cycle) {
+    if (!renewMoment) {
       return {
         productName,
         details: [
           rowSubsSource(m.payMethod),
-          rowAutoRenewOn(),
+          ['自动续订', '已开启'],
           rowExpiration(m.expireDate),
-          rowSubsStatus(m.status)
+          rowSubsStatus(m)
         ],
       };
     }
@@ -116,8 +143,8 @@ function autoRenewalSubsStatus(m: Membership): MemberStatus {
       productName,
       details: [
         rowSubsSource(m.payMethod),
-        rowAutoRenewDate(expiresAt, m.cycle),
-        rowSubsStatus(m.status)
+        ['自动续订', concatAutoRenewMoment(renewMoment)],
+        rowSubsStatus(m)
       ]
     };
   }
@@ -129,15 +156,20 @@ function autoRenewalSubsStatus(m: Membership): MemberStatus {
    * 自动续订     已关闭
    * 到期时间     2021-11-11
    */
-  const expired = expiresAt ? isExpired(expiresAt) : true;
+  const expiresAt = m.expireDate
+    ? parseISO(m.expireDate)
+    : undefined;
+  const expired = expiresAt
+    ? isExpired(expiresAt)
+    : true;
 
   return {
     productName,
     details: [
       rowSubsSource(m.payMethod),
-      rowAutoRenewOff(),
+      ['自动续订', '已关闭'],
       rowExpiration(m.expireDate),
-      rowSubsStatus(m.status)
+      rowSubsStatus(m)
     ],
     reminder: formatRemainingDays(expiresAt, m.status),
     // For stripe, if auto renew is off and expiration date is not past.
