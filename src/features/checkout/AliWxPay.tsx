@@ -17,6 +17,7 @@ import { aliwxPaySession } from '../../store/aliwxPaySession';
 import { LoadIndicator } from '../../components/progress/LoadIndicator';
 import { ConfirmationResult } from '../../data/order';
 import { FtcPayDetails } from './FtcPayResult';
+import { Alert } from 'react-bootstrap';
 
 type OnConfirmationResult = (r: ConfirmationResult) => void;
 
@@ -251,6 +252,17 @@ function WxQrDialog(
         <div className="text-center">
           <img src={endpoint.qrSrc(ftcPaySetting.wxPayIntent.params.desktopQr)} />
         </div>
+
+        {
+          err &&
+          <Alert
+            variant="danger"
+            dismissible
+            onClose={() => setErr('')}
+          >
+            {err}
+          </Alert>
+        }
       </Modal.Body>
 
       <Modal.Footer>
