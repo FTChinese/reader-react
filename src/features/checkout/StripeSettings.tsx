@@ -31,7 +31,10 @@ export function StripeSettings(props: PassportProp) {
       <PaymentMethodSetting
         passport={props.passport}
       />
-      <StripeCancelSubs />
+      {
+        props.passport.membership.autoRenew &&
+        <StripeCancelSubs />
+      }
     </div>
   );
 }
@@ -85,6 +88,10 @@ function PaymentMethodSetting(props: PassportProp) {
   );
 }
 
+/**
+ * @description Cancel subscription.
+ * Only show this when the subscription.cancelAtPeriodEnd is true.
+ */
 function StripeCancelSubs() {
 
   const [ show, setShow ] = useState(false);
@@ -135,12 +142,16 @@ function CancelSubsDialog(
       return;
     }
 
+    setProgress(true);
     cancelSubs(passport.token, subsId)
       .then( result => {
+        console.log(result);
+        props.onHide();
+        //
         setMembership(result.membership);
-        setProgress(false);
       })
       .catch((err: ResponseError) => {
+        console.error(err);
         setErr(err.message);
         setProgress(false);
       });
