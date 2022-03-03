@@ -12,12 +12,16 @@ import Modal from 'react-bootstrap/Modal';
 import { ProgressButton } from '../../components/buttons/ProgressButton';
 import Alert from 'react-bootstrap/Alert';
 import { ResponseError } from '../../repository/response-error';
-import { isStripe } from '../../data/membership';
+import { isStripeRenewOn } from '../../data/membership';
 import { PassportProp } from '../../data/account';
 
+/**
+ * @description Show stripe payment setting.
+ * This is visible as long as user is a stripe customer.
+ */
 export function StripeSettings(props: PassportProp) {
 
-  if (!isStripe(props.passport.membership)) {
+  if (!props.passport.stripeId) {
     return null;
   }
 
@@ -32,7 +36,7 @@ export function StripeSettings(props: PassportProp) {
         passport={props.passport}
       />
       {
-        props.passport.membership.autoRenew &&
+        isStripeRenewOn(props.passport.membership) &&
         <StripeCancelSubs />
       }
     </div>
@@ -49,6 +53,7 @@ function PaymentMethodSetting(props: PassportProp) {
     return null;
   }
 
+  // Load current subscription's default payment method.
   const load = () => loadSubsDefaultPayMethod(
     props.passport.token,
     subsId
@@ -61,12 +66,12 @@ function PaymentMethodSetting(props: PassportProp) {
 
         <RowSecondary className='d-flex align-items-center'>
           <>
-            <span className="me-1">添加或更改当前订阅的支付方式</span>
+            <span className="me-1">添加更多支付方式</span>
             <Button
               variant="link"
               onClick={() => setShow(!show)}
             >
-              <span className="scale-down8">详情</span>
+              <span className="scale-down8">查看默认支付</span>
               {
                 show ?
                 <ChevronUp/> :
@@ -179,6 +184,7 @@ function CancelSubsDialog(
         <ProgressButton
           progress={progress}
           disabled={progress}
+          variant="danger"
           text="是的，我要关闭"
           onClick={handleClick}
         />
