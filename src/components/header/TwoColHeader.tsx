@@ -5,7 +5,7 @@ export function TwoColHeader(
   }
 ) {
   return (
-    <div className="d-flex justify-content-between align-items-center">
+    <div className="d-flex justify-content-between align-items-start">
       {props.left}
       {props.right}
     </div>
