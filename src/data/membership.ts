@@ -87,8 +87,8 @@ export function isRenewalSubs(m: Membership): boolean {
   return m.payMethod === 'stripe' || m.payMethod === 'apple';
 }
 
-export function isStripe(m: Membership): boolean {
-  return m.payMethod === 'stripe';
+export function isStripeRenewOn(m: Membership): boolean {
+  return m.payMethod === 'stripe' && m.autoRenew
 }
 
 export function isMemberExpired(m: Membership): boolean {
