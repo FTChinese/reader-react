@@ -5,7 +5,7 @@ import { verifyPasswordSchema } from '../../data/form-value';
 import { UpdatePasswordFormVal } from '../../data/update-account';
 import { TextInput } from '../controls/TextInput';
 import * as Yup from 'yup';
-import { SubmitButton } from '../controls/SubmitButton';
+import { FormikSubmitButton } from '../controls/FormikSubmitButton';
 
 export function UpdatePasswordForm(
   props: {
@@ -61,7 +61,7 @@ export function UpdatePasswordForm(
             name="confirmPassword"
             type="password"
           />
-          <SubmitButton
+          <FormikSubmitButton
             text="重置"
             wrapped="end"
           />

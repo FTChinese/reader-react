@@ -4,7 +4,7 @@ import { Credentials, invalidMessages } from "../../data/form-value";
 import { TextInput } from "../controls/TextInput";
 import * as Yup from 'yup';
 import { useEffect, useState } from 'react';
-import { SubmitButton } from '../controls/SubmitButton';
+import { FormikSubmitButton } from '../controls/FormikSubmitButton';
 
 /**
  * @description A form to collect email login data, used for:
@@ -72,7 +72,7 @@ export function EmailLoginForm(
             name="password"
             type="password"
           />
-          <SubmitButton
+          <FormikSubmitButton
             text={props.btnText}
             wrapped="block"
           />

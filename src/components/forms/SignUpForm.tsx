@@ -5,7 +5,7 @@ import { TextInput } from '../controls/TextInput';
 import Alert from 'react-bootstrap/Alert';
 import { useEffect, useState } from 'react';
 import { SignupFormVal } from '../../data/authentication';
-import { SubmitButton } from '../controls/SubmitButton';
+import { FormikSubmitButton } from '../controls/FormikSubmitButton';
 
 export function SignUpForm(
   props: {
@@ -74,7 +74,7 @@ export function SignUpForm(
             name="confirmPassword"
             type="password"
           />
-          <SubmitButton
+          <FormikSubmitButton
             text="注册"
             wrapped="block"
           />

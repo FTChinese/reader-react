@@ -4,7 +4,7 @@ import { Alert } from 'react-bootstrap';
 import { EmailVal, invalidMessages } from '../../data/form-value';
 import { TextInput } from '../controls/TextInput';
 import * as Yup from 'yup';
-import { SubmitButton } from '../controls/SubmitButton';
+import { FormikSubmitButton } from '../controls/FormikSubmitButton';
 
 /**
  * @description An email input form used in multiple places:
@@ -65,7 +65,7 @@ export function EmailForm(
             placeholder="yourname@example.org"
             desc={props.desc}
           />
-          <SubmitButton
+          <FormikSubmitButton
             text={props.btnText}
             variant={props.btnInline ? 'link' : 'primary'}
             wrapped={props.btnInline ? 'end' : 'block'}

@@ -5,7 +5,7 @@ import { invalidMessages } from '../../data/form-value';
 import { UpdateNameFormVal } from '../../data/update-account';
 import { TextInput } from '../controls/TextInput';
 import * as Yup from 'yup';
-import { SubmitButton } from '../controls/SubmitButton';
+import { FormikSubmitButton } from '../controls/FormikSubmitButton';
 
 export function UserNameForm(
   props: {
@@ -50,7 +50,7 @@ export function UserNameForm(
             name="userName"
             type="text"
           />
-          <SubmitButton
+          <FormikSubmitButton
             text="保存"
             wrapped="end"
           />

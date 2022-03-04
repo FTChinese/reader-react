@@ -4,7 +4,7 @@ import Alert from 'react-bootstrap/Alert';
 import * as Yup from 'yup';
 import { verifyPasswordSchema } from '../../data/form-value';
 import { PasswordResetFormVal } from '../../data/password-reset';
-import { SubmitButton } from '../controls/SubmitButton';
+import { FormikSubmitButton } from '../controls/FormikSubmitButton';
 import { TextInput } from '../controls/TextInput';
 
 export function PasswordResetForm(
@@ -60,7 +60,7 @@ export function PasswordResetForm(
               name="confirmPassword"
               type="password"
             />
-            <SubmitButton
+            <FormikSubmitButton
               text="重置"
               wrapped="block"
             />

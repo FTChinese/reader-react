@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/esm/Button';
 import { ButtonVariant } from 'react-bootstrap/types';
 import { LoadIndicator } from '../progress/LoadIndicator';
 
-export function SubmitButton<T>(
+export function FormikSubmitButton<T>(
   props: {
     text: string;
     variant?: ButtonVariant;

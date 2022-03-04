@@ -10,7 +10,7 @@ import { CounterButton } from '../buttons/CounterButton';
 import styles from '../buttons/CounterButton.module.css';
 import Alert from 'react-bootstrap/Alert';
 import { VerifySMSFormVal } from '../../data/mobile';
-import { SubmitButton } from '../controls/SubmitButton';
+import { FormikSubmitButton } from '../controls/FormikSubmitButton';
 
 export interface SMSHelper {
   setProgress: (p: boolean) => void;
@@ -128,7 +128,7 @@ export function MobileLoginForm(
                 ) : null
               }
             </div>
-            <SubmitButton
+            <FormikSubmitButton
               text={props.isLogin ? '登录' : '保存'}
               wrapped={props.isLogin ? 'block' : 'end'}
             />
