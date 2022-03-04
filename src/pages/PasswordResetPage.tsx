@@ -12,7 +12,7 @@ import { resetPassword, verifyPwToken } from '../repository/password-reset';
 import { cancelSource } from '../repository/cancel';
 import { ErrorBoundary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
-import { SubmitButton } from '../components/controls/SubmitButton';
+import { FormikSubmitButton } from '../components/controls/FormikSubmitButton';
 
 function ResetPassword(
   props: PasswordResetVerified
@@ -89,7 +89,7 @@ function ResetPassword(
               name="confirmPassword"
               type="password"
             />
-            <SubmitButton
+            <FormikSubmitButton
               text="重置"
             />
           </Form>
