@@ -4,6 +4,10 @@ import { sitemap } from '../../data/sitemap';
 import { useAuth } from '../hooks/useAuth';
 import { Loading } from '../progress/Loading';
 
+/**
+ * @description RequireAuth acts like a middleware
+ * checking authorization data.
+ */
 export function RequireAuth(
   props: {
     children: JSX.Element;
@@ -19,7 +23,6 @@ export function RequireAuth(
   // We might wait for the loading.
   useEffect(() => {
     if (passport) {
-      console.log('Passport already exists');
       return;
     }
 

@@ -6,7 +6,7 @@ import styles from './Sidebar.module.css';
 const navItems: ILink[] = [
   {
     name: '账号与安全',
-    href: sitemap.home,
+    href: sitemap.settings,
   },
   {
     name: '我的订阅',
