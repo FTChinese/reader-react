@@ -76,6 +76,10 @@
   color: var(--color-crimson);
 }
 
+.text-black40 {
+  color: var(--color-black40);
+}
+
 .text-black50 {
   color: var(--color-black50);
 }
