@@ -1,8 +1,39 @@
 import { CheckLarge } from '../../components/graphics/icons';
 import { PaymentMethod } from '../../data/stripe';
 import { useStripePaySetting } from '../../components/hooks/useStripePaySetting';
+import Card from 'react-bootstrap/Card';
 
 export function BankCard(
+  props: {
+    paymentMethod: PaymentMethod;
+  }
+) {
+
+  const card = props.paymentMethod.card;
+
+  const style = {
+    width: '20em',
+  };
+
+  return (
+    <Card className="mt-3 mb-3" style={style}>
+      <Card.Body>
+        <div className="mb-4">
+          {card.brand.toUpperCase()}
+        </div>
+        <div className='mb-2'>
+          **** **** **** {card.last4}
+        </div>
+        <div className="text-black60 scale-down8">
+          <span className="me-2">到期日</span>
+          <span>{card.expYear}/{card.expMonth}</span>
+        </div>
+      </Card.Body>
+    </Card>
+  );
+}
+
+export function BankCardRow(
   props: {
     paymentMethod: PaymentMethod;
     border?: boolean;
