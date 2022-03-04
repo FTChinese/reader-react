@@ -5,7 +5,7 @@ import { PassportProp } from '../../data/account';
 import { PaymentMethod } from '../../data/stripe';
 import { ResponseError } from '../../repository/response-error';
 import { listCusPaymentMethods } from '../../repository/stripe';
-import { BankCard } from './BankCard';
+import { BankCardRow } from './BankCard';
 
 /**
  * @description Load a customer's existing paymemnt methods and display it.
@@ -71,7 +71,7 @@ function ListPaymentMethods(
     <>
       {
         props.methods.map(m => (
-          <BankCard
+          <BankCardRow
             key={m.id}
             paymentMethod={m}
             border={true}

@@ -6,7 +6,7 @@ import { PassportProp } from '../../data/account';
 import { PaymentMethod } from '../../data/stripe';
 import { ResponseError } from '../../repository/response-error';
 import { loadStripeDefaultPayment } from '../../repository/stripe';
-import { BankCard } from './BankCard';
+import { BankCardRow } from './BankCard';
 
 /**
  * @description Loads and display Stripe's default payment method.
@@ -86,7 +86,7 @@ export function DisplayPaymentMethod(
     return <div className="text-black60 scale-down8">未设置</div>;
   }
 
-  return <BankCard
+  return <BankCardRow
     paymentMethod={props.paymentMethod}
     selectable={false}
   />;
