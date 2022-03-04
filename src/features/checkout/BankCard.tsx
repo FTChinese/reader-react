@@ -5,7 +5,9 @@ import { useStripePaySetting } from '../../components/hooks/useStripePaySetting'
 export function BankCard(
   props: {
     paymentMethod: PaymentMethod;
-    border?: boolean
+    border?: boolean;
+    showDefault?: boolean;
+    selectable?: boolean;
   }
 ) {
 
@@ -13,7 +15,10 @@ export function BankCard(
 
   const card = props.paymentMethod.card;
 
-  const handleClick = () => {
+  const handleSelect = () => {
+    if (!props.selectable) {
+      return;
+    }
     selectPaymentMethod(props.paymentMethod);
   };
 
@@ -22,10 +27,14 @@ export function BankCard(
     className += ' border-bottom';
   }
 
+  const showDefault = !!props.showDefault && (props.paymentMethod.id === paymentSetting.defaultMethod?.id);
+
+  const showCheck = !!props.selectable && (props.paymentMethod.id === paymentSetting.selectedMethod?.id);
+
   return (
     <div className={className}>
       <div className="flex-grow-1"
-        onClick={handleClick}
+        onClick={handleSelect}
       >
         <div>
           <span className="me-2">
@@ -34,6 +43,9 @@ export function BankCard(
           <span>
             **** {card.last4}
           </span>
+          {
+             showDefault && <DefaultIndicator />
+          }
         </div>
         <div className="text-black60 scale-down8">
           <span className="me-2">到期日</span>
@@ -43,10 +55,16 @@ export function BankCard(
 
       <div className="text-teal">
         {
-          (props.paymentMethod.id === paymentSetting.selectedMethod?.id) &&
+          showCheck &&
           <CheckLarge />
         }
       </div>
     </div>
+  );
+}
+
+function DefaultIndicator() {
+  return (
+    <span className="ms-2 text-black40 scale-down5">(默认支付)</span>
   );
 }
