@@ -54,6 +54,15 @@ export type SetupIntent = {
   paymentMethodId?: string;
 };
 
+export function emptySetupIntent(): SetupIntent {
+  return {
+    id: '',
+    clientSecret: '',
+    customerId: '',
+    liveMode: false,
+  }
+}
+
 export type PaymentIntent = {
   id: string;
   clientSecret?: string;
