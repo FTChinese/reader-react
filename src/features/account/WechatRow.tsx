@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { isAccountLinked, ReaderPassport } from "../../data/account";
-import { useAuth } from '../../components/hooks/useAuth';
-import { EmailLinkWxDialog } from '../wx/EmailLinkWxDialog';
-import { OnReaderAccount } from '../wx/OnReaderAccount';
-import { UnlinkDialog } from '../wx/UnlinkDialog';
+import { UnlinkDialog } from './UnlinkDialog';
 import { WxAvatar } from '../wx/WxAvatar';
-import { TwoLineRow } from '../../components/layout/TwoLineRow';
+import { SecondaryLine, TwoLineRow } from '../../components/layout/TwoLineRow';
+import { IconButton } from '../../components/buttons/IconButton';
+import { Modal } from 'react-bootstrap';
+import { ProgressButton } from '../../components/buttons/ProgressButton';
+import { ResponseError } from '../../repository/response-error';
+import { getWxOAuthCodeReq } from '../../repository/wx-auth';
+import { wxOAuthCbSession } from '../../store/wxOAuthCbSession';
 
 export function DisplayWechat(
   props: {
@@ -14,93 +17,101 @@ export function DisplayWechat(
 ) {
 
   const isLinked = isAccountLinked(props.passport);
-
-  return (
-    <TwoLineRow
-      primary="微信"
-    >
-      { isLinked ?
-        <WechatLinked
-          passport={props.passport}
-        /> :
-        <WechatMissing
-          passport={props.passport}
-        />
-      }
-    </TwoLineRow>
-  )
-}
-
-function WechatLinked(
-  props: {
-    passport: ReaderPassport;
-  }
-) {
-
-  const { refreshLogin } = useAuth();
-
-  const [showUnlink, setShowUnlink] = useState(false);
-
-  const handleUnlinked: OnReaderAccount = (passport: ReaderPassport) => {
-    setShowUnlink(false);
-    refreshLogin(passport);
-  };
-
-  return (
-    <div className="d-flex justify-content-between">
-      <div className="flex-grow-1">
-        <button className="btn btn-link"
-          onClick={() => setShowUnlink(true)}
-        >
-          解除绑定
-        </button>
-      </div>
-      <WxAvatar wechat={props.passport.wechat} />
-      <UnlinkDialog
-        passport={props.passport}
-        show={showUnlink}
-        onClose={() => setShowUnlink(false)} onUnlinked={handleUnlinked}
-      />
-    </div>
-  );
-}
-
-function WechatMissing(
-  props: {
-    passport: ReaderPassport
-  }
-) {
-  const { refreshLogin } = useAuth();
-  const [ show, setShow ] = useState(false);
+  const [ showUnlink, setShowUnlink ] = useState(false);
+  const [ showLink, setShowLink ] = useState(false);
 
   const handleClick = () => {
-    setShow(!show);
+    if (isLinked) {
+      setShowUnlink(true);
+    } else {
+      setShowLink(true);
+    }
   };
-
-  const handleLinked: OnReaderAccount = (passport: ReaderPassport) => {
-    setShow(false);
-    refreshLogin(passport);
-  }
 
   return (
     <>
-      <button
-        className="btn btn-link"
-        onClick={handleClick}
+      <TwoLineRow
+        primary="微信"
+        icon={
+          <IconButton
+            text={isLinked ? '解除绑定' : '去绑定'}
+            onClick={handleClick}
+          />
+        }
       >
-        未绑定
-      </button>
-      {
-        show &&
-        <EmailLinkWxDialog
-          passport={props.passport}
-          show={show}
-          onClose={handleClick}
-          onLinked={handleLinked}
-        />
-      }
+        { isLinked ?
+          <WxAvatar wechat={props.passport.wechat} /> :
+          <SecondaryLine text="未绑定" />
+        }
+      </TwoLineRow>
+
+      <UnlinkDialog
+        passport={props.passport}
+        show={showUnlink}
+        onClose={() => setShowUnlink(false)}
+      />
+      <EmailLinkWxDialog
+        passport={props.passport}
+        show={showLink}
+        onClose={handleClick}
+      />
     </>
   );
 }
+
+/**
+ * @description Show a dialog to let a user logged in
+ * with email/mobile link to wechat.
+ */
+function EmailLinkWxDialog(
+  props: {
+    passport: ReaderPassport;
+    show: boolean;
+    onClose: () => void;
+  }
+) {
+
+  const [ submitting, setSubmitting ] = useState(false);
+
+  const handleClick = () => {
+    setSubmitting(true);
+    getWxOAuthCodeReq()
+      .then(codeReq => {
+        wxOAuthCbSession.save(codeReq, 'link');
+        setSubmitting(false);
+        window.location.href = codeReq.redirectTo;
+      })
+      .catch((err: ResponseError) => {
+        setSubmitting(false);
+        console.log(err);
+      });
+  }
+
+  return (
+    <Modal
+      show={props.show}
+      onHide={props.onClose}
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>绑定微信？</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <p>
+        尚未关联微信。绑定微信账号后，可以使用微信账号账号快速登录
+        </p>
+      </Modal.Body>
+      <Modal.Footer>
+        <ProgressButton
+          disabled={submitting}
+          text="获取微信授权"
+          progress={submitting}
+          onClick={handleClick}
+        />
+      </Modal.Footer>
+    </Modal>
+  );
+}
+
+
 
 

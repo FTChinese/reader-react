@@ -10,17 +10,19 @@ import { wxUnlinkEmail } from '../../repository/wx-auth';
 import { ProgressButton } from '../../components/buttons/ProgressButton';
 import { StringPair, pairEmail, pairWxName } from '../../data/pair';
 import { UnlinkableSubs } from '../member/UnlinkableSubs';
-import { OnReaderAccount } from './OnReaderAccount';
 import { TwoColList } from '../../components/list/TwoColList';
+import { useAuth } from '../../components/hooks/useAuth';
+import { toast } from 'react-toastify';
 
 export function UnlinkDialog(
   props: {
     passport: ReaderPassport;
     show: boolean;
     onClose: () => void;
-    onUnlinked: OnReaderAccount;
   }
 ) {
+
+  const { refreshLogin } = useAuth();
   const [errMsg, setErrMsg] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [anchor, setAnchor] = useState<WxUnlinkAnchor | null>(null);
@@ -50,7 +52,10 @@ export function UnlinkDialog(
       )
       .then(passport => {
         setSubmitting(false);
-        props.onUnlinked(passport);
+        refreshLogin(passport);
+        toast.info('已解除微信绑定');
+        props.onClose();
+
       })
       .catch((err: ResponseError) => {
         setSubmitting(false);
