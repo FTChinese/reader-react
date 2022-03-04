@@ -7,7 +7,7 @@ import { ContentLayout } from './components/layout/ContentLayout';
 import { siteRoot } from './data/sitemap';
 import { VerificationPage } from './pages/VerificationPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
-import { HomePage } from './pages/HomePage';
+import { SettingsPage } from './pages/SettingsPage';
 import { LoginPage } from './pages/LoginPage';
 import { MembershipPage } from './pages/MembershipPage';
 import { WxOAuthCbPage } from './pages/WxOAuthCbPage';
@@ -20,6 +20,8 @@ import { SubsPage } from './pages/SubsPage';
 import { RequireAuth } from './components/routes/RequireAuth';
 import { AliPayCbPage } from './pages/AliPayCbPage';
 import { RequireShoppingCart } from './components/routes/RequireShoopingCart';
+import { StripeSettingPage } from './pages/StripeSettingPage';
+import { HomePage } from './pages/HomePage';
 
 function Skeleton() {
   return (
@@ -59,54 +61,52 @@ function App() {
             <Route path={siteRoot.wxOAuthCb} element={<WxOAuthCbPage />} />
           </Route>
 
-          <Route element={<ContentLayout />}>
+          <Route
+            element={
+              <RequireAuth>
+                <ContentLayout />
+              </RequireAuth>
+            }
+          >
+            <Route
+              path={siteRoot.setting}
+            >
+              <Route
+                index
+                element={<SettingsPage />}
+              />
+              <Route
+                path={siteRoot.stripe}
+                element={<StripeSettingPage/>}
+              />
+            </Route>
             <Route
               path={siteRoot.membership}
-              element={
-                <RequireAuth>
-                  <MembershipPage />
-                </RequireAuth>
-              }
+              element={<MembershipPage />}
             />
             <Route
               path={siteRoot.subs}
-              element={
-                <RequireAuth>
-                  <SubsPage />
-                </RequireAuth>
-              }
+              element={<SubsPage />}
             />
             <Route
               path={siteRoot.checkout}
               element={
-                <RequireAuth>
-                  <RequireShoppingCart>
-                    <CheckoutPage />
-                  </RequireShoppingCart>
-                </RequireAuth>
+                <RequireShoppingCart>
+                  <CheckoutPage />
+                </RequireShoppingCart>
               }
             />
             <Route
               path={siteRoot.alipayCb}
-              element={
-                <RequireAuth>
-                  <AliPayCbPage />
-                </RequireAuth>
-              }
+              element={<AliPayCbPage />}
             />
             <Route
               path={siteRoot.stripeSetupCb}
-              element={
-                <RequireAuth>
-                  <StripeSetupCbPage />
-                </RequireAuth>
-              }
+              element={<StripeSetupCbPage />}
             />
-            <Route index element={
-                <RequireAuth>
-                  <HomePage />
-                </RequireAuth>
-              }
+            <Route
+              index
+              element={<HomePage />}
             />
           </Route>
         </Route>

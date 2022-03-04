@@ -2,20 +2,19 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
-import { Elements } from '@stripe/react-stripe-js'
-import { stripePromise } from './features/checkout/loadStripe'
 import { BrowserRouter } from 'react-router-dom'
 import { RecoilRoot } from 'recoil'
+import { StripeContext } from './features/checkout/StripeContext'
 
 ReactDOM.render(
   <React.StrictMode>
-    <Elements stripe={stripePromise}>
+    <StripeContext>
       <BrowserRouter basename="/reader">
-        <RecoilRoot>
-          <App />
-        </RecoilRoot>
-      </BrowserRouter>
-    </Elements>
+          <RecoilRoot>
+            <App />
+          </RecoilRoot>
+        </BrowserRouter>
+    </StripeContext>
   </React.StrictMode>,
   document.getElementById('root')
 )
