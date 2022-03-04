@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { bearerAuthHeader } from '../data/account';
+import { bearerAuthHeader, ReaderPassport } from '../data/account';
 import { PagedList } from '../data/paged-list';
 import { PubKey, SetupIntent, SetupIntentParams } from '../data/stripe';
 import { Customer, PaymentMethod, SubsParams, SubsResult } from '../data/stripe';
@@ -183,4 +183,21 @@ export function loadSubsDefaultPayMethod(
   )
   .then(resp => resp.data)
   .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+/**
+ * @description Try to find a stripe default payment method.
+ * Use subscription's paymenet method if exists;
+ * otherwise fallback to customer payment method.
+ */
+export function loadStripeDefaultPayment(pp: ReaderPassport): Promise<PaymentMethod> {
+  if (pp.membership.stripeSubsId) {
+    return loadSubsDefaultPayMethod(pp.token, pp.membership.stripeSubsId);
+  }
+
+  if (pp.stripeId) {
+    return loadCusDefaultPayMethod(pp.token, pp.stripeId);
+  }
+
+  return Promise.reject(new Error('Neither stripe subscripiton nor customer found!'));
 }
