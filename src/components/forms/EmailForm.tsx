@@ -57,7 +57,7 @@ export function EmailForm(
         })}
         onSubmit={props.onSubmit}
       >
-        <Form>
+        <Form className="mb-2">
           <TextInput
             label={props.hideLabel ? undefined : '邮箱'}
             name="email"
@@ -67,7 +67,6 @@ export function EmailForm(
           />
           <FormikSubmitButton
             text={props.btnText}
-            variant={props.btnInline ? 'link' : 'primary'}
             wrapped={props.btnInline ? 'end' : 'block'}
           />
         </Form>

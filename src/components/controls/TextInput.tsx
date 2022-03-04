@@ -17,7 +17,7 @@ export function TextInput(
   const isInvalid = meta.touched && meta.error;
 
   return (
-    <div className="mb-3">
+    <div className="mb-2">
       { props.label &&
         <label
           className="form-label"
