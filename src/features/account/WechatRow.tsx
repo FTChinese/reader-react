@@ -6,6 +6,7 @@ import { OnReaderAccount } from '../wx/OnReaderAccount';
 import { UnlinkDialog } from '../wx/UnlinkDialog';
 import { WxAvatar } from '../wx/WxAvatar';
 import { AccountRow } from "./AccountRow";
+import { TwoLineRow } from '../../components/layout/TwoLineRow';
 
 export function DisplayWechat(
   props: {
@@ -16,8 +17,8 @@ export function DisplayWechat(
   const isLinked = isAccountLinked(props.passport);
 
   return (
-    <AccountRow
-      title="微信"
+    <TwoLineRow
+      primary="微信"
     >
       { isLinked ?
         <WechatLinked
@@ -27,7 +28,7 @@ export function DisplayWechat(
           passport={props.passport}
         />
       }
-    </AccountRow>
+    </TwoLineRow>
   )
 }
 
@@ -84,10 +85,11 @@ function WechatMissing(
 
   return (
     <>
-      <button className="btn btn-link"
+      <button
+        className="btn btn-link"
         onClick={handleClick}
       >
-        尚未绑定
+        未绑定
       </button>
       {
         show &&

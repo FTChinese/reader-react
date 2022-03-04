@@ -9,6 +9,7 @@ import { ResponseError } from '../../repository/response-error';
 import { EmailForm } from '../../components/forms/EmailForm';
 import { AccountRow } from "./AccountRow";
 import { OnAccountUpdated } from './OnAccountUpdated';
+import { SecondaryLine } from '../../components/layout/TwoLineRow';
 
 export function SetEmail(
   props: {
@@ -74,7 +75,9 @@ export function SetEmail(
           btnInline={true}
           hideLabel={true}
         /> :
-        <div>{emailText}</div>
+        <SecondaryLine
+          text={emailText}
+        />
       }
     </AccountRow>
   );

@@ -8,6 +8,7 @@ import { ResponseError } from '../../repository/response-error';
 import { UserNameForm } from '../../components/forms/UserNameForm';
 import { AccountRow } from "./AccountRow";
 import { OnAccountUpdated } from './OnAccountUpdated';
+import { SecondaryLine } from '../../components/layout/TwoLineRow';
 
 export function UserNameRow(
   props: {
@@ -57,9 +58,9 @@ export function UserNameRow(
           errMsg={errMsg}
           userName={props.userName}
         /> :
-        <div>
-          {props.userName || '未设置'}
-        </div>
+        <SecondaryLine
+          text={props.userName || '未设置'}
+        />
       }
     </AccountRow>
   );

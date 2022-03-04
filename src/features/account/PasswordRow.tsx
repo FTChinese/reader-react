@@ -7,6 +7,7 @@ import { updatePassword } from '../../repository/email-account';
 import { ResponseError } from '../../repository/response-error';
 import { UpdatePasswordForm } from '../../components/forms/UpdatePasswordForm';
 import { AccountRow } from './AccountRow';
+import { SecondaryLine } from '../../components/layout/TwoLineRow';
 
 export function DisplayPassword(
   props: {
@@ -64,7 +65,9 @@ export function DisplayPassword(
           onSubmit={handleSubmit}
           errMsg={errMsg}
         /> :
-        <div>*******</div>
+        <SecondaryLine
+          text="*******"
+        />
       }
     </AccountRow>
   )

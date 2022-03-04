@@ -8,6 +8,7 @@ import { ResponseError } from '../../repository/response-error';
 import { MobileLoginForm, SMSHelper } from '../../components/forms/MobileLoginForm';
 import { AccountRow } from "./AccountRow";
 import { OnAccountUpdated } from './OnAccountUpdated';
+import { SecondaryLine } from '../../components/layout/TwoLineRow';
 
 export function DisplayMobile(
   props: {
@@ -81,8 +82,9 @@ export function DisplayMobile(
           isLogin={false}
           mobile={props.mobile}
         /> :
-
-        <div>{props.mobile || '未设置'}</div>
+        <SecondaryLine
+          text={props.mobile || '未设置'}
+        />
       }
     </AccountRow>
   );

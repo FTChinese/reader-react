@@ -1,6 +1,6 @@
 import { Button } from 'react-bootstrap';
 import { XLarge, Pencil } from '../../components/graphics/icons';
-import { RowContainer } from '../../components/list/RowCotainer';
+import { TwoLineRow } from '../../components/layout/TwoLineRow';
 
 export function AccountRow(
   props: {
@@ -11,30 +11,24 @@ export function AccountRow(
   }
 ) {
 
+  const editBtn = (
+    <Button
+      variant="link"
+      onClick={props.onEdit}
+    >
+      { props.isEditing ?
+        <XLarge /> :
+        <Pencil />
+      }
+    </Button>
+  );
+
   return (
-    <RowContainer>
-      <>
-        <div
-          className="d-flex justify-content-between align-items-center"
-        >
-          <h5>{props.title}</h5>
-
-          {
-            props.onEdit &&
-            <Button
-              variant="link"
-              onClick={props.onEdit}
-            >
-              { props.isEditing ?
-                <XLarge /> :
-                <Pencil />
-              }
-            </Button>
-          }
-        </div>
-
-        {props.children}
-      </>
-    </RowContainer>
+    <TwoLineRow
+      primary={props.title}
+      icon={editBtn}
+    >
+      {props.children}
+    </TwoLineRow>
   );
 }

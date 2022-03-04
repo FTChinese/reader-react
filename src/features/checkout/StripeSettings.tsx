@@ -2,9 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../../components/hooks/useAuth';
 import { ChevronDown, ChevronRight, ChevronUp } from '../../components/graphics/icons';
 import { cancelStripeSubs } from '../../repository/stripe';
-import { StripeDefaultPaymentMethod } from './StripDefaultPaymentMethod';
 import { BorderHeader } from '../../components/header/BorderHeader';
-import { RowContainer, RowSecondary } from '../../components/list/RowCotainer';
 import Modal from 'react-bootstrap/Modal';
 import { ProgressButton } from '../../components/buttons/ProgressButton';
 import Alert from 'react-bootstrap/Alert';
@@ -12,9 +10,9 @@ import { ResponseError } from '../../repository/response-error';
 import { isStripeRenewOn } from '../../data/membership';
 import { PassportProp } from '../../data/account';
 import { IconButton } from '../../components/buttons/IconButton';
-import { Flex } from '../../components/layout/Flex';
 import { Link } from 'react-router-dom';
 import { sitemap } from '../../data/sitemap';
+import { TwoLineRow } from '../../components/layout/TwoLineRow';
 
 /**
  * @description Show stripe payment setting.
@@ -54,23 +52,16 @@ export function StripeSettings(props: PassportProp) {
  */
 function RowManagePaymentMethod() {
   return (
-    <RowContainer>
-      <>
-        <Flex>
-          <>
-            <h6>管理支付方式</h6>
-            <Link to={sitemap.stripeSetting}>
-              <span className="scale-down8">设置</span>
-              <ChevronRight />
-            </Link>
-          </>
-        </Flex>
-
-        <RowSecondary className='d-flex align-items-center'>
-          <span className="me-1">查看已有支付方式或添加新的支付方式</span>
-        </RowSecondary>
-      </>
-    </RowContainer>
+    <TwoLineRow
+      primary="管理支付方式"
+      secondary="查看已有支付方式或添加新的支付方式"
+      icon={
+        <Link to={sitemap.stripeSetting}>
+          <span className="scale-down8">设置</span>
+          <ChevronRight />
+        </Link>
+      }
+    />
   );
 }
 
@@ -81,31 +72,17 @@ function RowDefaultPaymentMethod(props: PassportProp) {
   const icon = show ? <ChevronUp/> : <ChevronDown/>;
 
   return (
-    <RowContainer>
-      <>
-        <Flex>
-          <>
-            <h6>默认支付方式</h6>
-            <IconButton
-              text="查看"
-              end={icon}
-              onClick={() => setShow(!show)}
-            />
-          </>
-        </Flex>
-
-        <RowSecondary>
-          <span>自动续订时使用的默认支付方式</span>
-        </RowSecondary>
-
-        {
-          show &&
-          <StripeDefaultPaymentMethod
-            passport={props.passport}
-          />
-        }
-      </>
-    </RowContainer>
+    <TwoLineRow
+      primary="默认支付方式"
+      secondary="自动续订时使用的默认支付方式"
+      icon={
+        <IconButton
+          text="查看"
+          end={icon}
+          onClick={() => setShow(!show)}
+        />
+      }
+    />
   );
 }
 
@@ -118,29 +95,24 @@ function RowCancelSubs() {
   const [ show, setShow ] = useState(false);
 
   return (
-    <RowContainer>
-      <>
-        <Flex>
-          <>
-            <h6>关闭自动续订</h6>
-            <IconButton
-              text="关闭"
-              end={<ChevronRight />}
-              onClick={() => setShow(true)}
-            />
-          </>
-        </Flex>
+    <>
+      <TwoLineRow
+        primary="关闭自动续订"
+        secondary="关闭自动续订将在本次订阅到期后停止扣款"
+        icon={
+          <IconButton
+            text="关闭"
+            end={<ChevronRight />}
+            onClick={() => setShow(true)}
+          />
+        }
+      />
 
-        <RowSecondary>
-          <span>关闭自动续订将在本次订阅到期后停止扣款</span>
-        </RowSecondary>
-
-        <CancelSubsDialog
-          show={show}
-          onHide={() => setShow(false)}
-        />
-      </>
-    </RowContainer>
+      <CancelSubsDialog
+        show={show}
+        onHide={() => setShow(false)}
+      />
+    </>
   );
 }
 
