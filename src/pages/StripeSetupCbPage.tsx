@@ -1,26 +1,26 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { SingleCenterCol } from '../components/layout/ContentLayout';
 import { ErrorBoundary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
-import { stripePromise } from '../features/checkout/loadStripe';
 import { useAuth } from '../components/hooks/useAuth';
-import { newSetupCbParams, stripeSetupSession } from '../store/stripeSetupSession';
+import { newSetupCbParams, SetupUsage, stripeSetupSession, validateSetupSession } from '../store/stripeSetupSession';
 import { sitemap } from '../data/sitemap';
 import { ReaderPassport } from '../data/account';
 import { useStripePaySetting } from '../components/hooks/useStripePaySetting';
 import { loadPaymentMethod } from '../repository/stripe';
+import { BankCard } from '../features/checkout/BankCard';
+import { PaySuccessLink } from '../features/checkout/PaySuccessLink';
+import { stripePromise } from '../features/checkout/StripeContext';
 
 export function StripeSetupCbPage() {
 
   const { passport } = useAuth();
-  const { removeSetupIntent } = useStripePaySetting();
+  const { paymentSetting, selectPaymentMethod } = useStripePaySetting();
 
   const [ searchParams, _ ] = useSearchParams();
   const navigate = useNavigate();
-  const { selectPaymentMethod } = useStripePaySetting();
 
-  const [ progress, setProgress ] = useState(true);
+  const [ progress, setProgress ] = useState(false);
   const [ err, setErr ] = useState('');
 
   useEffect(() => {
@@ -30,22 +30,32 @@ export function StripeSetupCbPage() {
     }
 
     const params = newSetupCbParams(searchParams);
-    const invalid = stripeSetupSession.validate(params, passport)
+    const sess = stripeSetupSession.load();
+
+    if (!sess) {
+      setErr('Invalid session');
+      return;
+    }
+
+    const invalid = validateSetupSession({
+      params,
+      sess,
+      passport,
+    });
 
     if (invalid) {
       setErr(invalid);
       return;
     }
 
-    getPaymentMethod(params.setupIntentClientSecret, passport);
+    getPaymentMethod(params.setupIntentClientSecret, passport, sess.usage);
 
     return function clear() {
       stripeSetupSession.clear();
-      removeSetupIntent();
     }
-  }, [passport?.id]);
+  }, []);
 
-  async function getPaymentMethod(secret: string, pp: ReaderPassport) {
+  async function getPaymentMethod(secret: string, pp: ReaderPassport, usage: SetupUsage) {
 
     const stripe = await stripePromise;
     if (!stripe) {
@@ -72,12 +82,16 @@ export function StripeSetupCbPage() {
       const pm = await loadPaymentMethod(pp.token, pmId);
 
       selectPaymentMethod(pm);
-      setProgress(false);
-      // Navigate back to checkout page.
-      // By now the global stripe payment method
-      // state will have a default payment method
-      // you can display to user on checkout page.
-      navigate(sitemap.checkout);
+      // If user is setting up payment upon subscription,
+      // navigate back to checkout page.
+      if (usage === SetupUsage.PayNow) {
+        // By now the global stripe payment method
+        // state will have a default payment method
+        // you can display to user on checkout page.
+        navigate(sitemap.checkout);
+      } else {
+        setProgress(false);
+      }
     } catch (e) {
       console.log(e);
       setProgress(false)
@@ -86,12 +100,19 @@ export function StripeSetupCbPage() {
   }
 
   return (
-    <SingleCenterCol>
-      <ErrorBoundary errMsg={err}>
-        <Loading loading={progress}>
-          <div>Payment method setup successfully.</div>
-        </Loading>
-      </ErrorBoundary>
-    </SingleCenterCol>
+    <ErrorBoundary errMsg={err}>
+      <Loading loading={progress}>
+        <div className="d-flex flex-column align-items-center">
+          <h5>Stripe支付已添加</h5>
+          {
+            paymentSetting.selectedMethod &&
+            <BankCard
+              paymentMethod={paymentSetting.selectedMethod}
+            />
+          }
+          <PaySuccessLink/>
+        </div>
+      </Loading>
+    </ErrorBoundary>
   );
 }
