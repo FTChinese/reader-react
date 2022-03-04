@@ -31,7 +31,6 @@ export function ProgressButton(
     >
       <CircleLoader
         progress={props.progress}
-        small={true}
       />
       {
         !props.progress &&

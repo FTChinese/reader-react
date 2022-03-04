@@ -4,7 +4,7 @@ import { Variant } from 'react-bootstrap/types';
 export function CircleLoader(
   props: {
     progress: boolean;
-    small?: boolean;
+    large?: boolean;
     variant?: Variant;
   }
 ) {
@@ -16,7 +16,7 @@ export function CircleLoader(
     <Spinner
       as="span"
       animation="border"
-      size={props.small ? 'sm' : undefined}
+      size={props.large ? undefined : 'sm'}
       variant={props.variant}
     />
   );

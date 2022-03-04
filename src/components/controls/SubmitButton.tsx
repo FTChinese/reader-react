@@ -23,7 +23,6 @@ export function SubmitButton(
     >
       <CircleLoader
         progress={props.progress}
-        small={true}
       />
       {props.text}
     </Button>

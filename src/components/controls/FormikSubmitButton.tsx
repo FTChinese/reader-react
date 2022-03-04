@@ -19,7 +19,6 @@ export function FormikSubmitButton<T>(
   const indicator = (
     <CircleLoader
       progress={isSubmitting}
-      small={true}
     />
   );
 
