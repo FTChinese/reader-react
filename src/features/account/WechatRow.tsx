@@ -5,7 +5,6 @@ import { EmailLinkWxDialog } from '../wx/EmailLinkWxDialog';
 import { OnReaderAccount } from '../wx/OnReaderAccount';
 import { UnlinkDialog } from '../wx/UnlinkDialog';
 import { WxAvatar } from '../wx/WxAvatar';
-import { AccountRow } from "./AccountRow";
 import { TwoLineRow } from '../../components/layout/TwoLineRow';
 
 export function DisplayWechat(
