@@ -1,6 +1,6 @@
 import Button from 'react-bootstrap/Button';
 import { ButtonVariant } from 'react-bootstrap/types';
-import { LoadIndicator } from '../progress/LoadIndicator';
+import { CircleLoader } from '../progress/LoadIndicator';
 
 /**
  * @description SubmitButton is used in a plain form
@@ -21,7 +21,7 @@ export function SubmitButton(
       size="sm"
       type="submit"
     >
-      <LoadIndicator
+      <CircleLoader
         progress={props.progress}
         small={true}
       />

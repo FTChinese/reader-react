@@ -6,9 +6,9 @@ import { ProgressButton } from '../../components/buttons/ProgressButton';
 import { ArrowClockwise } from '../../components/graphics/icons';
 import { useAuth } from '../../components/hooks/useAuth';
 import { TwoColList } from '../../components/list/TwoColList';
-import { LoadIndicator } from '../../components/progress/LoadIndicator';
-import { PassportProp, ReaderPassport } from '../../data/account';
-import { hasAddOn, isOneTimePurchase, Membership } from '../../data/membership';
+import { CircleLoader } from '../../components/progress/LoadIndicator';
+import { ReaderPassport } from '../../data/account';
+import { hasAddOn, Membership } from '../../data/membership';
 import { StringPair } from '../../data/pair';
 import { refreshIAP } from '../../repository/apple';
 import { reloadMembership } from '../../repository/membership';
@@ -26,7 +26,7 @@ export function SubsOverview(
 
   return (
     <Card>
-      <Card.Header className="d-flex justify-content-between align-content-center">
+      <Card.Header className="d-flex justify-content-between align-content-start">
         <span>我的订阅</span>
         <RefreshMembership />
       </Card.Header>
@@ -138,7 +138,7 @@ function RefreshMembership() {
     >
       {
         progress ?
-        <LoadIndicator progress={progress} small={true} /> :
+        <CircleLoader progress={progress} small={true} /> :
         <ArrowClockwise/>
       }
     </Button>

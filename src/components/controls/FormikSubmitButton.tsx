@@ -1,7 +1,7 @@
 import { useFormikContext } from 'formik';
 import Button from 'react-bootstrap/esm/Button';
 import { ButtonVariant } from 'react-bootstrap/types';
-import { LoadIndicator } from '../progress/LoadIndicator';
+import { CircleLoader } from '../progress/LoadIndicator';
 
 export function FormikSubmitButton<T>(
   props: {
@@ -17,7 +17,7 @@ export function FormikSubmitButton<T>(
   const { dirty, isValid, isSubmitting } = useFormikContext<T>();
 
   const indicator = (
-    <LoadIndicator
+    <CircleLoader
       progress={isSubmitting}
       small={true}
     />

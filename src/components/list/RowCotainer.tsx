@@ -36,6 +36,7 @@ export function RowTrailButton(
   props: {
     text?: string;
     hideIcon?: boolean;
+    icon?: JSX.Element;
     variant?: ButtonVariant
     onClick?: () => void;
   }
@@ -49,9 +50,7 @@ export function RowTrailButton(
       {
         props.text && <span className="scale-down8">{props.text}</span>
       }
-      {
-        !props.hideIcon && <ChevronRight />
-      }
+      {props.icon}
     </Button>
   );
 }

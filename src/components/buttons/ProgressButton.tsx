@@ -1,6 +1,6 @@
 import Button from 'react-bootstrap/Button';
 import { ButtonVariant } from 'react-bootstrap/types';
-import { LoadIndicator } from '../progress/LoadIndicator';
+import { CircleLoader } from '../progress/LoadIndicator';
 
 export function ProgressButton(
   props: {
@@ -29,7 +29,7 @@ export function ProgressButton(
       size="sm"
       type="button"
     >
-      <LoadIndicator
+      <CircleLoader
         progress={props.progress}
         small={true}
       />

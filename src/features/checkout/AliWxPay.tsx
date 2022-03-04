@@ -14,7 +14,7 @@ import { toast } from 'react-toastify';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { aliwxPaySession } from '../../store/aliwxPaySession';
-import { LoadIndicator } from '../../components/progress/LoadIndicator';
+import { CircleLoader } from '../../components/progress/LoadIndicator';
 import { ConfirmationResult } from '../../data/order';
 import { FtcPayDetails } from './FtcPayResult';
 import { Alert } from 'react-bootstrap';
@@ -275,7 +275,7 @@ function WxQrDialog(
           {
             progress ?
             <>
-              <LoadIndicator
+              <CircleLoader
                 progress={progress}
                 small={true}
               />
