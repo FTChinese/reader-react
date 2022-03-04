@@ -277,7 +277,6 @@ function WxQrDialog(
             <>
               <CircleLoader
                 progress={progress}
-                small={true}
               />
               <span>正在验证，请稍候</span>
             </> :

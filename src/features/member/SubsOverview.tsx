@@ -138,7 +138,7 @@ function RefreshMembership() {
     >
       {
         progress ?
-        <CircleLoader progress={progress} small={true} /> :
+        <CircleLoader progress={progress} /> :
         <ArrowClockwise/>
       }
     </Button>
