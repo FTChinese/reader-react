@@ -2,9 +2,15 @@ import { ReaderPassport } from '../data/account';
 import { SetupIntent } from '../data/stripe';
 import { unixNow } from '../utils/now';
 
-const key = 'stripe_setup_sessi';
+const key = 'stripe_setup_sess';
+
+export enum SetupUsage {
+  PayNow,
+  Future,
+};
 
 type SetupSession = {
+  usage: SetupUsage;
   id: string;
   cus: string;
   exp: number;
@@ -24,9 +30,49 @@ export function newSetupCbParams(query: URLSearchParams): SetupCallbackParams {
   };
 }
 
+function validateParams(params: SetupCallbackParams): string {
+  if (!params.setupIntent || !params.setupIntentClientSecret) {
+    return 'Missing required query parameters';
+  }
+
+  if (params.redirectStatus !== 'succeeded') {
+    return `错误的状态: ${params.redirectStatus}`;
+  }
+
+  return '';
+}
+
+export function validateSetupSession(args: {
+  params: SetupCallbackParams;
+  sess: SetupSession;
+  passport: ReaderPassport;
+}): string {
+
+  const invalid = validateParams(args.params);
+  if (invalid) {
+    return invalid;
+  }
+
+  if (args.params.setupIntent !== args.sess.id) {
+    return '响应无效';
+  }
+
+  if (args.sess.exp < unixNow()) {
+    return '响应超时';
+  }
+
+  if (args.sess.cus !== args.passport.stripeId) {
+    return 'Not targeting current user';
+  }
+
+  return '';
+}
+
 export const stripeSetupSession = {
-  save(si: SetupIntent) {
+
+  save(si: SetupIntent, usage: SetupUsage) {
     const sess: SetupSession = {
+      usage,
       id: si.id,
       cus: si.customerId,
       exp: unixNow() + 5 * 60,
@@ -42,36 +88,6 @@ export const stripeSetupSession = {
     }
 
     return JSON.parse(v) as SetupSession;
-  },
-
-  validate(params: SetupCallbackParams, pp: ReaderPassport): string {
-    if (!params.setupIntent || !params.setupIntentClientSecret) {
-      return 'Missing required query parameters';
-    }
-
-    if (params.redirectStatus !== 'succeeded') {
-      return `错误的状态: ${params.redirectStatus}`;
-    }
-
-    const sess = stripeSetupSession.load();
-
-    if (!sess) {
-      return 'Invalid session';
-    }
-
-    if (params.setupIntent !== sess.id) {
-      return '响应无效';
-    }
-
-    if (sess.exp < unixNow()) {
-      return '响应超时';
-    }
-
-    if (sess.cus !== pp.stripeId) {
-      return 'Not targeting current user';
-    }
-
-    return '';
   },
 
   clear() {
