@@ -1,19 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { ReaderPassport } from '../../data/account';
+import { PassportProp } from '../../data/account';
 import { CartItemStripe } from '../../data/shopping-cart';
 import { Subs, SubsResult } from '../../data/stripe';
 import { ResponseError } from '../../repository/response-error';
-import { createStripeSubs, loadCusDefaultPayMethod, updateStripeSubs } from '../../repository/stripe';
+import { createStripeSubs, updateStripeSubs } from '../../repository/stripe';
 import { useAuth } from '../../components/hooks/useAuth';
 import { IntentKind } from '../../data/chekout-intent';
 import { useStripePaySetting } from '../../components/hooks/useStripePaySetting';
-import { PaymentMethodSelector } from './PaymentMethodSelector';
-import { StripeDefaultPaymentMethod } from './StripDefaultPaymentMethod';
+import { DisplayPaymentMethod, StripeDefaultPaymentMethod } from './StripDefaultPaymentMethod';
 import { ProgressButton } from '../../components/buttons/ProgressButton';
 import { StripeSubsDetails } from './StripeSubsDetails';
 import { localizeTier } from '../../data/localization';
 import { StripePayLink } from '../product/StripePayLink';
+import { IconButton } from '../../components/buttons/IconButton';
+import { ChevronRight } from '../../components/graphics/icons';
+import { PaymentMethodDialog } from './PaymentMethodDialog';
+import { Flex } from '../../components/layout/Flex';
 
 /**
  * @description Handles Stripe pay actions.
@@ -32,6 +35,7 @@ export function StripePay(
     return null;
   }
 
+  const { paymentSetting } = useStripePaySetting();
   const [ subs, setSubs ] = useState<Subs>();
 
   const msg = (
@@ -75,9 +79,21 @@ export function StripePay(
   return (
     <>
       { msg }
-      <CustomerPaymentMethod
-        passport={passport}
-      />
+
+      <div className="mt-3 mb-3">
+        <PaymentMethodHeader />
+        {
+          // If a payment method is seletecd,
+          // display it; otherwise loads default payment method.
+          paymentSetting.selectedMethod ?
+          <DisplayPaymentMethod
+            paymentMethod={paymentSetting.selectedMethod}
+          /> :
+          <StripeDefaultPaymentMethod
+            passport={passport}
+          />
+        }
+      </div>
 
       <SubscribeButton
         passport={passport}
@@ -89,31 +105,39 @@ export function StripePay(
   );
 }
 
-/**
- * @description Load and show a customer's default payment
- * method, used for new subscription.
- */
-function CustomerPaymentMethod(
-  props: {
-    passport: ReaderPassport,
-  }
-) {
+function PaymentMethodHeader() {
+  const [ show, setShow ] = useState(false);
 
-  const cusId = props.passport.stripeId;
-  if (!cusId) {
-    return null;
-  }
+  const { paymentSetting } = useStripePaySetting();
 
-  const load = () => loadCusDefaultPayMethod(props.passport.token, cusId);
+  // Automatically close the dialog after user selected a new payment method.
+  useEffect(() => {
+    // If nothing selected, do nothing.
+    if (!paymentSetting.selectedMethod) {
+      return;
+    }
+    setShow(false);
+  }, [paymentSetting.selectedMethod?.id]);
 
   return (
-    <div className="mt-3 mb-3">
-      <PaymentMethodSelector/>
-      <StripeDefaultPaymentMethod
-        passport={props.passport}
-        load={load}
+    <>
+      <Flex>
+        <>
+          <h6>支付方式</h6>
+          <IconButton
+            text="添加"
+            end={<ChevronRight />}
+            onClick={() => setShow(true)}
+          />
+        </>
+      </Flex>
+
+      <PaymentMethodDialog
+        title="选择或添加支付方式"
+        show={show}
+        onHide={() => setShow(false)}
       />
-    </div>
+    </>
   );
 }
 
@@ -121,8 +145,7 @@ function CustomerPaymentMethod(
  * @description Submit required data to create a new subscription.
  */
 function SubscribeButton(
-  props: {
-    passport: ReaderPassport;
+  props: PassportProp & {
     item: CartItemStripe;
     isNew: boolean; // Whether it is a new subscription, or updating to other price.
     onSuccess: (subs: Subs) => void;

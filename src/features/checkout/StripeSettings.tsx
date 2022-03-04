@@ -1,19 +1,20 @@
 import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
 import { useAuth } from '../../components/hooks/useAuth';
-import { ChevronDown, ChevronUp } from '../../components/graphics/icons';
-import { cancelStripeSubs, loadSubsDefaultPayMethod } from '../../repository/stripe';
-import { PaymentMethodSelector } from './PaymentMethodSelector';
+import { ChevronDown, ChevronRight, ChevronUp } from '../../components/graphics/icons';
+import { cancelStripeSubs } from '../../repository/stripe';
 import { StripeDefaultPaymentMethod } from './StripDefaultPaymentMethod';
 import { BorderHeader } from '../../components/header/BorderHeader';
-import { RowContainer, RowSecondary, RowTrailButton } from '../../components/list/RowCotainer';
-import { TwoColHeader } from '../../components/header/TwoColHeader';
+import { RowContainer, RowSecondary } from '../../components/list/RowCotainer';
 import Modal from 'react-bootstrap/Modal';
 import { ProgressButton } from '../../components/buttons/ProgressButton';
 import Alert from 'react-bootstrap/Alert';
 import { ResponseError } from '../../repository/response-error';
 import { isStripeRenewOn } from '../../data/membership';
 import { PassportProp } from '../../data/account';
+import { IconButton } from '../../components/buttons/IconButton';
+import { Flex } from '../../components/layout/Flex';
+import { Link } from 'react-router-dom';
+import { sitemap } from '../../data/sitemap';
 
 /**
  * @description Show stripe payment setting.
@@ -32,60 +33,75 @@ export function StripeSettings(props: PassportProp) {
         level={5}
       />
 
-      <PaymentMethodSetting
+      <RowManagePaymentMethod />
+      <RowDefaultPaymentMethod
         passport={props.passport}
       />
       {
         isStripeRenewOn(props.passport.membership) &&
-        <StripeCancelSubs />
+        <RowCancelSubs />
       }
     </div>
   );
 }
 
-function PaymentMethodSetting(props: PassportProp) {
+/**
+ * @description Payment method managment.
+ * @todo Enable deleting payment method, change
+ * current subscription's default payment method.
+ * If subscription does not exist, set default
+ * payment method on customer.
+ */
+function RowManagePaymentMethod() {
+  return (
+    <RowContainer>
+      <>
+        <Flex>
+          <>
+            <h6>管理支付方式</h6>
+            <Link to={sitemap.stripeSetting}>
+              <span className="scale-down8">设置</span>
+              <ChevronRight />
+            </Link>
+          </>
+        </Flex>
+
+        <RowSecondary className='d-flex align-items-center'>
+          <span className="me-1">查看已有支付方式或添加新的支付方式</span>
+        </RowSecondary>
+      </>
+    </RowContainer>
+  );
+}
+
+function RowDefaultPaymentMethod(props: PassportProp) {
 
   const [ show, setShow ] = useState(false);
 
-  const subsId = props.passport.membership.stripeSubsId;
-  if (!subsId) {
-    console.error('Stripe subscription id not found');
-    return null;
-  }
-
-  // Load current subscription's default payment method.
-  const load = () => loadSubsDefaultPayMethod(
-    props.passport.token,
-    subsId
-  );
+  const icon = show ? <ChevronUp/> : <ChevronDown/>;
 
   return (
     <RowContainer>
       <>
-        <PaymentMethodSelector/>
-
-        <RowSecondary className='d-flex align-items-center'>
+        <Flex>
           <>
-            <span className="me-1">添加更多支付方式</span>
-            <Button
-              variant="link"
+            <h6>默认支付方式</h6>
+            <IconButton
+              text="查看"
+              end={icon}
               onClick={() => setShow(!show)}
-            >
-              <span className="scale-down8">查看默认支付</span>
-              {
-                show ?
-                <ChevronUp/> :
-                <ChevronDown/>
-              }
-
-            </Button>
+            />
           </>
+        </Flex>
+
+        <RowSecondary>
+          <span>自动续订时使用的默认支付方式</span>
         </RowSecondary>
+
         {
           show &&
           <StripeDefaultPaymentMethod
             passport={props.passport}
-            load={load}
           />
         }
       </>
@@ -97,22 +113,24 @@ function PaymentMethodSetting(props: PassportProp) {
  * @description Cancel subscription.
  * Only show this when the subscription.cancelAtPeriodEnd is true.
  */
-function StripeCancelSubs() {
+function RowCancelSubs() {
 
   const [ show, setShow ] = useState(false);
 
   return (
     <RowContainer>
       <>
-        <TwoColHeader
-          left={<h6>关闭自动续订</h6>}
-          right={
-            <RowTrailButton
+        <Flex>
+          <>
+            <h6>关闭自动续订</h6>
+            <IconButton
               text="关闭"
+              end={<ChevronRight />}
               onClick={() => setShow(true)}
             />
-          }
-        />
+          </>
+        </Flex>
+
         <RowSecondary>
           <span>关闭自动续订将在本次订阅到期后停止扣款</span>
         </RowSecondary>

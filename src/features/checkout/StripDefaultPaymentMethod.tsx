@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { useStripePaySetting } from '../../components/hooks/useStripePaySetting';
 import { ErrorBoundary } from '../../components/progress/ErrorBoundary';
 import { Loading } from '../../components/progress/Loading';
-import { ReaderPassport } from '../../data/account';
+import { PassportProp } from '../../data/account';
 import { PaymentMethod } from '../../data/stripe';
 import { ResponseError } from '../../repository/response-error';
+import { loadStripeDefaultPayment } from '../../repository/stripe';
 import { BankCard } from './BankCard';
 
 /**
@@ -14,39 +15,37 @@ import { BankCard } from './BankCard';
  * if user is alreayd subscribed.
  */
 export function StripeDefaultPaymentMethod(
-  props: {
-    passport: ReaderPassport;
-    load: () => Promise<PaymentMethod>;
-  }
+  props: PassportProp,
 ) {
   const [ err, setErr ] = useState('');
   const [ progress, setProgress ] = useState(false);
 
-  const { paymentSetting, selectPaymentMethod } = useStripePaySetting();
+  const { paymentSetting, setDefaultPaymentMethod } = useStripePaySetting();
 
   // If there's already a default payment method, stop;
   // otherwise load either customer's invoice default payment method,
   // or current subscription's default payment method.
   useEffect(() => {
-    if (paymentSetting.selectedMethod) {
+    if (paymentSetting.defaultMethod) {
       return;
     }
 
     setErr('');
     setProgress(true);
 
-    props.load()
+    // If membership.stripeSubsId exists, use
+    // subscription's default payment method;
+    // otherwise, if ReaderAccount.stripeId exists,
+    // user customer's default payment method.
+    loadStripeDefaultPayment(props.passport)
       .then(pm => {
         console.log('Stripe payment method loaded');
         setProgress(false);
         // Only set payment method if no one exists.
         // It might happen when network is very slow, the data is loaded
         // after user added a new card.
-        if (paymentSetting.selectedMethod) {
-          return;
-        }
 
-        selectPaymentMethod(pm);
+        setDefaultPaymentMethod(pm);
       })
       .catch((err: ResponseError) => {
         setProgress(false);
@@ -61,7 +60,7 @@ export function StripeDefaultPaymentMethod(
     <ErrorBoundary errMsg={err}>
       <Loading loading={progress}>
         <DisplayPaymentMethod
-          paymentMethod={paymentSetting.selectedMethod}
+          paymentMethod={paymentSetting.defaultMethod}
         />
       </Loading>
     </ErrorBoundary>
@@ -76,9 +75,8 @@ export function StripeDefaultPaymentMethod(
  * If customer's default payment method exists, and a new card is added,
  * always use the new one.
  * As long as a payment method exits, it will be displayed.
- * @todo In the future we should list all payment methods.
  */
-function DisplayPaymentMethod(
+export function DisplayPaymentMethod(
   props: {
     paymentMethod?: PaymentMethod;
   }
@@ -90,5 +88,6 @@ function DisplayPaymentMethod(
 
   return <BankCard
     paymentMethod={props.paymentMethod}
+    selectable={false}
   />;
 }
