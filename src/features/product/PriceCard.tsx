@@ -1,5 +1,4 @@
 import Card from 'react-bootstrap/Card';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PriceParts } from '../../data/localization';
 import {
@@ -9,10 +8,7 @@ import {
   newStripeCartItemParams,
   CartItemStripe
 } from '../../data/shopping-cart';
-import { Customer } from '../../data/stripe';
 import { useAuth } from '../../components/hooks/useAuth';
-import { CustomerDialog } from './CustomerDialog';
-import { isEmailAccount } from '../../data/account';
 import { sitemap } from '../../data/sitemap';
 import { useShoppingCart } from '../../components/hooks/useShoppingCart';
 
@@ -176,43 +172,17 @@ export function StripePriceCard(
   const navigate = useNavigate();
   const { putStripeItem } = useShoppingCart();
 
-  const [ showCustomer, setShowCustomer ] = useState(false);
   const params = newStripeCartItemParams(props.item);
 
-  const putIntoCart = () => {
+  const handleClick = () => {
     putStripeItem(props.item);
     navigate(sitemap.checkout, { replace: false });
   };
 
-  const handleClick = () => {
-    if (isEmailAccount(passport)) {
-      putIntoCart();
-      return;
-    }
-
-    setShowCustomer(true);
-  };
-
-  // After customer created, show the got to checkout page.
-  const customerCreated = (cus: Customer) => {
-    console.log(cus);
-    setShowCustomer(false);
-    putIntoCart();
-  };
-
   return (
-    <>
-      <PriceCard
-        params={params}
-        onClick={handleClick}
-      />
-
-      <CustomerDialog
-        passport={passport}
-        show={showCustomer}
-        onHide={() => setShowCustomer(false)}
-        onCreated={customerCreated}
-      />
-    </>
+    <PriceCard
+      params={params}
+      onClick={handleClick}
+    />
   );
 }
