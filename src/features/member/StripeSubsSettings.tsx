@@ -12,6 +12,7 @@ import { IconButton } from '../../components/buttons/IconButton';
 import { TwoLineRow } from '../../components/layout/TwoLineRow';
 import { LoadButton } from '../../components/buttons/LoadButton';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
+import { StripeDefaultPaymentMethod } from '../checkout/StripDefaultPaymentMethod';
 
 /**
  * @description Show stripe payment setting.
@@ -30,7 +31,9 @@ export function StripeSubsSettings(props: PassportProp) {
         level={5}
       />
 
-      <RowDefaultPaymentMethod />
+      <RowDefaultPaymentMethod
+        passport={props.passport}
+      />
       {
         isStripeRenewOn(props.passport.membership) &&
         <RowCancelSubs />
@@ -39,7 +42,9 @@ export function StripeSubsSettings(props: PassportProp) {
   );
 }
 
-function RowDefaultPaymentMethod() {
+function RowDefaultPaymentMethod(
+  props: PassportProp,
+) {
 
   const [ show, setShow ] = useState(false);
 
@@ -56,7 +61,15 @@ function RowDefaultPaymentMethod() {
           onClick={() => setShow(!show)}
         />
       }
-    />
+    >
+      {
+        show ?
+        <StripeDefaultPaymentMethod
+          passport={props.passport}
+        /> :
+        undefined
+      }
+    </TwoLineRow>
   );
 }
 
