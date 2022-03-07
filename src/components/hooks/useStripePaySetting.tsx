@@ -11,6 +11,10 @@ import { PaymentMethod } from '../../data/stripe';
  */
 type StripePaymentSetting = {
   defaultMethod?: PaymentMethod;
+  // The selected payment method might comes from
+  // multiple sources:
+  // * If user already selected one from list, use it;
+  // * otherwise load user's default payment method.
   selectedMethod?: PaymentMethod;
   methodCandidates: PaymentMethod[];
 }

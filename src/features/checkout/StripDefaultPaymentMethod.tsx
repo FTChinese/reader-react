@@ -15,12 +15,20 @@ import { BankCardRow } from './BankCard';
  * if user is alreayd subscribed.
  */
 export function StripeDefaultPaymentMethod(
-  props: PassportProp,
+  props: PassportProp & {
+    // If children is not defined, use a component
+    // to show default payment method.
+    // This way you can only show the default payment method
+    // in MembershipPage while being able to
+    // show a different selected one
+    // in CheckoutPage.
+    children?: JSX.Element;
+  },
 ) {
   const [ err, setErr ] = useState('');
   const [ progress, setProgress ] = useState(false);
 
-  const { paymentSetting, setDefaultPaymentMethod } = useStripePaySetting();
+  const { paymentSetting, setDefaultPaymentMethod, selectPaymentMethod } = useStripePaySetting();
 
   // If there's already a default payment method, stop;
   // otherwise load either customer's invoice default payment method,
@@ -40,12 +48,17 @@ export function StripeDefaultPaymentMethod(
     loadStripeDefaultPayment(props.passport)
       .then(pm => {
         console.log('Stripe payment method loaded');
-        setProgress(false);
         // Only set payment method if no one exists.
         // It might happen when network is very slow, the data is loaded
         // after user added a new card.
-
         setDefaultPaymentMethod(pm);
+        // If we found out user has not seleteced
+        // any payment method, use the default one.
+        if (!paymentSetting.selectedMethod) {
+          selectPaymentMethod(pm);
+        }
+
+        setProgress(false);
       })
       .catch((err: ResponseError) => {
         setProgress(false);
@@ -59,9 +72,13 @@ export function StripeDefaultPaymentMethod(
   return (
     <ErrorBoundary errMsg={err}>
       <Loading loading={progress}>
-        <DisplayPaymentMethod
-          paymentMethod={paymentSetting.defaultMethod}
-        />
+        {
+          props.children ?
+          props.children :
+          <DisplayPaymentMethod
+            paymentMethod={paymentSetting.defaultMethod}
+          />
+        }
       </Loading>
     </ErrorBoundary>
   );

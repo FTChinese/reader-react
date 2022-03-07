@@ -83,15 +83,15 @@ export function StripePay(
       <div className="mt-3 mb-3">
         <PaymentMethodHeader />
         {
-          // If a payment method is seletecd,
-          // display it; otherwise loads default payment method.
-          paymentSetting.selectedMethod ?
-          <DisplayPaymentMethod
-            paymentMethod={paymentSetting.selectedMethod}
-          /> :
+          // Here the selected payment method
+          // always takes precedence.
           <StripeDefaultPaymentMethod
             passport={passport}
-          />
+          >
+            <DisplayPaymentMethod
+              paymentMethod={paymentSetting.selectedMethod}
+            />
+          </StripeDefaultPaymentMethod>
         }
       </div>
 
@@ -125,7 +125,7 @@ function PaymentMethodHeader() {
         <>
           <h6>支付方式</h6>
           <IconButton
-            text="添加"
+            text="添加或选择"
             end={<ChevronRight />}
             onClick={() => setShow(true)}
           />
