@@ -53,7 +53,7 @@ export function DisplayWechat(
       <EmailLinkWxDialog
         passport={props.passport}
         show={showLink}
-        onClose={handleClick}
+        onClose={() => setShowLink(false)}
       />
     </>
   );
