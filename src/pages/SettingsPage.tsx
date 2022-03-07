@@ -1,14 +1,15 @@
 import { useAuth } from '../components/hooks/useAuth';
 import { Unauthorized } from '../components/routes/Unauthorized';
 import { UserNameRow } from '../features/account/UserNameRow';
-import { SetEmail } from '../features/account/SetEmail';
-import { DisplayPassword } from '../features/account/PasswordRow';
-import { DisplayMobile } from '../features/account/MobileRow';
-import { DisplayWechat } from '../features/account/WechatRow';
+import { EmailRow } from '../features/account/EmailRow';
+import { PasswordRow } from '../features/account/PasswordRow';
+import { MobileRow } from '../features/account/MobileRow';
+import { WechatRow } from '../features/account/WechatRow';
 import { isAccountWxOnly, OnReaderAccount, ReaderPassport } from '../data/account';
 import { WxLinkEmailDialog } from '../features/wx/WxLinkEmailDialog';
 import { useState } from 'react';
 import { WxAvatar } from '../features/wx/WxAvatar';
+import { StripeRow } from '../features/account/StripeRow';
 
 export function SettingsPage() {
   const { passport } = useAuth();
@@ -40,7 +41,7 @@ function FtcDetails(
 
   return (
     <>
-      <SetEmail
+      <EmailRow
         token={props.token}
         email={props.email}
         isVerified={props.isVerified}
@@ -51,17 +52,18 @@ function FtcDetails(
         userName={props.userName}
         onUpdated={setBaseAccount}
       />
-      <DisplayPassword
+      <PasswordRow
         token={props.token}
       />
-      <DisplayMobile
+      <MobileRow
         token={props.token}
         mobile={props.mobile}
         onUpdated={setBaseAccount}
       />
-      <DisplayWechat
+      <WechatRow
         passport={props}
       />
+      <StripeRow />
     </>
   );
 }
