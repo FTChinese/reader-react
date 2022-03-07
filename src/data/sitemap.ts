@@ -1,4 +1,4 @@
-export const siteRoot = {
+export const sitePath = {
   login: 'login',
   signUp: 'signup',
   forgotPassword: 'forgot-password',
@@ -17,17 +17,17 @@ export const siteRoot = {
 
 export const sitemap = {
   home: '/',
-  login: `/${siteRoot.login}`,
-  signUp: `/${siteRoot.signUp}`,
-  forgotPassword: `/${siteRoot.forgotPassword}`,
-  passwordReset: `/${siteRoot.passwordReset}`,
-  verification: `/${siteRoot.verification}`,
-  settings: `/${siteRoot.setting}`,
-  stripeSetting: `/${siteRoot.setting}/${siteRoot.stripe}`,
-  membership: `/${siteRoot.membership}`,
-  subs: `/${siteRoot.subs}`,
-  checkout: `/${siteRoot.checkout}`,
-  stripeSetupCb: `/${siteRoot.stripeSetupCb}`,
+  login: `/${sitePath.login}`,
+  signUp: `/${sitePath.signUp}`,
+  forgotPassword: `/${sitePath.forgotPassword}`,
+  passwordReset: `/${sitePath.passwordReset}`,
+  verification: `/${sitePath.verification}`,
+  settings: `/${sitePath.setting}`,
+  stripeSetting: `/${sitePath.setting}/${sitePath.stripe}`,
+  membership: `/${sitePath.membership}`,
+  subs: `/${sitePath.subs}`,
+  checkout: `/${sitePath.checkout}`,
+  stripeSetupCb: `/${sitePath.stripeSetupCb}`,
 };
 
 /**
@@ -35,17 +35,17 @@ export const sitemap = {
  * @example stripeSetupCbUrl(document.location.origin)
  */
 export function stripeSetupCbUrl(baseUrl: string): string {
-  return `${baseUrl}/reader/${siteRoot.stripeSetupCb}`
+  return `${baseUrl}/reader/${sitePath.stripeSetupCb}`
 }
 
 export function passwordResetUrl(baseUrl: string): string {
-  return `${baseUrl}/reader/${siteRoot.passwordReset}`;
+  return `${baseUrl}/reader/${sitePath.passwordReset}`;
 }
 
 export function emailVerificationUrl(baseUrl: string): string {
-  return `${baseUrl}/reader/${siteRoot.verification}`;
+  return `${baseUrl}/reader/${sitePath.verification}`;
 }
 
 export function alipayCallback(baseUrl: string): string {
-  return `${baseUrl}/reader/${siteRoot.alipayCb}`;
+  return `${baseUrl}/reader/${sitePath.alipayCb}`;
 }
