@@ -1,11 +1,11 @@
 import { FormikHelpers, Formik, Form } from 'formik';
 import { useState, useEffect } from 'react';
-import Alert from 'react-bootstrap/Alert';
 import { verifyPasswordSchema } from '../../data/form-value';
 import { UpdatePasswordFormVal } from '../../data/update-account';
 import { TextInput } from '../controls/TextInput';
 import * as Yup from 'yup';
 import { FormikSubmitButton } from '../controls/FormikSubmitButton';
+import { ErrorAlert } from '../progress/ErrorAlert';
 
 export function UpdatePasswordForm(
   props: {
@@ -27,15 +27,10 @@ export function UpdatePasswordForm(
 
   return (
     <>
-      {
-        errMsg &&
-        <Alert
-          variant="danger"
-          dismissible
-          onClose={() => setErrMsg('')}>
-          {errMsg}
-        </Alert>
-      }
+      <ErrorAlert
+        msg={errMsg}
+        onClose={() => setErrMsg('')}
+      />
       <Formik<UpdatePasswordFormVal>
         initialValues={{
           currentPassword: '',

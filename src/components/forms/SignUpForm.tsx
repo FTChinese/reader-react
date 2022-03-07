@@ -2,10 +2,10 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { invalidMessages, regex } from '../../data/form-value';
 import { TextInput } from '../controls/TextInput';
-import Alert from 'react-bootstrap/Alert';
 import { useEffect, useState } from 'react';
 import { SignupFormVal } from '../../data/authentication';
 import { FormikSubmitButton } from '../controls/FormikSubmitButton';
+import { ErrorAlert } from '../progress/ErrorAlert';
 
 export function SignUpForm(
   props: {
@@ -23,16 +23,10 @@ export function SignUpForm(
 
   return (
     <>
-      {
-        errMsg &&
-        <Alert
-          variant="danger"
-          dismissible
-          onClose={() => setErrMsg('')}>
-          {errMsg}
-        </Alert>
-      }
-
+      <ErrorAlert
+        msg={errMsg}
+        onClose={() => setErrMsg('')}
+      />
       <Formik<SignupFormVal>
         initialValues={{
           email: props.email || '',

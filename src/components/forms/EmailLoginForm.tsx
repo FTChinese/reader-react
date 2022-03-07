@@ -1,10 +1,10 @@
 import { Formik, Form, FormikHelpers } from "formik";
-import Alert from "react-bootstrap/Alert";
 import { Credentials, invalidMessages } from "../../data/form-value";
 import { TextInput } from "../controls/TextInput";
 import * as Yup from 'yup';
 import { useEffect, useState } from 'react';
 import { FormikSubmitButton } from '../controls/FormikSubmitButton';
+import { ErrorAlert } from '../progress/ErrorAlert';
 
 /**
  * @description A form to collect email login data, used for:
@@ -34,16 +34,10 @@ export function EmailLoginForm(
 
   return (
     <>
-      {
-        errMsg &&
-        <Alert
-          variant="danger"
-          dismissible
-          onClose={() => setErrMsg('')}
-        >
-          {errMsg}
-        </Alert>
-      }
+      <ErrorAlert
+        msg={errMsg}
+        onClose={() => setErrMsg('')}
+      />
       <Formik<Credentials>
         initialValues={{
           email: props.email,

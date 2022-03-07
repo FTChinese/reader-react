@@ -1,10 +1,10 @@
 import { FormikHelpers, Formik, Form } from 'formik';
 import { useState, useEffect } from 'react';
-import { Alert } from 'react-bootstrap';
 import { EmailVal, invalidMessages } from '../../data/form-value';
 import { TextInput } from '../controls/TextInput';
 import * as Yup from 'yup';
 import { FormikSubmitButton } from '../controls/FormikSubmitButton';
+import { ErrorAlert } from '../progress/ErrorAlert';
 
 /**
  * @description An email input form used in multiple places:
@@ -37,15 +37,10 @@ export function EmailForm(
 
   return (
     <>
-      {
-        errMsg &&
-        <Alert
-          variant="danger"
-          dismissible
-          onClose={() => setErrMsg('')}>
-          {errMsg}
-        </Alert>
-      }
+      <ErrorAlert
+        msg={errMsg}
+        onClose={() => setErrMsg('')}
+      />
       <Formik<EmailVal>
         initialValues={{
           email: props.email,

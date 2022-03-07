@@ -1,11 +1,11 @@
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useEffect, useState } from 'react';
-import Alert from 'react-bootstrap/Alert';
 import * as Yup from 'yup';
 import { verifyPasswordSchema } from '../../data/form-value';
 import { PasswordResetFormVal } from '../../data/password-reset';
 import { FormikSubmitButton } from '../controls/FormikSubmitButton';
 import { TextInput } from '../controls/TextInput';
+import { ErrorAlert } from '../progress/ErrorAlert';
 
 export function PasswordResetForm(
   props: {
@@ -35,38 +35,30 @@ export function PasswordResetForm(
       validationSchema={Yup.object(verifyPasswordSchema)}
       onSubmit={props.onSubmit}
     >
-      { formik => (
-        <>
-          <h4 className="text-center">更改 {props.email} 的密码</h4>
+      <>
+        <h4 className="text-center">更改 {props.email} 的密码</h4>
 
-          {
-            errMsg &&
-            <Alert
-              variant="danger"
-              dismissible
-              onClose={() => setErrMsg('')}>
-              {errMsg}
-            </Alert>
-          }
-
-          <Form>
-            <TextInput
-              label="密码"
-              name="password"
-              type="password"
-            />
-            <TextInput
-              label="确认密码"
-              name="confirmPassword"
-              type="password"
-            />
-            <FormikSubmitButton
-              text="重置"
-              wrapped="block"
-            />
-          </Form>
-        </>
-      )}
+        <ErrorAlert
+          msg={errMsg}
+          onClose={() => setErrMsg('')}
+        />
+        <Form>
+          <TextInput
+            label="密码"
+            name="password"
+            type="password"
+          />
+          <TextInput
+            label="确认密码"
+            name="confirmPassword"
+            type="password"
+          />
+          <FormikSubmitButton
+            text="重置"
+            wrapped="block"
+          />
+        </Form>
+      </>
     </Formik>
   );
 }

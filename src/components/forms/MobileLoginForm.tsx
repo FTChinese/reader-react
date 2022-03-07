@@ -8,9 +8,9 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import { CounterButton } from '../buttons/CounterButton';
 import styles from '../buttons/CounterButton.module.css';
-import Alert from 'react-bootstrap/Alert';
 import { VerifySMSFormVal } from '../../data/mobile';
 import { FormikSubmitButton } from '../controls/FormikSubmitButton';
+import { ErrorAlert } from '../progress/ErrorAlert';
 
 export interface SMSHelper {
   setProgress: (p: boolean) => void;
@@ -43,16 +43,10 @@ export function MobileLoginForm(
 
   return (
     <>
-      {
-        errMsg &&
-        <Alert
-          variant="danger"
-          dismissible
-          onClose={() => setErrMsg('')}
-        >
-          {errMsg}
-        </Alert>
-      }
+      <ErrorAlert
+        msg={errMsg}
+        onClose={() => setErrMsg('')}
+      />
       <Formik<VerifySMSFormVal>
         initialValues={{
           mobile: props.mobile || '',

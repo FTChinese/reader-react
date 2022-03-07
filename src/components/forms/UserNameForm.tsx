@@ -1,11 +1,11 @@
 import { FormikHelpers, Formik, Form } from 'formik';
 import { useState, useEffect } from 'react';
-import { Alert } from 'react-bootstrap';
 import { invalidMessages } from '../../data/form-value';
 import { UpdateNameFormVal } from '../../data/update-account';
 import { TextInput } from '../controls/TextInput';
 import * as Yup from 'yup';
 import { FormikSubmitButton } from '../controls/FormikSubmitButton';
+import { ErrorAlert } from '../progress/ErrorAlert';
 
 export function UserNameForm(
   props: {
@@ -26,15 +26,10 @@ export function UserNameForm(
 
   return (
     <>
-      {
-        errMsg &&
-        <Alert
-          variant="danger"
-          dismissible
-          onClose={() => setErrMsg('')}>
-          {errMsg}
-        </Alert>
-      }
+      <ErrorAlert
+        msg={errMsg}
+        onClose={() => setErrMsg('')}
+      />
       <Formik<UpdateNameFormVal>
         initialValues={{
           userName: props.userName || '',
