@@ -10,7 +10,7 @@ import { EmailForm } from '../../components/forms/EmailForm';
 import { AccountRow } from "./AccountRow";
 import { SecondaryLine } from '../../components/layout/TwoLineRow';
 
-export function SetEmail(
+export function EmailRow(
   props: {
     token: string;
     email: string;

@@ -10,7 +10,7 @@ import { AccountRow } from "./AccountRow";
 import { SecondaryLine } from '../../components/layout/TwoLineRow';
 import { OnAccountUpdated } from '../../data/account';
 
-export function DisplayMobile(
+export function MobileRow(
   props: {
     token: string;
     mobile: string | null;

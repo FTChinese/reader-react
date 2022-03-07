@@ -10,7 +10,7 @@ import { ResponseError } from '../../repository/response-error';
 import { getWxOAuthCodeReq } from '../../repository/wx-auth';
 import { wxOAuthCbSession } from '../../store/wxOAuthCbSession';
 
-export function DisplayWechat(
+export function WechatRow(
   props: {
     passport: ReaderPassport;
   }

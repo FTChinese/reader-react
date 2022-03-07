@@ -9,7 +9,7 @@ import { UpdatePasswordForm } from '../../components/forms/UpdatePasswordForm';
 import { AccountRow } from './AccountRow';
 import { SecondaryLine } from '../../components/layout/TwoLineRow';
 
-export function DisplayPassword(
+export function PasswordRow(
   props: {
     token: string;
   }
