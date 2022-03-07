@@ -5,7 +5,6 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { ProgressButton } from '../../components/buttons/ProgressButton';
 import { EmailLoginForm } from '../../components/forms/EmailLoginForm';
 import { SMSHelper, MobileLoginForm } from '../../components/forms/MobileLoginForm';
 import { useAuth } from '../../components/hooks/useAuth';
@@ -16,6 +15,8 @@ import { VerifySMSFormVal } from '../../data/mobile';
 import { mobileLinkExistingEmail, mobileSignUp, requestMobileLoginSMS, verifyMobileLoginSMS } from '../../repository/mobile-auth';
 import { ResponseError, isCodeMissing } from '../../repository/response-error';
 import { LinkPwResetOrSignUp } from './LinkPwResetOrSignUp';
+import { LoadButton } from '../../components/buttons/LoadButton';
+import { CircleLoader } from '../../components/progress/LoadIndicator';
 
 export function MobileLogin() {
   const { login } = useAuth();
@@ -153,11 +154,11 @@ function AlertMobileNotFound(
         <p>请注意，选择"手机号新建账号"后，该手机号将无法关联您已有的邮箱账号。</p>
 
         <div className="d-flex justify-content-between">
-          <ProgressButton
+          <LoadButton
             text="手机号新建账号"
             disabled={submitting}
-            progress={submitting}
             onClick={handleSignUp}
+            endIcon={<CircleLoader progress={submitting} />}
           />
           <Button
             variant="secondary"

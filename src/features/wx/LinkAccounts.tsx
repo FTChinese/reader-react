@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import Alert from 'react-bootstrap/Alert';
 import { isLinkable, OnReaderAccount, ReaderAccount } from '../../data/account';
 import { ResponseError } from '../../repository/response-error';
 import { wxLinkExistingEmail } from '../../repository/wx-auth';
-import { ProgressButton } from '../../components/buttons/ProgressButton';
 import { StringPair, pairEmail, pairMobile, pairWxName } from '../../data/pair';
 import Card from 'react-bootstrap/Card';
 import { TwoColList } from '../../components/list/TwoColList';
 import { rowExpiration, rowTier } from '../member/member-status';
+import { ErrorAlert } from '../../components/progress/ErrorAlert';
+import { LoadButton } from '../../components/buttons/LoadButton';
+import { CircleLoader } from '../../components/progress/LoadIndicator';
 
 /**
  * @description Display the two accounts to be linked and a button
@@ -67,23 +68,18 @@ export function LinkAccounts(
           rows={linkableAccountRows(props.wxAccount)}
         />
       </Card>
-      {
-        errMsg &&
-        <Alert
-          variant="danger"
-          dismissible
-          onClose={() => setErrMsg('')}
-        >
-          {errMsg}
-        </Alert>
-      }
+      <ErrorAlert
+        msg={errMsg}
+        onClose={() => setErrMsg('')}
+      />
       {
         !denied &&
-        <ProgressButton
+        <LoadButton
           disabled={submitting}
           text="绑定账号"
-          progress={submitting}
           onClick={handleSubmit}
+          variant="primary"
+          startIcon={<CircleLoader progress={submitting} />}
         />
       }
     </div>

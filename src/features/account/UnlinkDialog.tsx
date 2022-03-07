@@ -7,12 +7,13 @@ import { PaymentKind, WxUnlinkAnchor } from '../../data/enum';
 import { isMembershipZero, Membership } from '../../data/membership';
 import { ResponseError } from '../../repository/response-error';
 import { wxUnlinkEmail } from '../../repository/wx-auth';
-import { ProgressButton } from '../../components/buttons/ProgressButton';
 import { StringPair, pairEmail, pairWxName } from '../../data/pair';
 import { UnlinkableSubs } from '../member/UnlinkableSubs';
 import { TwoColList } from '../../components/list/TwoColList';
 import { useAuth } from '../../components/hooks/useAuth';
 import { toast } from 'react-toastify';
+import { LoadButton } from '../../components/buttons/LoadButton';
+import { CircleLoader } from '../../components/progress/LoadIndicator';
 
 export function UnlinkDialog(
   props: {
@@ -98,11 +99,11 @@ export function UnlinkDialog(
         </>
       </Modal.Body>
       <Modal.Footer>
-        <ProgressButton
+        <LoadButton
           disabled={submitting || !valid}
           text="解除绑定"
-          progress={submitting}
           onClick={handleSubmit}
+          startIcon={<CircleLoader progress={submitting} />}
         />
       </Modal.Footer>
     </Modal>

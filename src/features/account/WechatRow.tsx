@@ -5,10 +5,11 @@ import { WxAvatar } from '../wx/WxAvatar';
 import { SecondaryLine, TwoLineRow } from '../../components/layout/TwoLineRow';
 import { IconButton } from '../../components/buttons/IconButton';
 import { Modal } from 'react-bootstrap';
-import { ProgressButton } from '../../components/buttons/ProgressButton';
 import { ResponseError } from '../../repository/response-error';
 import { getWxOAuthCodeReq } from '../../repository/wx-auth';
 import { wxOAuthCbSession } from '../../store/wxOAuthCbSession';
+import { LoadButton } from '../../components/buttons/LoadButton';
+import { CircleLoader } from '../../components/progress/LoadIndicator';
 
 export function WechatRow(
   props: {
@@ -101,11 +102,12 @@ function EmailLinkWxDialog(
         </p>
       </Modal.Body>
       <Modal.Footer>
-        <ProgressButton
+        <LoadButton
           disabled={submitting}
           text="获取微信授权"
-          progress={submitting}
+          variant="primary"
           onClick={handleClick}
+          startIcon={<CircleLoader progress={submitting} />}
         />
       </Modal.Footer>
     </Modal>
