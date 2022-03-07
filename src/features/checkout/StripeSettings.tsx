@@ -31,7 +31,6 @@ export function StripeSettings(props: PassportProp) {
         level={5}
       />
 
-      <RowManagePaymentMethod />
       <RowDefaultPaymentMethod
         passport={props.passport}
       />
@@ -40,28 +39,6 @@ export function StripeSettings(props: PassportProp) {
         <RowCancelSubs />
       }
     </div>
-  );
-}
-
-/**
- * @description Payment method managment.
- * @todo Enable deleting payment method, change
- * current subscription's default payment method.
- * If subscription does not exist, set default
- * payment method on customer.
- */
-function RowManagePaymentMethod() {
-  return (
-    <TwoLineRow
-      primary="管理支付方式"
-      secondary="查看已有支付方式或添加新的支付方式"
-      icon={
-        <Link to={sitemap.stripeSetting}>
-          <span className="scale-down8">设置</span>
-          <ChevronRight />
-        </Link>
-      }
-    />
   );
 }
 
