@@ -47,9 +47,15 @@ export function FormikSubmitButton<T>(
       variant={props.variant}
       type="submit"
     >
-      { atEnd && indicator }
-      <span>{props.text}</span>
-      { !atEnd && indicator }
+      {
+        <CircleLoader
+          progress={isSubmitting}
+        />
+      }
+      {
+        !isSubmitting &&
+        <span>{props.text}</span>
+      }
     </Button>
   );
 
