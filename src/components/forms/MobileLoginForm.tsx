@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Form, Formik, FormikHelpers } from 'formik';
+import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import { invalidMessages } from '../../data/form-value';
 import * as Yup from 'yup';
 import { TextInput } from '../controls/TextInput';
-import { ProgressButton } from '../buttons/ProgressButton';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import { CounterButton } from '../buttons/CounterButton';
@@ -11,6 +10,8 @@ import styles from '../buttons/CounterButton.module.css';
 import { VerifySMSFormVal } from '../../data/mobile';
 import { FormikSubmitButton } from '../controls/FormikSubmitButton';
 import { ErrorAlert } from '../progress/ErrorAlert';
+import Button from 'react-bootstrap/Button';
+import { CircleLoader } from '../progress/LoadIndicator';
 
 export interface SMSHelper {
   setProgress: (p: boolean) => void;
@@ -40,6 +41,16 @@ export function MobileLoginForm(
   useEffect(() => {
     setErrMsg(props.errMsg);
   }, [props.errMsg]);
+
+  const handleRequestSMS = (mobile: string) => {
+    props.onRequestSMS(
+      mobile,
+      {
+        setProgress: setRequestingSMS,
+        setShowCounter: setShowCounter,
+      }
+    );
+  };
 
   return (
     <>
@@ -96,21 +107,9 @@ export function MobileLoginForm(
                     from={60}
                     onFinish={() => setShowCounter(false)}
                   /> :
-                  <ProgressButton
-                    disabled={!(formik.touched.mobile && !formik.errors.mobile) || formik.isSubmitting}
-                    text="获取"
+                  <RequestSMSButton
                     progress={requestingSMS}
-                    variant="outline-secondary"
-                    className={styles.counter}
-                    onClick={() => {
-                      props.onRequestSMS(
-                        formik.values.mobile,
-                        {
-                          setProgress: setRequestingSMS,
-                          setShowCounter: setShowCounter,
-                        }
-                      )
-                    }}
+                    onClick={handleRequestSMS}
                   />
                 }
               </InputGroup>
@@ -130,5 +129,29 @@ export function MobileLoginForm(
         )}
       </Formik>
     </>
+  );
+}
+
+function RequestSMSButton(
+  props: {
+    progress: boolean;
+    onClick: (mobile: string) => void;
+  }
+) {
+
+  const { touched, errors, isSubmitting, values } = useFormikContext<VerifySMSFormVal>();
+
+  return (
+    <Button
+      disabled={!(touched.mobile && !errors.mobile) || isSubmitting}
+      variant="outline-secondary"
+      className={styles.counter}
+      onClick={() => props.onClick(values.mobile)}
+    >
+      <CircleLoader progress={props.progress} />
+      {
+        !props.progress && '获取'
+      }
+    </Button>
   );
 }
