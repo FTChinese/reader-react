@@ -2,7 +2,7 @@ import { useAuth } from '../components/hooks/useAuth';
 import { Unauthorized } from '../components/routes/Unauthorized';
 import { SingleCenterCol } from '../components/layout/ContentLayout';
 import { AddOnOverview, SubsOverview } from '../features/member/SubsOverview';
-import { StripeSettings } from '../features/checkout/StripeSettings';
+import { StripeSubsSettings } from '../features/checkout/StripeSubsSettings';
 import { CustomerService } from '../features/member/CustomerSerivce';
 
 export function MembershipPage() {
@@ -23,7 +23,7 @@ export function MembershipPage() {
           member={passport.membership}
         />
 
-        <StripeSettings
+        <StripeSubsSettings
           passport={passport}
         />
         <CustomerService />

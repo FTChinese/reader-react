@@ -16,7 +16,7 @@ import { TwoLineRow } from '../../components/layout/TwoLineRow';
  * @description Show stripe payment setting.
  * This is visible as long as user has a stripe subscription.
  */
-export function StripeSettings(props: PassportProp) {
+export function StripeSubsSettings(props: PassportProp) {
 
   if (!props.passport.membership.stripeSubsId) {
     return null;
