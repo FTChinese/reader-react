@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import { Toolbar } from './components/layout/Toolbar';
 import { CenterLayout } from './components/layout/CenterLayout';
 import { ContentLayout } from './components/layout/ContentLayout';
-import { siteRoot } from './data/sitemap';
+import { sitePath } from './data/sitemap';
 import { VerificationPage } from './pages/VerificationPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { SettingsPage } from './pages/SettingsPage';
@@ -22,6 +22,7 @@ import { AliPayCbPage } from './pages/AliPayCbPage';
 import { RequireShoppingCart } from './components/routes/RequireShoopingCart';
 import { StripeSettingPage } from './pages/StripeSettingPage';
 import { HomePage } from './pages/HomePage';
+import { RequireStripeCustomer } from './components/routes/RequireStripeCustomer';
 
 function Skeleton() {
   return (
@@ -53,12 +54,12 @@ function App() {
       <Routes>
         <Route path="/" element={<Skeleton />} >
           <Route element={<CenterLayout />}>
-            <Route path={siteRoot.login} element={<LoginPage />} />
-            <Route path={siteRoot.signUp} element={<SignUpPage />} />
-            <Route path={siteRoot.forgotPassword} element={<ForgotPasswordPage />} />
-            <Route path={`${siteRoot.passwordReset}/:token`} element={<PasswordResetPage />} />
-            <Route path={`${siteRoot.verification}/:token`} element={<VerificationPage />} />
-            <Route path={siteRoot.wxOAuthCb} element={<WxOAuthCbPage />} />
+            <Route path={sitePath.login} element={<LoginPage />} />
+            <Route path={sitePath.signUp} element={<SignUpPage />} />
+            <Route path={sitePath.forgotPassword} element={<ForgotPasswordPage />} />
+            <Route path={`${sitePath.passwordReset}/:token`} element={<PasswordResetPage />} />
+            <Route path={`${sitePath.verification}/:token`} element={<VerificationPage />} />
+            <Route path={sitePath.wxOAuthCb} element={<WxOAuthCbPage />} />
           </Route>
 
           <Route
@@ -69,27 +70,31 @@ function App() {
             }
           >
             <Route
-              path={siteRoot.setting}
+              path={sitePath.setting}
             >
               <Route
                 index
                 element={<SettingsPage />}
               />
               <Route
-                path={siteRoot.stripe}
-                element={<StripeSettingPage/>}
+                path={sitePath.stripe}
+                element={
+                  <RequireStripeCustomer>
+                    <StripeSettingPage />
+                  </RequireStripeCustomer>
+                }
               />
             </Route>
             <Route
-              path={siteRoot.membership}
+              path={sitePath.membership}
               element={<MembershipPage />}
             />
             <Route
-              path={siteRoot.subs}
+              path={sitePath.subs}
               element={<SubsPage />}
             />
             <Route
-              path={siteRoot.checkout}
+              path={sitePath.checkout}
               element={
                 <RequireShoppingCart>
                   <CheckoutPage />
@@ -97,11 +102,11 @@ function App() {
               }
             />
             <Route
-              path={siteRoot.alipayCb}
+              path={sitePath.alipayCb}
               element={<AliPayCbPage />}
             />
             <Route
-              path={siteRoot.stripeSetupCb}
+              path={sitePath.stripeSetupCb}
               element={<StripeSetupCbPage />}
             />
             <Route
