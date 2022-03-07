@@ -7,7 +7,7 @@ export function FormikSubmitButton<T>(
   props: {
     text: string;
     variant?: ButtonVariant;
-    wrapped?: 'block' | 'start' | 'end';
+    wrapped?: 'block' | 'end';
   }
 ) {
 
@@ -16,27 +16,19 @@ export function FormikSubmitButton<T>(
   // FormikProps contains all of them.
   const { dirty, isValid, isSubmitting } = useFormikContext<T>();
 
-  const indicator = (
-    <CircleLoader
-      progress={isSubmitting}
-    />
-  );
-
   let wrapperClass = '';
-  let atEnd = false;
 
   switch (props.wrapped) {
     case 'block':
-      wrapperClass = 'd-grid';
-      break;
-
-    case 'start':
-      wrapperClass = 'text-start';
+      wrapperClass = 'd-grid mt-3';
       break;
 
     case 'end':
-      wrapperClass = 'text-end';
-      atEnd = true;
+      wrapperClass = 'text-end mt-3';
+      break;
+
+    default:
+      wrapperClass = 'mt-3';
       break;
   }
 
