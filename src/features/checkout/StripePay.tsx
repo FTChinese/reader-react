@@ -6,7 +6,7 @@ import { Subs, SubsResult } from '../../data/stripe';
 import { ResponseError } from '../../repository/response-error';
 import { createStripeSubs, updateStripeSubs } from '../../repository/stripe';
 import { useAuth } from '../../components/hooks/useAuth';
-import { IntentKind } from '../../data/chekout-intent';
+import { IntentKind, stripeBtnText } from '../../data/chekout-intent';
 import { useStripePaySetting } from '../../components/hooks/useStripePaySetting';
 import { DisplayPaymentMethod, StripeDefaultPaymentMethod } from './StripDefaultPaymentMethod';
 import { BlockLoadButton } from '../../components/buttons/BlockLoadButton';
@@ -121,7 +121,7 @@ function PaymentMethodHeader() {
 
   return (
     <>
-      <Flex>
+      <Flex border={true}>
         <>
           <h6>支付方式</h6>
           <IconButton
@@ -209,7 +209,7 @@ function SubscribeButton(
     <>
       <BlockLoadButton
         disabled={!paymentSetting.selectedMethod || progress}
-        text={props.isNew ? '订阅' : '升级'}
+        text={stripeBtnText(props.item.intent.kind)}
         progress={progress}
         onClick={handleClick}
       />

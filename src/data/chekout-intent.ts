@@ -168,13 +168,6 @@ export function newStripeOrderIntent(m: Membership, p: StripePrice): CheckoutInt
     return intentVip;
   }
 
-  if (m.status&& m.status !== 'active') {
-    return {
-      kind: IntentKind.Forbidden,
-      message: `暂不支持在${localizeSubsStatus(m.status)}状态下升级`
-    };
-  }
-
   if (!m.tier) {
     return {
       kind: IntentKind.Create,
@@ -239,4 +232,20 @@ export function newStripeOrderIntent(m: Membership, p: StripePrice): CheckoutInt
   }
 
   return intentUnknown;
+}
+
+export function stripeBtnText(k: IntentKind): string {
+  switch (k) {
+    case IntentKind.SwitchInterval:
+      return '更改订阅周期';
+
+    case IntentKind.Upgrade:
+      return '转为高端会员';
+
+    case IntentKind.Downgrade:
+      return '转为标准会员';
+
+    default:
+      return '订阅';
+  }
 }
