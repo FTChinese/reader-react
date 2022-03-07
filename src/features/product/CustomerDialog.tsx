@@ -6,7 +6,7 @@ import { ReaderPassport } from '../../data/account';
 import { ResponseError } from '../../repository/response-error';
 import { createCustomer } from '../../repository/stripe';
 import { useAuth } from '../../components/hooks/useAuth';
-import { OnCustomerUpsert } from '../account/OnAccountUpdated';
+import { Customer } from '../../data/stripe';
 
 /**
  * @description Show a dialog to ask user to create stripe customer.
@@ -18,7 +18,7 @@ export function CustomerDialog(
     passport: ReaderPassport;
     show: boolean;
     onHide: () => void;
-    onCreated: OnCustomerUpsert;
+    onCreated: (c: Customer) => void;
   }
 ) {
 

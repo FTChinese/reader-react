@@ -5,9 +5,8 @@ import { SetEmail } from '../features/account/SetEmail';
 import { DisplayPassword } from '../features/account/PasswordRow';
 import { DisplayMobile } from '../features/account/MobileRow';
 import { DisplayWechat } from '../features/account/WechatRow';
-import { isAccountWxOnly, ReaderPassport } from '../data/account';
+import { isAccountWxOnly, OnReaderAccount, ReaderPassport } from '../data/account';
 import { WxLinkEmailDialog } from '../features/wx/WxLinkEmailDialog';
-import { OnReaderAccount } from "../features/wx/OnReaderAccount";
 import { useState } from 'react';
 import { WxAvatar } from '../features/wx/WxAvatar';
 

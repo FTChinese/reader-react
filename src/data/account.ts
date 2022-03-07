@@ -137,3 +137,6 @@ export type SearchResult = {
   id: string | null;
 }
 
+export type OnAccountUpdated = (a: BaseAccount) => void;
+
+export type OnReaderAccount = (passport: ReaderPassport) => void;

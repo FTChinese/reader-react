@@ -7,8 +7,8 @@ import { updateUserName } from '../../repository/email-account';
 import { ResponseError } from '../../repository/response-error';
 import { UserNameForm } from '../../components/forms/UserNameForm';
 import { AccountRow } from "./AccountRow";
-import { OnAccountUpdated } from './OnAccountUpdated';
 import { SecondaryLine } from '../../components/layout/TwoLineRow';
+import { OnAccountUpdated } from '../../data/account';
 
 export function UserNameRow(
   props: {

@@ -1,14 +1,13 @@
 import { FormikHelpers } from 'formik';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { normalizeEmail } from '../../data/account';
+import { normalizeEmail, OnAccountUpdated } from '../../data/account';
 import { EmailVal, toastMessages } from '../../data/form-value';
 import { emailVerificationUrl } from '../../data/sitemap';
 import { updateEmail } from '../../repository/email-account';
 import { ResponseError } from '../../repository/response-error';
 import { EmailForm } from '../../components/forms/EmailForm';
 import { AccountRow } from "./AccountRow";
-import { OnAccountUpdated } from './OnAccountUpdated';
 import { SecondaryLine } from '../../components/layout/TwoLineRow';
 
 export function SetEmail(

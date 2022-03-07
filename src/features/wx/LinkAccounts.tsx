@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
-import { isLinkable, ReaderAccount } from '../../data/account';
+import { isLinkable, OnReaderAccount, ReaderAccount } from '../../data/account';
 import { ResponseError } from '../../repository/response-error';
 import { wxLinkExistingEmail } from '../../repository/wx-auth';
 import { ProgressButton } from '../../components/buttons/ProgressButton';
 import { StringPair, pairEmail, pairMobile, pairWxName } from '../../data/pair';
-import { OnReaderAccount } from "./OnReaderAccount";
 import Card from 'react-bootstrap/Card';
 import { TwoColList } from '../../components/list/TwoColList';
 import { rowExpiration, rowTier } from '../member/member-status';

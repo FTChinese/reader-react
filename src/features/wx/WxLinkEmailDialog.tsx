@@ -1,7 +1,7 @@
 import { FormikHelpers } from 'formik';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
-import { ReaderAccount, ReaderPassport } from '../../data/account';
+import { OnReaderAccount, ReaderAccount, ReaderPassport } from '../../data/account';
 import { Credentials, EmailVal, invalidMessages } from '../../data/form-value';
 import { emailExists, emailLogin } from '../../repository/email-auth';
 import { isCodeAlreadyExists, ResponseError } from '../../repository/response-error';
@@ -9,7 +9,6 @@ import { BackButton } from '../../components/buttons/BackButton';
 import { EmailForm } from '../../components/forms/EmailForm';
 import { EmailLoginForm } from '../../components/forms/EmailLoginForm';
 import { LinkAccounts } from './LinkAccounts';
-import { OnReaderAccount } from './OnReaderAccount';
 import { SignUpForm } from '../../components/forms/SignUpForm';
 import { SignupFormVal } from '../../data/authentication';
 import { wxLinkNewEmail } from '../../repository/wx-auth';
