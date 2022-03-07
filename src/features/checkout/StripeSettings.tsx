@@ -10,30 +10,26 @@ import { ResponseError } from '../../repository/response-error';
 import { isStripeRenewOn } from '../../data/membership';
 import { PassportProp } from '../../data/account';
 import { IconButton } from '../../components/buttons/IconButton';
-import { Link } from 'react-router-dom';
-import { sitemap } from '../../data/sitemap';
 import { TwoLineRow } from '../../components/layout/TwoLineRow';
 
 /**
  * @description Show stripe payment setting.
- * This is visible as long as user is a stripe customer.
+ * This is visible as long as user has a stripe subscription.
  */
 export function StripeSettings(props: PassportProp) {
 
-  if (!props.passport.stripeId) {
+  if (!props.passport.membership.stripeSubsId) {
     return null;
   }
 
   return (
     <div className="mt-4">
       <BorderHeader
-        text="Stripe设置"
+        text="Stripe订阅设置"
         level={5}
       />
 
-      <RowDefaultPaymentMethod
-        passport={props.passport}
-      />
+      <RowDefaultPaymentMethod />
       {
         isStripeRenewOn(props.passport.membership) &&
         <RowCancelSubs />
@@ -42,7 +38,7 @@ export function StripeSettings(props: PassportProp) {
   );
 }
 
-function RowDefaultPaymentMethod(props: PassportProp) {
+function RowDefaultPaymentMethod() {
 
   const [ show, setShow ] = useState(false);
 
