@@ -5,6 +5,13 @@ import { CustomerPaymentMethods } from '../features/checkout/CustomerPaymentMeth
 import { SetupPaymentMethod } from '../features/checkout/SetupPaymentMethod';
 import { SetupUsage } from '../store/stripeSetupSession';
 
+/**
+ * @description Payment method managment.
+ * @todo Enable deleting payment method, change
+ * current subscription's default payment method.
+ * If subscription does not exist, set default
+ * payment method on customer.
+ */
 export function StripeSettingPage() {
   const { passport } = useAuth();
   if (!passport) {

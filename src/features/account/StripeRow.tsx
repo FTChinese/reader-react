@@ -3,6 +3,7 @@ import { ChevronRight } from '../../components/graphics/icons';
 import { TwoLineRow } from '../../components/layout/TwoLineRow';
 import { sitemap } from '../../data/sitemap';
 
+
 export function StripeRow() {
   return (
     <TwoLineRow
