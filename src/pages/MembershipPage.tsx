@@ -2,7 +2,7 @@ import { useAuth } from '../components/hooks/useAuth';
 import { Unauthorized } from '../components/routes/Unauthorized';
 import { SingleCenterCol } from '../components/layout/ContentLayout';
 import { AddOnOverview, SubsOverview } from '../features/member/SubsOverview';
-import { StripeSubsSettings } from '../features/checkout/StripeSubsSettings';
+import { StripeSubsSettings } from '../features/member/StripeSubsSettings';
 import { CustomerService } from '../features/member/CustomerSerivce';
 
 export function MembershipPage() {
