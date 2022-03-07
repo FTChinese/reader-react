@@ -6,14 +6,16 @@ export function WxAvatar(
   }
 ) {
   return (
-    <figure className="figure">
-      <img
-        className="figure-img img-fluid rounded"
-        src={props.wechat.avatarUrl || undefined}
-        alt="微信头像" />
-      <figcaption className="figure-caption text-center">
-        {props.wechat.nickname}
-      </figcaption>
-    </figure>
+    <div className="d-flex justify-content-center">
+      <figure className="figure">
+        <img
+          className="figure-img img-fluid rounded"
+          src={props.wechat.avatarUrl || undefined}
+          alt="微信头像" />
+        <figcaption className="figure-caption text-center">
+          {props.wechat.nickname}
+        </figcaption>
+      </figure>
+    </div>
   );
 }

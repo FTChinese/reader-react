@@ -90,9 +90,7 @@ function WechatDetails(
     <div className="row justify-content-center">
       <div className="col-sm-10 col-lg-6">
 
-        <div className="d-flex justify-content-center">
-          <WxAvatar wechat={props.wechat} />
-        </div>
+        <WxAvatar wechat={props.wechat} />
 
         <div className="text-center">
           <p>您目前使用了微信账号登录FT中文网。为保障账号安全，建议绑定在FT中文网注册的邮箱账号。</p>
