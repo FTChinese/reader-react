@@ -8,7 +8,7 @@ import { useAuth } from '../../components/hooks/useAuth';
 import { ReaderPassport } from '../../data/account';
 import { IntentKind } from '../../data/chekout-intent';
 import { FtcPayProvider } from './FtcPayProvider';
-import { ProgressButton } from '../../components/buttons/ProgressButton';
+import { BlockLoadButton } from '../../components/buttons/BlockLoadButton';
 import { useFtcPay } from '../../components/hooks/useFtcPay';
 import { toast } from 'react-toastify';
 import Modal from 'react-bootstrap/Modal';
@@ -173,11 +173,10 @@ function PayButton(
 
   return (
     <>
-      <ProgressButton
+      <BlockLoadButton
         disabled={!ftcPaySetting.selectedMethod || progress}
         text="支付"
         progress={progress}
-        block={true}
         onClick={handleClick}
       />
       <WxQrDialog

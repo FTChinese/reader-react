@@ -2,29 +2,24 @@ import Button from 'react-bootstrap/Button';
 import { ButtonVariant } from 'react-bootstrap/types';
 import { CircleLoader } from '../progress/LoadIndicator';
 
-export function ProgressButton(
+/**
+ * @description Used when we need to submit data
+ * without a form.
+ */
+export function BlockLoadButton(
   props: {
     disabled: boolean;
     text: string;
     progress: boolean;
     variant?: ButtonVariant;
-    className?: string;
-    block?: boolean;
     onClick?: () => void
   }
 ) {
-
-  let styleClass = 'primary';
-
-  if (props.className) {
-    styleClass += ` ${props.className}`;
-  }
 
   const btn = (
     <Button
       disabled={props.disabled}
       variant={props.variant}
-      className={props.className}
       onClick={props.onClick}
       size="sm"
       type="button"
@@ -39,13 +34,9 @@ export function ProgressButton(
     </Button>
   );
 
-  if (props.block) {
-    return (
-      <div className="d-grid">
-        {btn}
-      </div>
-    );
-  }
-
-  return btn;
+  return (
+    <div className="d-grid">
+      {btn}
+    </div>
+  );
 }

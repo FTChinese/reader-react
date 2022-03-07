@@ -9,7 +9,7 @@ import { useAuth } from '../../components/hooks/useAuth';
 import { IntentKind } from '../../data/chekout-intent';
 import { useStripePaySetting } from '../../components/hooks/useStripePaySetting';
 import { DisplayPaymentMethod, StripeDefaultPaymentMethod } from './StripDefaultPaymentMethod';
-import { ProgressButton } from '../../components/buttons/ProgressButton';
+import { BlockLoadButton } from '../../components/buttons/BlockLoadButton';
 import { StripeSubsDetails } from './StripeSubsDetails';
 import { localizeTier } from '../../data/localization';
 import { StripePayLink } from '../product/StripePayLink';
@@ -207,11 +207,10 @@ function SubscribeButton(
 
   return (
     <>
-      <ProgressButton
+      <BlockLoadButton
         disabled={!paymentSetting.selectedMethod || progress}
         text={props.isNew ? '订阅' : '升级'}
         progress={progress}
-        block={true}
         onClick={handleClick}
       />
       <StripePayLink />
