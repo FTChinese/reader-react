@@ -25,8 +25,9 @@ type ProductPrices = {
   stripeIds: StripePriceIDs;
 }
 /**
- * @description Collect all prices applicable to
- * current user.
+ * @description Collect all ftc prices applicable to
+ * current user, together with stripe ids associated with
+ * each price
  */
  export function collectPaywallPrices(pp: PaywallProduct, isNewMember: boolean): ProductPrices {
 
