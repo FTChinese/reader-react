@@ -94,10 +94,7 @@ export function newOneTimeOrderIntent(m: Membership, p: Price): CheckoutIntent {
   }
 
   if (!m.tier) {
-    return {
-      kind: IntentKind.Create,
-      message: '累加一个订阅周期',
-    };
+    return intentNewMember;
   }
 
   switch (normalizePayMethod(m)) {
@@ -107,7 +104,7 @@ export function newOneTimeOrderIntent(m: Membership, p: Price): CheckoutIntent {
         return intentOneTimeRenewal(m.expireDate);
       }
 
-      return intentOneTimeDiffTier(m.tier);
+      return intentOneTimeDiffTier(p.tier);
 
     case 'stripe':
       // Stripe standard -> Onetime standard
