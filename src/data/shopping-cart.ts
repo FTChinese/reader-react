@@ -93,6 +93,11 @@ export type CartItemFtc = {
   isIntro: boolean;
 };
 
+/**
+ *
+ * @todo Removed duplicate calculation of applicabledOfferKinds(m)
+ * It might be better to create a list of CartItemFtc directly from a PaywallProduct.
+ */
 export function newCartItemFtc(p: PaywallPrice, m: Membership): CartItemFtc {
   if (isIntro(p)) {
     return {
