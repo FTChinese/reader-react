@@ -174,7 +174,7 @@ export type CartItemUIParams = {
 
 export function newFtcCartItemUIParams(item: CartItemFtc): CartItemUIParams {
 
-  const header = isIntro(item.price)
+  const header = item.isIntro
     ? '试用'
     : `包${localizeCycle(cycleOfYMD(item.price.periodCount))}`;
 
@@ -185,7 +185,7 @@ export function newFtcCartItemUIParams(item: CartItemFtc): CartItemUIParams {
 
     return {
       header,
-      title: item.discount.description || '新会员首次试用',
+      title: item.discount.description || '限时折扣',
       payable: {
         ...formatMoneyParts(
           item.price.currency,
@@ -194,7 +194,10 @@ export function newFtcCartItemUIParams(item: CartItemFtc): CartItemUIParams {
         cycle: '/' + formatPeriods(period, false),
       },
       original: {
-        ...formatMoneyParts(item.price.currency, item.price.unitAmount),
+        ...formatMoneyParts(
+          item.price.currency,
+          item.price.unitAmount
+        ),
         cycle: '/' + formatPeriods(item.price.periodCount, false),
       },
       isAutoRenew: false,
