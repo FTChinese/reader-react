@@ -16,10 +16,27 @@ export function RequireStripeCustomer(
 ) {
 
   const { passport, setCustomerId } = useAuth();
+  const [ progress, setProgress ] = useState(false);
+  const [ err, setErr ] = useState('');
 
   if (!passport) {
     return null;
   }
+
+  const handleClick = () => {
+    setProgress(true);
+
+    createCustomer(passport.token)
+      .then(cus => {
+        console.log('Stripe customer created');
+        setProgress(false);
+        setCustomerId(cus.id);
+      })
+      .catch((err: ResponseError) => {
+        setErr(err.message);
+        setProgress(false);
+      });
+  };
 
   if (passport.stripeId) {
     return props.children;
@@ -39,24 +56,6 @@ export function RequireStripeCustomer(
       </SingleCenterCol>
     );
   }
-
-  const [ progress, setProgress ] = useState(false);
-  const [ err, setErr ] = useState('');
-
-  const handleClick = () => {
-    setProgress(true);
-
-    createCustomer(passport.token)
-      .then(cus => {
-        console.log('Stripe customer created');
-        setProgress(false);
-        setCustomerId(cus.id);
-      })
-      .catch((err: ResponseError) => {
-        setProgress(false);
-        setErr(err.message);
-      });
-  };
 
   return (
     <SingleCenterCol>
