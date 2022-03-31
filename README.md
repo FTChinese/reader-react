@@ -26,7 +26,7 @@ Stripe provides two versions of frontend SDK:
 
 1. 通过我方服务器，请求Stripe API为当前用户创建一个Setup Intent，获取该对象中包含的`client_secret`；
 
-2. 把`sclient_scret`传递给React Stripe.js中的`Elements`，在它下面再创建`PaymentElement`，就可以显示输入支付方式的表单；
+2. 把`client_scret`传递给React Stripe.js中的`Elements`，在它下面再创建`PaymentElement`，就可以显示输入支付方式的表单；
 
 3. 用户点击保存后，调用Stripe.js的[confirmSetup](https://stripe.com/docs/js/setup_intents/confirm_setup)方法，此时应保存下本次订阅相关的数据存储到localStorage，以备跳转后使用；
 
@@ -38,7 +38,7 @@ Stripe provides two versions of frontend SDK:
 
     * `redirect_status`: 成功后为`succeeded`。
 
-5. 调用Stripe.js的[retrieveSetupIintent](https://stripe.com/docs/js/setup_intents/retrieve_setup_intent)来获取到更新后的Setup Intent，此时它的`payment_method`字段就有值了。注意获取更新后的Setup Intent也可以通过请求我方服务器转发的方式获取，但是这种方式获取的数据可能尚未更新，因此用在前端调用Stripe SDK更稳妥。
+5. 调用Stripe.js的[retrieveSetupIntent](https://stripe.com/docs/js/setup_intents/retrieve_setup_intent)来获取到更新后的Setup Intent，此时它的`payment_method`字段就有值了。注意获取更新后的Setup Intent也可以通过请求我方服务器转发的方式获取，但是这种方式获取的数据可能尚未更新，因此用在前端调用Stripe SDK更稳妥。
 
 6. 用上述`payment_method`，请求我方服务器获取[PaymentMethods](https://stripe.com/docs/api/payment_methods)的数据，可以把本次使用的支付方式显示给用户。
 
