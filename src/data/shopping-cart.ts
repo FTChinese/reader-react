@@ -4,7 +4,7 @@ import {
   StripePrice,
   isIntro,
 } from './price';
-import { formatMoneyParts, localizeCycle, PriceParts } from './localization';
+import { newMoneyParts, localizeCycle, PriceParts } from './localization';
 import { Membership, applicableOfferKinds } from './membership';
 import { applicableOffer, PaywallPrice, PaywallProduct } from './paywall';
 import { cycleOfYMD, formatPeriods, isValidPeriod, isZeroYMD } from './period';
@@ -187,14 +187,14 @@ export function newFtcCartItemUIParams(item: CartItemFtc): CartItemUIParams {
       header,
       title: item.discount.description || '限时折扣',
       payable: {
-        ...formatMoneyParts(
+        ...newMoneyParts(
           item.price.currency,
           item.price.unitAmount - item.discount.priceOff,
         ),
         cycle: '/' + formatPeriods(period, false),
       },
       original: {
-        ...formatMoneyParts(
+        ...newMoneyParts(
           item.price.currency,
           item.price.unitAmount
         ),
@@ -208,7 +208,7 @@ export function newFtcCartItemUIParams(item: CartItemFtc): CartItemUIParams {
     header,
     title: item.price.title || '',
     payable: {
-      ...formatMoneyParts(item.price.currency, item.price.unitAmount),
+      ...newMoneyParts(item.price.currency, item.price.unitAmount),
       cycle: '/' + formatPeriods(item.price.periodCount, false),
     },
     isAutoRenew: false,
@@ -220,7 +220,7 @@ export function newStripeCartItemParams(item: CartItemStripe): CartItemUIParams 
   const header = `连续包${localizeCycle(cycleOfYMD(item.recurring.periodCount))}`;
 
   const recurPriceParts: PriceParts = {
-    ...formatMoneyParts(
+    ...newMoneyParts(
       item.recurring.currency,
       item.recurring.unitAmount / 100,
     ),
@@ -232,7 +232,7 @@ export function newStripeCartItemParams(item: CartItemStripe): CartItemUIParams 
       header,
       title: '新会员首次试用',
       payable: {
-        ...formatMoneyParts(
+        ...newMoneyParts(
           item.trial.currency,
           item.trial.unitAmount / 100,
         ),

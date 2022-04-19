@@ -66,7 +66,7 @@ export type PriceParts = MoneyParts & {
   cycle: string;
 }
 
-export function formatMoneyParts(currency: string, amount: number): MoneyParts {
+export function newMoneyParts(currency: string, amount: number): MoneyParts {
   return new Intl.NumberFormat(undefined, {
       style: 'currency',
       currency: currency.toUpperCase(),
