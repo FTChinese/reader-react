@@ -4,21 +4,6 @@ import { PriceKind, SubStatus, Tier } from './enum';
 import { Membership } from './membership';
 import { YearMonthDay, OptionalPeriod } from './period';
 
-export type StripePrice = {
-  id: string;
-  active: boolean;
-  currency: string;
-  isIntroductory: boolean;
-  kind: PriceKind;
-  liveMode: boolean;
-  nickname: string;
-  productId: string;
-  periodCount: YearMonthDay;
-  tier: Tier;
-  unitAmount: number;
-  created: number;
-} & OptionalPeriod;
-
 export type PubKey = {
   key: string;
 };
@@ -115,3 +100,28 @@ export function convertPaymentMthod(pm: StripePayMethod): PaymentMethod {
     }
   }
 }
+
+export type StripePrice = {
+  id: string;
+  active: boolean;
+  currency: string;
+  isIntroductory: boolean;
+  kind: PriceKind;
+  liveMode: boolean;
+  nickname: string;
+  productId: string;
+  periodCount: YearMonthDay;
+  tier: Tier;
+  unitAmount: number;
+  created: number;
+} & OptionalPeriod;
+
+export type StripeCoupon = {
+  id: string;
+  amountOff: number,
+  currency: string;
+  redeemBy: number;
+  priceId?: string;
+  startUtc?: string;
+  endUtc?: string;
+};
