@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Paywall } from '../data/paywall';
-import { StripePrice } from '../data/price';
+import { StripePrice } from '../data/stripe';
 import { endpoint } from './endpoint';
 import { ResponseError } from './response-error';
 

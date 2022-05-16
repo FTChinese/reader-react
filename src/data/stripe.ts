@@ -1,7 +1,23 @@
 import { PaymentMethod as StripePayMethod } from '@stripe/stripe-js';
 import { Edition } from './edition';
-import { SubStatus } from './enum';
+import { PriceKind, SubStatus, Tier } from './enum';
 import { Membership } from './membership';
+import { YearMonthDay, OptionalPeriod } from './period';
+
+export type StripePrice = {
+  id: string;
+  active: boolean;
+  currency: string;
+  isIntroductory: boolean;
+  kind: PriceKind;
+  liveMode: boolean;
+  nickname: string;
+  productId: string;
+  periodCount: YearMonthDay;
+  tier: Tier;
+  unitAmount: number;
+  created: number;
+} & OptionalPeriod;
 
 export type PubKey = {
   key: string;

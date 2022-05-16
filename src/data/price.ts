@@ -38,19 +38,4 @@ export type Discount = {
 } & OptionalPeriod;
 
 
-export type StripePrice = {
-  id: string;
-  active: boolean;
-  currency: string;
-  isIntroductory: boolean;
-  kind: PriceKind;
-  liveMode: boolean;
-  nickname: string;
-  productId: string;
-  periodCount: YearMonthDay;
-  tier: Tier;
-  unitAmount: number;
-  created: number;
-} & OptionalPeriod;
-
 

@@ -1,7 +1,6 @@
 import {
   Price,
   Discount,
-  StripePrice,
   isIntro,
 } from './price';
 import { newMoneyParts, localizeCycle, PriceParts } from './localization';
@@ -9,6 +8,7 @@ import { Membership, applicableOfferKinds } from './membership';
 import { applicableOffer, PaywallPrice, PaywallProduct } from './paywall';
 import { cycleOfYMD, formatPeriods, isValidPeriod, isZeroYMD } from './period';
 import { CheckoutIntent, IntentKind, newOneTimeOrderIntent, newStripeOrderIntent } from './chekout-intent';
+import { StripePrice } from './stripe';
 
 type StripePriceIDs = {
   recurrings: string[];

@@ -1,6 +1,6 @@
 import { atom, selector, useRecoilState } from 'recoil'
 import { Banner, isPromoValid, Paywall, PaywallProduct } from '../../data/paywall'
-import { StripePrice } from '../../data/price'
+import { StripePrice } from '../../data/stripe'
 
 type PriceData = {
   ftc?: Paywall;

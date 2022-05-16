@@ -1,8 +1,8 @@
 import { Tier } from './enum';
-import { localizeSubsStatus } from './localization';
 import { isBeyondMaxRenewalPeriod, Membership, normalizePayMethod } from './membership';
 import { cycleOfYMD } from './period';
-import { Price, StripePrice } from './price';
+import { Price } from './price';
+import { StripePrice } from './stripe';
 
 export enum IntentKind {
   // VIP;
