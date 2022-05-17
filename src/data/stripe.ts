@@ -125,3 +125,21 @@ export type StripeCoupon = {
   startUtc?: string;
   endUtc?: string;
 };
+
+export type StripePaywallItem = {
+  price: StripePrice;
+  coupons: StripeCoupon[];
+};
+
+export function getCoupon(coupons: StripeCoupon[]): StripeCoupon | undefined {
+  switch (coupons.length) {
+    case 0:
+      return undefined;
+
+    case 1:
+      return coupons[0];
+
+    default:
+      return coupons.sort((a, b) => b.amountOff - a.amountOff)[0];
+  }
+}
