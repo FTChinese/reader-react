@@ -1,5 +1,5 @@
 import { Tier, Cycle, PriceKind, DiscountStatus, OfferKind } from './enum';
-import { YearMonthDay, OptionalPeriod } from './period';
+import { YearMonthDay, OptionalPeriod, isValidPeriod } from './period';
 
 /**
  * @description Price determines how much a product cost.
@@ -38,4 +38,12 @@ export type Discount = {
 } & OptionalPeriod;
 
 
-
+export function filterOffers(offers: Discount[], filters: OfferKind[]): Discount[] {
+  return offers
+    .filter(offer => {
+      return isValidPeriod(offer) && filters.includes(offer.kind);
+    })
+    .sort((a, b) => {
+      return b.priceOff - a.priceOff
+    });
+}

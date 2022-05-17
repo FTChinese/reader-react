@@ -1,5 +1,5 @@
 import { OfferKind, Tier } from './enum';
-import { Discount, Price } from './price';
+import { Discount, filterOffers, Price } from './price';
 import { formatMoney } from './localization';
 import { cycleOfYMD, isValidPeriod, OptionalPeriod, totalDaysOfYMD } from './period';
 
@@ -73,12 +73,7 @@ export function applicableOffer(pp: PaywallPrice, filters: OfferKind[]): Discoun
     return undefined;
   }
 
-  const filtered = pp.offers.filter(offer => {
-      return isValidPeriod(offer) && filters.includes(offer.kind);
-    })
-    .sort((a, b) => {
-      return b.priceOff - a.priceOff;
-    });
+  const filtered = filterOffers(pp.offers, filters);
 
   if (filtered.length == 0) {
     return undefined;
