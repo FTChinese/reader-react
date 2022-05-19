@@ -11,7 +11,8 @@
     "html": "ts-node --project=scripts/tsconfig.json ./scripts/html.prod.ts",
     "copy-static": "ts-node --project=scripts/tsconfig.json ./scripts/copyStaticAssets.ts",
     "deploy-dev": "yarn build && yarn html && yarn copy-static",
-    "deploy": "yarn build && yarn html && yarn copy-static --prod"
+    "deploy": "yarn build && yarn html && yarn copy-static --prod",
+    "mincss": "postcss src/index.css > dist/ftc-bootstrap.css && cp dist/ftc-bootstrap.css ~/svn-online/ftac/frontend/styles"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^1.7.1",
@@ -37,8 +38,11 @@
     "@types/shelljs": "^0.8.11",
     "@vitejs/plugin-react": "^1.3.1",
     "bootstrap": "^5.1.3",
+    "cssnano": "^5.1.8",
     "jest": "^27.5.1",
     "nunjucks": "^3.2.3",
+    "postcss": "^8.4.14",
+    "postcss-cli": "^9.1.0",
     "prettier": "^2.6.2",
     "shelljs": "^0.8.5",
     "ts-jest": "^27.1.4",
