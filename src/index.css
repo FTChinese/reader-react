@@ -215,6 +215,33 @@ a:hover {
   border-color: var(--color-teal40);
 }
 
+.ftc-toolbar {
+  background-color: var(--color-paper);
+  border-bottom: 1px solid var(--color-black20);
+}
+
+.ftc-toolbar a {
+  color: var(--color-black80);
+  text-decoration: none;
+}
+
+.ftc-brand {
+  box-sizing: border-box;
+  height: 50px;
+  padding: 5px;
+}
+
+.ftc-logo {
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.ftc-logo img {
+  object-fit: contain;
+  height: 100%;
+  width: auto;
+}
+
 .o-footer a {
   border-bottom: 0;
   text-decoration: none;
