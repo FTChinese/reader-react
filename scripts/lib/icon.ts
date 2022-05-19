@@ -7,6 +7,6 @@ export interface Icon {
  * @description Nunjucks context to render icons.
  */
 export const defaultIcon: Icon = {
-  baseUrl: 'https://interactive.ftchinese.com/favicons',
+  baseUrl: 'https://www.ftacademy.cn/images/favicons',
   sizes: ['180x180', '152x152', '120x120', '76x76']
 };
