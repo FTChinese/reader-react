@@ -4,12 +4,20 @@ import { PagedList } from '../data/paged-list';
 import { PubKey, SetupIntent, SetupIntentParams } from '../data/stripe';
 import { Customer, PaymentMethod, SubsParams, SubsResult } from '../data/stripe';
 import { endpoint } from './endpoint';
+import { Fetch, UrlBuilder } from './request';
 import { ResponseError } from './response-error';
 
+// Load stripe publishable key from server.
+// It's impossible to load the key dynamically for
+// different environment since it is required to be
+// a fixed static value upon initialization.
 export function loadStripePubKey(): Promise<PubKey> {
-  return axios.get(endpoint.stripePubKey)
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+  const url = new UrlBuilder(endpoint.stripePubKey)
+    .toString();
+
+  return new Fetch()
+    .get(url)
+    .endJson<PubKey>()
 }
 
 export function createCustomer(token: string): Promise<Customer> {
