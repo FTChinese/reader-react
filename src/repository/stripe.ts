@@ -9,7 +9,7 @@ import { ResponseError } from './response-error';
 export function loadStripePubKey(): Promise<PubKey> {
   return axios.get(endpoint.stripePubKey)
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function createCustomer(token: string): Promise<Customer> {
@@ -21,7 +21,7 @@ export function createCustomer(token: string): Promise<Customer> {
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function loadCustomer(token: string, cusId: string): Promise<Customer> {
@@ -32,7 +32,7 @@ export function loadCustomer(token: string, cusId: string): Promise<Customer> {
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function loadCusDefaultPayMethod(token: string, cusId: string): Promise<PaymentMethod> {
@@ -43,7 +43,7 @@ export function loadCusDefaultPayMethod(token: string, cusId: string): Promise<P
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function listCusPaymentMethods(token: string, cusId: string): Promise<PagedList<PaymentMethod>> {
@@ -54,7 +54,7 @@ export function listCusPaymentMethods(token: string, cusId: string): Promise<Pag
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function createSetupIntent(token: string, p: SetupIntentParams): Promise<SetupIntent> {
@@ -66,7 +66,7 @@ export function createSetupIntent(token: string, p: SetupIntentParams): Promise<
       }
     )
   .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function loadSetupPaymentMethod(token: string, setupId: string): Promise<PaymentMethod> {
@@ -80,7 +80,7 @@ export function loadSetupPaymentMethod(token: string, setupId: string): Promise<
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function loadPaymentMethod(token: string, id: string): Promise<PaymentMethod> {
@@ -91,7 +91,7 @@ export function loadPaymentMethod(token: string, id: string): Promise<PaymentMet
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function createStripeSubs(
@@ -106,7 +106,7 @@ export function createStripeSubs(
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function updateStripeSubs(
@@ -123,7 +123,7 @@ export function updateStripeSubs(
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function refreshStripeSubs(
@@ -138,7 +138,7 @@ export function refreshStripeSubs(
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function cancelStripeSubs(
@@ -153,7 +153,7 @@ export function cancelStripeSubs(
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function redoStripeSubsCancel(
@@ -168,7 +168,7 @@ export function redoStripeSubsCancel(
     }
   )
   .then(resp => resp.data)
-  .catch(error => Promise.reject(ResponseError.newInstance(error)));
+  .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function loadSubsDefaultPayMethod(
@@ -182,7 +182,7 @@ export function loadSubsDefaultPayMethod(
     }
   )
   .then(resp => resp.data)
-  .catch(error => Promise.reject(ResponseError.newInstance(error)));
+  .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 /**

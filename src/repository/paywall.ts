@@ -10,12 +10,12 @@ export function loadPaywall(): Promise<Paywall> {
       return resp.data;
     })
     .catch(error => {
-      return Promise.reject(ResponseError.newInstance(error));
+      return Promise.reject(ResponseError.fromAxios(error));
     });
 }
 
 export function listStripePrices(): Promise<StripePrice[]> {
   return axios.get(endpoint.stripePrices)
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }

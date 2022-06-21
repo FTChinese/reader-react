@@ -12,7 +12,7 @@ export function requestMobileLoginSMS(v: MobileFormVal): Promise<boolean> {
     })
     .catch(err => {
       return Promise.reject(
-        ResponseError.newInstance(err)
+        ResponseError.fromAxios(err)
       );
     });
 }
@@ -24,7 +24,7 @@ export function verifyMobileLoginSMS(v: VerifySMSFormVal): Promise<ReaderPasspor
     })
     .catch(err => {
       return Promise.reject(
-        ResponseError.newInstance(err),
+        ResponseError.fromAxios(err),
       );
     });
 }
@@ -34,7 +34,7 @@ export function mobileSignUp(v: MobileFormVal): Promise<ReaderPassport> {
   return axios.post<MobileFormVal, AxiosResponse<ReaderPassport>>(endpoint.mobileSignUp, v)
     .then(resp => resp.data)
     .catch(err => {
-      return Promise.reject(ResponseError.newInstance(err));
+      return Promise.reject(ResponseError.fromAxios(err));
     });
 }
 
@@ -45,7 +45,7 @@ export function mobileLinkExistingEmail(req: MobileLinkExistingEmailReq): Promis
       req
     )
     .then(resp => resp.data)
-    .catch(err => Promise.reject(ResponseError.newInstance(err)));
+    .catch(err => Promise.reject(ResponseError.fromAxios(err)));
 }
 
 export function mobileLinkNewEmail(req: MobileLinkNewEmailReq): Promise<ReaderPassport> {
@@ -54,5 +54,5 @@ export function mobileLinkNewEmail(req: MobileLinkNewEmailReq): Promise<ReaderPa
       req,
     )
     .then(resp => resp.data)
-    .catch(err => Promise.reject(ResponseError.newInstance(err)));
+    .catch(err => Promise.reject(ResponseError.fromAxios(err)));
 }

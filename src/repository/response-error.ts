@@ -92,7 +92,7 @@ export class ResponseError extends Error{
     )
   }
 
-  static newInstance(error: AxiosError<ApiErrorPayload>): ResponseError {
+  static fromAxios(error: AxiosError<ApiErrorPayload>): ResponseError {
     // The request was made and the server responded with a status code
     // that falls out of the range of 2xx
     if (error.response) {

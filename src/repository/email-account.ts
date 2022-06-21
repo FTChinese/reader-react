@@ -16,7 +16,7 @@ export function loadAccount(p: ReaderPassport): Promise<ReaderAccount> {
       return resp.data;
     })
     .catch(error => {
-      return Promise.reject(ResponseError.newInstance(error));
+      return Promise.reject(ResponseError.fromAxios(error));
     });
 }
 
@@ -28,7 +28,7 @@ export function requestEmailVerification(p: ReaderPassport): Promise<boolean> {
       return resp.status === 204;
     })
     .catch(error => {
-      return Promise.reject(ResponseError.newInstance(error));
+      return Promise.reject(ResponseError.fromAxios(error));
     });
 }
 
@@ -41,7 +41,7 @@ export function updateUserName(v: UpdateNameFormVal, token: string): Promise<Bas
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function updateEmail(v: UpdateEmailReq, token: string): Promise<BaseAccount> {
@@ -53,7 +53,7 @@ export function updateEmail(v: UpdateEmailReq, token: string): Promise<BaseAccou
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function updatePassword(v: UpdatePasswordReq, token: string,): Promise<boolean> {
@@ -68,7 +68,7 @@ export function updatePassword(v: UpdatePasswordReq, token: string,): Promise<bo
       return resp.status === 204;
     })
     .catch(error => {
-      return Promise.reject(ResponseError.newInstance(error));
+      return Promise.reject(ResponseError.fromAxios(error));
     });
 }
 
@@ -85,7 +85,7 @@ export function requestVerifyMobile(v: MobileFormVal, token: string): Promise<bo
       }
     )
     .then(resp => resp.status === 204)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function changeMobile(v: VerifySMSFormVal, token: string): Promise<BaseAccount> {
@@ -97,7 +97,7 @@ export function changeMobile(v: VerifySMSFormVal, token: string): Promise<BaseAc
       }
     )
     .then(resp => resp.data)
-    .catch(err => Promise.reject(ResponseError.newInstance(err)));
+    .catch(err => Promise.reject(ResponseError.fromAxios(err)));
 }
 
 export function loadAddress(token: string): Promise<Address> {
@@ -108,7 +108,7 @@ export function loadAddress(token: string): Promise<Address> {
     }
   )
   .then(resp => resp.data)
-  .catch(error => Promise.reject(ResponseError.newInstance(error)));
+  .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function updateAddress(v: AddressFormVal, token: string): Promise<Address> {
@@ -120,7 +120,7 @@ export function updateAddress(v: AddressFormVal, token: string): Promise<Address
     }
   )
   .then(resp => resp.data)
-  .catch(error => Promise.reject(ResponseError.newInstance(error)));
+  .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function loadProfile(token: string): Promise<Profile> {
@@ -131,7 +131,7 @@ export function loadProfile(token: string): Promise<Profile> {
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function updateProfile(v: ProfileFormVal, token: string): Promise<Profile> {
@@ -143,5 +143,5 @@ export function updateProfile(v: ProfileFormVal, token: string): Promise<Profile
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }

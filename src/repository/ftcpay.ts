@@ -14,7 +14,7 @@ export function createWxOrder(v: OrderParams, token: string): Promise<WxPayInten
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function createAliOrder(
@@ -29,7 +29,7 @@ export function createAliOrder(
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function verifyAliWxPay(token: string, id: string): Promise<ConfirmationResult> {
@@ -41,5 +41,5 @@ export function verifyAliWxPay(token: string, id: string): Promise<ConfirmationR
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }

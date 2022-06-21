@@ -12,7 +12,7 @@ export function requestPasswordReset(req: PwResetLetterReq): Promise<boolean> {
     })
     .catch(error => {
       return Promise.reject(
-        ResponseError.newInstance(error)
+        ResponseError.fromAxios(error)
       );
     });
 }
@@ -31,7 +31,7 @@ export function verifyPwToken(token: string): Promise<PasswordResetVerified> {
       }
 
       return Promise.reject(
-        ResponseError.newInstance(error),
+        ResponseError.fromAxios(error),
       );
     });
 }
@@ -43,7 +43,7 @@ export function resetPassword(v: PasswordResetReqParams): Promise<boolean> {
     })
     .catch(error => {
       return Promise.reject(
-        ResponseError.newInstance(error),
+        ResponseError.fromAxios(error),
       );
     });
 }

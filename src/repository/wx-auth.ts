@@ -8,7 +8,7 @@ import { ResponseError } from './response-error';
 export function getWxOAuthCodeReq(): Promise<WxOAuthCodeReq> {
   return axios.get<WxOAuthCodeReq>(endpoint.wxCode)
     .then(resp => resp.data)
-    .catch(err => Promise.reject(ResponseError.newInstance(err)));
+    .catch(err => Promise.reject(ResponseError.fromAxios(err)));
 }
 
 export function wxLogin(code: string): Promise<ReaderPassport> {
@@ -17,7 +17,7 @@ export function wxLogin(code: string): Promise<ReaderPassport> {
       { code, }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function wxLinkExistingEmail(
@@ -36,7 +36,7 @@ export function wxLinkExistingEmail(
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function wxLinkNewEmail(v: EmailSignUpReq, token: string): Promise<ReaderPassport> {
@@ -48,7 +48,7 @@ export function wxLinkNewEmail(v: EmailSignUpReq, token: string): Promise<Reader
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function wxUnlinkEmail(v: WxEmailUnlinkReq, token: string): Promise<ReaderPassport> {
@@ -60,5 +60,5 @@ export function wxUnlinkEmail(v: WxEmailUnlinkReq, token: string): Promise<Reade
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }

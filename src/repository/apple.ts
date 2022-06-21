@@ -12,5 +12,5 @@ export function refreshIAP(token: string, originalTxId: string): Promise<IAPSubs
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }

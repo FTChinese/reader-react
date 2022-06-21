@@ -12,7 +12,7 @@ export function reloadMembership(token: string): Promise<Membership> {
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
 export function claimAddOn(token: string): Promise<Membership> {
@@ -23,5 +23,5 @@ export function claimAddOn(token: string): Promise<Membership> {
       }
     )
     .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }

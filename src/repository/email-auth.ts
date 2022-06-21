@@ -16,7 +16,7 @@ export function emailExists(email: string): Promise<boolean> {
     )
     .then(resp => resp.status === 204)
     .catch(err => {
-      const respErr = ResponseError.newInstance(err);
+      const respErr = ResponseError.fromAxios(err);
       if (respErr.statusCode === 404) {
         return false;
       }
@@ -35,7 +35,7 @@ export function emailLogin(c: Credentials): Promise<ReaderPassport> {
     })
     .catch((error: AxiosError<ApiErrorPayload>) => {
       return Promise.reject(
-        ResponseError.newInstance(error),
+        ResponseError.fromAxios(error),
       );
     });
 }
@@ -47,7 +47,7 @@ export function emailSignUp(v: EmailSignUpReq): Promise<ReaderPassport> {
     })
     .catch(error => {
       return Promise.reject(
-        ResponseError.newInstance(error),
+        ResponseError.fromAxios(error),
       );
     });
 }
@@ -59,7 +59,7 @@ export function verifyEmail(token: string): Promise<boolean> {
     })
     .catch(error => {
       return Promise.reject(
-        ResponseError.newInstance(error),
+        ResponseError.fromAxios(error),
       );
     });
 }
