@@ -130,6 +130,11 @@ export class UrlBuilder {
     return this;
   }
 
+  setLive(live: boolean): UrlBuilder {
+    this.url.searchParams.set('live', `${live}`);
+    return this;
+  }
+
   setQuery(key: string, value: string): UrlBuilder {
     this.url.searchParams.set(key, value);
     return this;
