@@ -7,6 +7,7 @@
     "build": "tsc && vite build",
     "serve": "vite preview",
     "test": "jest",
+    "watch-test": "jest --watchAll",
     "postversion": "git push && git push --tags",
     "html": "ts-node --project=scripts/tsconfig.json ./scripts/html.prod.ts",
     "copy-static": "ts-node --project=scripts/tsconfig.json ./scripts/copyStaticAssets.ts",
