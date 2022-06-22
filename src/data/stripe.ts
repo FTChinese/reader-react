@@ -5,6 +5,7 @@ import { Membership } from './membership';
 import { YearMonthDay, OptionalPeriod } from './period';
 
 export type PubKey = {
+  live: boolean;
   key: string;
 };
 

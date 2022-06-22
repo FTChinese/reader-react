@@ -10,7 +10,7 @@ import { loadStripePubKey } from '../../repository/stripe';
 // servers using different keys.
 export const stripePromise = loadStripePubKey()
 .then(pk => {
-  console.log('Initializing Stripe...');
+  console.log(`Initializing Stripe with ${pk.live ? 'live' : 'test'} publishable key`);
   return loadStripe(pk.key);
 });
 
