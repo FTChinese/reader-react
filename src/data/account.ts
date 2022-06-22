@@ -29,8 +29,8 @@ export function normalizeEmail(email: string): string {
   return email;
 }
 
-export function isTestAccount(a: BaseAccount): boolean {
-  return a.email.endsWith('.test@ftchinese.com');
+export function isTestAccount(a?: BaseAccount): boolean {
+  return a?.email?.endsWith('.test@ftchinese.com') || false;
 }
 
 export type ReaderAccount = BaseAccount & {
