@@ -1,6 +1,7 @@
 {
   "name": "reader-react",
   "version": "1.0.2",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "html-dev": "ts-node --project=scripts/tsconfig.json ./scripts/html.dev.ts",
