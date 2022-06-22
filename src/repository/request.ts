@@ -112,12 +112,11 @@ export class Fetch {
 }
 
 export class UrlBuilder {
-  private url: URL;
   private paths: string[];
+  private query: URLSearchParams = new URLSearchParams();
 
   constructor(base: string) {
-    this.url = new URL(base);
-    this.paths = [];
+    this.paths = [base];
   }
 
   appendPath(segment: string): UrlBuilder {
@@ -126,31 +125,31 @@ export class UrlBuilder {
   }
 
   appendQuery(key: string, value: string): UrlBuilder {
-    this.url.searchParams.append(key, value);
-    return this;
-  }
-
-  setLive(live: boolean): UrlBuilder {
-    this.url.searchParams.set('live', `${live}`);
+    this.query.append(key, value);
     return this;
   }
 
   setQuery(key: string, value: string): UrlBuilder {
-    this.url.searchParams.set(key, value);
+    this.query.set(key, value);
+    return this;
+  }
+
+  setLive(live: boolean): UrlBuilder {
+    this.query.set('live', `${live}`);
     return this;
   }
 
   setSearchParams(params: URLSearchParams): UrlBuilder {
-    for (const [key, value] of params) {
-      this.url.searchParams.set(key, value);
-    }
+    this.query = params;
     return this;
   }
 
   toString(): string {
-    if (this.paths.length > 0) {
-      this.url.pathname = this.paths.join('/');
+    let q = this.query.toString();
+
+    if (q.length > 0) {
+      q = '?' + q;
     }
-    return this.url.toString();
+    return `${this.paths.join('/')}${q}`;
   }
 }
