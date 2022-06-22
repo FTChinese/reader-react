@@ -11,6 +11,11 @@ This app provides features for FTC user to manage account and subscription.
 * `/reader/verification/:token` Verify user's email.
 * `/reader/membership` Show user's current membership.
 
+## Testing Payment
+
+* For one-off payment, login with a test account. A large highted banner will remind you the current mode.
+* For stripe payment, you must run the backend locally. The test/live mode is determined by Stripe's publishable key, which could only be provided when the backend is run locally. In such case, it doesn't matter whether you are using test account or not.
+
 ## Stripe Integration
 
 Stripe provides two versions of frontend SDK:
