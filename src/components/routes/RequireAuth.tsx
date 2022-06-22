@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Location, Path, useLocation, useNavigate } from 'react-router-dom';
+import { isTestAccount } from '../../data/account';
 import { sitemap } from '../../data/sitemap';
 import { useAuth } from '../hooks/useAuth';
 import { Loading } from '../progress/Loading';
@@ -39,7 +40,13 @@ export function RequireAuth(
 
   return (
     <Loading loading={loadingAuth}>
-      {props.children}
+      <>
+        {
+          isTestAccount(passport) &&
+          <div className="text-center bg-danger text-white">Test Mode</div>
+        }
+        {props.children}
+      </>
     </Loading>
   );
 }
