@@ -1,66 +1,24 @@
-import { BaseButton } from './BaseButton';
+import Button from 'react-bootstrap/Button';
+import { ButtonVariant } from 'react-bootstrap/esm/types';
 
-export function PrimaryButton(
+export function BaseButton(
   props: {
-    text: string;
     onClick: () => void;
     disabled?: boolean;
-    leadingIcon?: JSX.Element;
-    trailingIcon?: JSX.Element;
+    size?: 'sm' | 'lg';
+    variant?: ButtonVariant;
+    children: JSX.Element | string
   }
 ) {
   return (
-    <BaseButton
-      text={props.text}
-      onClick={props.onClick}
+    <Button
       disabled={props.disabled}
-      startIcon={props.leadingIcon}
-      endIcon={props.trailingIcon}
-      variant="primary"
-    />
-  );
-}
-
-export function SecondaryButton(
-  props: {
-    text: string;
-    onClick: () => void;
-    disabled?: boolean;
-    leadingIcon?: JSX.Element;
-    trailingIcon?: JSX.Element;
-  }
-) {
-  return (
-    <BaseButton
-      text={props.text}
+      variant={props.variant || 'primary'}
+      size={props.size}
       onClick={props.onClick}
-      disabled={props.disabled}
-      startIcon={props.leadingIcon}
-      endIcon={props.trailingIcon}
-      variant="secondary"
-    />
-  );
-}
-
-export function TextButton(
-  props: {
-    text: string;
-    onClick: () => void;
-    disabled?: boolean;
-    leadingIcon?: JSX.Element;
-    trailingIcon?: JSX.Element;
-  }
-) {
-  return (
-    <BaseButton
-      text={props.text}
-      onClick={props.onClick}
-      disabled={props.disabled}
-      startIcon={props.leadingIcon}
-      endIcon={props.trailingIcon}
-      variant="link"
-      size="sm"
-    />
+    >
+      { props.children }
+    </Button>
   );
 }
 

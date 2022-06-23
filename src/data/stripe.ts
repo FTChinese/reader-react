@@ -1,4 +1,4 @@
-import { PaymentMethod as StripePayMethod } from '@stripe/stripe-js';
+import { PaymentMethod as StripePayMethod, PaymentMethodResult } from '@stripe/stripe-js';
 import { Edition } from './edition';
 import { PriceKind, SubStatus, Tier } from './enum';
 import { Membership } from './membership';
@@ -78,6 +78,11 @@ export type PaymentMethod = {
   id: string;
   customerId: string;
   card: PaymentCard;
+};
+
+export type PaymentMethodInUse = {
+  current?: PaymentMethod;
+  isDefault: boolean;
 };
 
 export type PaymentCard = {

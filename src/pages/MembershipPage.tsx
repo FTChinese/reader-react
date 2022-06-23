@@ -1,6 +1,6 @@
 import { useAuth } from '../components/hooks/useAuth';
 import { Unauthorized } from '../components/routes/Unauthorized';
-import { SingleCenterCol } from '../components/layout/ContentLayout';
+import { CenterColumn } from '../components/layout/Column';
 import { AddOnOverview, SubsOverview } from '../features/member/SubsOverview';
 import { StripeSubsSettings } from '../features/member/StripeSubsSettings';
 import { CustomerService } from '../features/member/CustomerSerivce';
@@ -13,7 +13,7 @@ export function MembershipPage() {
   }
 
   return (
-    <SingleCenterCol>
+    <CenterColumn>
       <>
         <SubsOverview
           passport={passport}
@@ -28,7 +28,7 @@ export function MembershipPage() {
         />
         <CustomerService />
       </>
-    </SingleCenterCol>
+    </CenterColumn>
   );
 }
 

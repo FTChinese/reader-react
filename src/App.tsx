@@ -20,7 +20,7 @@ import { SubsPage } from './pages/SubsPage';
 import { RequireAuth } from './components/routes/RequireAuth';
 import { AliPayCbPage } from './pages/AliPayCbPage';
 import { RequireShoppingCart } from './components/routes/RequireShoopingCart';
-import { StripeSettingPage } from './pages/StripeSettingPage';
+import { StripeWalletPage } from './pages/StripeWalletPage';
 import { HomePage } from './pages/HomePage';
 import { RequireStripeCustomer } from './components/routes/RequireStripeCustomer';
 
@@ -80,7 +80,7 @@ function App() {
                 path={sitePath.stripe}
                 element={
                   <RequireStripeCustomer>
-                    <StripeSettingPage />
+                    <StripeWalletPage />
                   </RequireStripeCustomer>
                 }
               />
