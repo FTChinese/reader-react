@@ -1,74 +1,59 @@
-import { atom, selector, useRecoilState } from 'recoil'
+import { useState } from 'react';
+import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 import { Banner, isPromoValid, Paywall } from '../../data/paywall'
-import { PaywallProduct } from '../../data/paywall-product';
-import { StripePrice } from '../../data/stripe'
+import { loadPaywall } from '../../repository/paywall';
+import { ResponseError } from '../../repository/response-error';
 
-type PriceData = {
-  paywall?: Paywall;
-  stripe: StripePrice[];
-}
-
-const paywallState = atom<PriceData>({
+const paywallState = atom<Paywall | undefined>({
   key: 'PaywallState',
-  default: {
-    paywall: undefined,
-    stripe: [],
-  }
+  default: undefined,
+});
+
+const paywallBannerState = selector<Banner | undefined>({
+  key: 'paywallBannerState',
+  get: ({ get }) => {
+    const pw = get(paywallState);
+    if (!pw) {
+      return undefined;
+    }
+
+    if (isPromoValid(pw.promo)) {
+      return pw.promo;
+    }
+
+    return pw.banner;
+  },
 });
 
 export function usePaywall() {
   const [ paywall, setPaywall ] = useRecoilState(paywallState);
+  const banner = useRecoilValue(paywallBannerState);
 
-  function setFtcPrice(pw: Paywall) {
-    setPaywall((currVal) => {
-      return {
-        ...currVal,
-        paywall: pw,
-      }
-    });
+  const [ progress, setProgress ]= useState(true);
+  const [ err, setErr ] = useState('');
+
+  const initLoadPaywall = (live: boolean) => {
+    setProgress(true);
+    setErr('');
+
+    loadPaywall(live)
+      .then(pw => {
+        console.log(pw);
+        setPaywall(pw);
+        setProgress(false);
+      })
+      .catch((err: ResponseError) => {
+        console.log(err);
+        setErr(err.message);
+        setProgress(false);
+      });
   }
 
   return {
     paywall,
-    setFtcPrice,
+    banner,
+    progress,
+    err,
+    initLoadPaywall,
   };
 }
-
-export const paywallBannerState = selector<Banner | undefined>({
-  key: 'paywallBannerState',
-  get: ({ get }) => {
-    const pw = get(paywallState);
-    if (!pw.paywall) {
-      return undefined;
-    }
-
-    if (isPromoValid(pw.paywall.promo)) {
-      return pw.paywall.promo;
-    }
-
-    return pw.paywall.banner;
-  },
-});
-
-export const paywallProductsState = selector<PaywallProduct[]>({
-  key: 'paywallProductsState',
-  get: ({ get }) => {
-    const pw = get(paywallState);
-    if (!pw.paywall) {
-      return [];
-    }
-
-    return pw.paywall.products;
-  },
-});
-
-export const paywallStripeState = selector<Map<string, StripePrice>>({
-  key: 'paywallStripeState',
-  get: ({ get }) => {
-    const pw = get(paywallState);
-
-    return pw.stripe.reduce((prev, curr) => {
-      return prev.set(curr.id, curr);
-    }, new Map());
-  },
-});

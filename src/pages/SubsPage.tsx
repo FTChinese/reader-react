@@ -1,54 +1,43 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
 import { ImageRatio } from '../components/graphics/ImageRatio';
 import { useAuth } from '../components/hooks/useAuth';
-import { paywallBannerState, usePaywall } from '../components/hooks/usePaywall';
+import { usePaywall } from '../components/hooks/usePaywall';
 import { useShoppingCart } from '../components/hooks/useShoppingCart';
 import { ErrorBoundary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
-import { Unauthorized } from '../components/routes/Unauthorized';
 import { isTestAccount } from '../data/account';
-import { Membership } from '../data/membership';
+import { Membership, zeroMembership } from '../data/membership';
 import { Banner, buildProductItems, Paywall } from '../data/paywall';
 import { ProductItem } from '../data/paywall-product';
 import { CartItemFtc, CartItemStripe } from '../data/shopping-cart';
 import { sitemap } from '../data/sitemap';
 import { ProductCard } from '../features/product/ProductCard';
-import { loadPaywall } from '../repository/paywall';
-import { ResponseError } from '../repository/response-error';
 
 export function SubsPage() {
 
-  const [ progress, setProgress ]= useState(true);
-  const [ err, setErr ] = useState('');
-
   const { passport } = useAuth();
-  const { setFtcPrice, paywall } = usePaywall();
+  const {
+    paywall,
+    banner,
+    initLoadPaywall,
+    progress,
+    err
+  } = usePaywall();
   const navigate = useNavigate();
   const { putStripeItem, putFtcItem } = useShoppingCart();
 
   useEffect(() => {
-    loadPaywall(!isTestAccount(passport))
-      .then(pw => {
-        console.log(pw)
-        setFtcPrice(pw);
-        setProgress(false);
-      })
-      .catch((err: ResponseError) => {
-        console.log(err);
-        setErr(err.message);
-        setProgress(false);
-      });
+    initLoadPaywall(!isTestAccount(passport));
   }, []);
 
   return (
     <ErrorBoundary errMsg={err}>
       <Loading loading={progress}>
-
         <PaywallScreen
-          paywall={paywall.paywall}
-          membership={passport?.membership}
+          paywall={paywall}
+          banner={banner}
+          membership={passport?.membership || zeroMembership()}
           onFtcPay={(ftcItem) => {
             putFtcItem(ftcItem);
             navigate(sitemap.checkout, { replace: false});
@@ -66,27 +55,30 @@ export function SubsPage() {
 function PaywallScreen(
   props: {
     paywall?: Paywall;
-    membership?: Membership;
+    banner?: Banner;
+    membership: Membership;
     onFtcPay: (item: CartItemFtc) => void;
     onStripePay: (item: CartItemStripe) => void;
   }
 ) {
 
-  if (!props.paywall || !props.membership) {
+  if (!props.paywall) {
     return null;
   }
 
-  const banner = useRecoilValue(paywallBannerState);
   const productItems = buildProductItems(
     props.paywall,
     props.membership,
-  )
+  );
 
   return (
     <div className="mt-3">
-      <PaywallBanner
-        banner={banner}
-      />
+      {
+        props.banner &&
+        <PaywallBanner
+          banner={props.banner}
+        />
+      }
       <PaywallProducts
         productItems={productItems}
         onFtcPay={props.onFtcPay}
@@ -98,13 +90,9 @@ function PaywallScreen(
 
 function PaywallBanner(
   props: {
-    banner?: Banner;
+    banner: Banner;
   }
 ) {
-
-  if (!props.banner) {
-    return null;
-  }
 
   return (
     <div className="row flex-row-reverse">
@@ -130,11 +118,6 @@ function PaywallProducts(
     onStripePay: (item: CartItemStripe) => void;
   }
 ) {
-  const { passport } = useAuth();
-
-  if (!passport) {
-    return <Unauthorized/>;
-  }
 
   return (
     <div className="mt-3">
