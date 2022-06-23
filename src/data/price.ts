@@ -1,5 +1,6 @@
 import { Tier, Cycle, PriceKind, DiscountStatus, OfferKind } from './enum';
-import { YearMonthDay, OptionalPeriod, isValidPeriod } from './period';
+import { formatMoney } from './localization';
+import { YearMonthDay, OptionalPeriod, isValidPeriod, cycleOfYMD, totalDaysOfYMD } from './period';
 
 /**
  * @description Price determines how much a product cost.
@@ -23,6 +24,33 @@ import { YearMonthDay, OptionalPeriod, isValidPeriod } from './period';
 
 export function isIntro(p: Price): boolean {
   return p.kind === 'one_time';
+}
+
+export type DailyPrice = {
+  holder: string;
+  replacer: string;
+}
+
+export function dailyPrice(price: Price): DailyPrice {
+  const days = totalDaysOfYMD(price.periodCount) || 1;
+
+  const avg = price.unitAmount / days;
+
+  const dailyAmount = formatMoney(price.currency, avg);
+
+  switch (cycleOfYMD(price.periodCount)) {
+    case 'year':
+      return {
+        holder: '{{dailyAverageOfYear}}',
+        replacer: dailyAmount,
+      };
+
+    case 'month':
+      return {
+        holder: '{{dailyAverageOfMonth}}',
+        replacer: dailyAmount,
+      };
+  }
 }
 
 export type Discount = {
