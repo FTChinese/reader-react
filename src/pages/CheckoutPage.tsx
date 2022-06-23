@@ -1,4 +1,4 @@
-import { SingleCenterCol } from '../components/layout/ContentLayout';
+import { CenterColumn } from '../components/layout/Column';
 import { Tier } from '../data/enum';
 import { localizeTier } from '../data/localization';
 import { CartItemUIParams, cartItemUiOfFtc, cartItemOfStripe } from '../data/shopping-cart';
@@ -17,7 +17,7 @@ function ChekcoutLayout(
   }
 ) {
   return (
-    <SingleCenterCol>
+    <CenterColumn>
       <>
         <h2 className="text-center mb-3">
           订阅{localizeTier(props.tier)}
@@ -29,7 +29,7 @@ function ChekcoutLayout(
 
         {props.children}
       </>
-    </SingleCenterCol>
+    </CenterColumn>
   );
 }
 

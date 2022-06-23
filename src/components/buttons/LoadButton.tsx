@@ -1,7 +1,7 @@
 import Button from 'react-bootstrap/Button';
 import { ButtonVariant } from 'react-bootstrap/types';
 
-export function BaseButton(
+export function LoadButton(
   props: {
     text: string;
     onClick: () => void;

@@ -3,6 +3,9 @@ import { PaymentMethod } from '../../data/stripe';
 import { useStripePaySetting } from '../../components/hooks/useStripePaySetting';
 import Card from 'react-bootstrap/Card';
 
+/**
+ * @deprecated
+ */
 export function BankCard(
   props: {
     paymentMethod: PaymentMethod;

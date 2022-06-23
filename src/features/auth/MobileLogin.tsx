@@ -15,7 +15,7 @@ import { VerifySMSFormVal } from '../../data/mobile';
 import { mobileLinkExistingEmail, mobileSignUp, requestMobileLoginSMS, verifyMobileLoginSMS } from '../../repository/mobile-auth';
 import { ResponseError, isCodeMissing } from '../../repository/response-error';
 import { LinkPwResetOrSignUp } from './LinkPwResetOrSignUp';
-import { BaseButton } from '../../components/buttons/BaseButton';
+import { LoadButton } from '../../components/buttons/LoadButton';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
 
 export function MobileLogin() {
@@ -154,7 +154,7 @@ function AlertMobileNotFound(
         <p>请注意，选择"手机号新建账号"后，该手机号将无法关联您已有的邮箱账号。</p>
 
         <div className="d-flex justify-content-between">
-          <BaseButton
+          <LoadButton
             text="手机号新建账号"
             disabled={submitting}
             onClick={handleSignUp}

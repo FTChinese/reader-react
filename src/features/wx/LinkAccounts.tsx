@@ -7,7 +7,7 @@ import Card from 'react-bootstrap/Card';
 import { TwoColList } from '../../components/list/TwoColList';
 import { rowExpiration, rowTier } from '../member/member-status';
 import { ErrorAlert } from '../../components/progress/ErrorAlert';
-import { BaseButton } from '../../components/buttons/BaseButton';
+import { LoadButton } from '../../components/buttons/LoadButton';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
 
 /**
@@ -74,7 +74,7 @@ export function LinkAccounts(
       />
       {
         !denied &&
-        <BaseButton
+        <LoadButton
           disabled={submitting}
           text="绑定账号"
           onClick={handleSubmit}

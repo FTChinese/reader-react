@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { toast } from 'react-toastify';
-import { BaseButton } from '../../components/buttons/BaseButton';
+import { LoadButton } from '../../components/buttons/LoadButton';
 import { ArrowClockwise } from '../../components/graphics/icons';
 import { useAuth } from '../../components/hooks/useAuth';
 import { TwoColList } from '../../components/list/TwoColList';
@@ -185,7 +185,7 @@ function ReactivateStripe(
 
   return (
     <Card.Footer className="text-end">
-      <BaseButton
+      <LoadButton
         disabled={progress}
         text="打开自动续订"
         onClick={handleClick}

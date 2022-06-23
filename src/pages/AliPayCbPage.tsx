@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '../components/hooks/useQuery';
-import { SingleCenterCol } from '../components/layout/ContentLayout';
+import { CenterColumn } from '../components/layout/Column';
 import { newAliPayCbParams, validateAliPayResp } from '../data/order';
 import { FtcPayResult } from '../features/checkout/FtcPayResult';
 import { aliwxPaySession } from '../store/aliwxPaySession';
@@ -39,12 +39,12 @@ export function AliPayCbPage() {
   }, []);
 
   return (
-    <SingleCenterCol>
+    <CenterColumn>
       <FtcPayResult
         progress={progress}
         errMsg={err}
         orderId={orderId}
       />
-    </SingleCenterCol>
+    </CenterColumn>
   );
 }

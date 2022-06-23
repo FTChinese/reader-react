@@ -12,7 +12,7 @@ import { createSetupIntent } from '../../repository/stripe';
 import { toast } from 'react-toastify';
 import { ResponseError } from '../../repository/response-error';
 import { Flex } from '../../components/layout/Flex';
-import { BaseButton } from '../../components/buttons/BaseButton';
+import { LoadButton } from '../../components/buttons/LoadButton';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
 import { Loading } from '../../components/progress/Loading';
 import { StripePaymentElementChangeEvent } from '@stripe/stripe-js';
@@ -84,7 +84,7 @@ function CreateSetupIntent(
   // Once the setup intent is used, do remember to clean up it.
   return (
     <Flex justify="end">
-      <BaseButton
+      <LoadButton
         disabled={progress || !!setupIntent.id}
         text="添加新卡片"
         onClick={handleClick}

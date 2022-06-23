@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { sitemap } from '../../data/sitemap';
 import { ResponseError } from '../../repository/response-error';
 import { createCustomer } from '../../repository/stripe';
-import { BaseButton } from '../buttons/BaseButton';
+import { LoadButton } from '../buttons/LoadButton';
 import { useAuth } from '../hooks/useAuth';
-import { SingleCenterCol } from '../layout/ContentLayout';
+import { CenterColumn } from '../layout/Column';
 import { ErrorAlert } from '../progress/ErrorAlert';
 import { CircleLoader } from '../progress/LoadIndicator';
 
@@ -44,7 +44,7 @@ export function RequireStripeCustomer(
 
   if (!passport.email) {
     return (
-      <SingleCenterCol>
+      <CenterColumn>
         <>
         <h2>使用Stripe支付服务需要提供邮箱</h2>
         <div className="text-center">
@@ -53,12 +53,12 @@ export function RequireStripeCustomer(
           </Link>
         </div>
         </>
-      </SingleCenterCol>
+      </CenterColumn>
     );
   }
 
   return (
-    <SingleCenterCol>
+    <CenterColumn>
       <>
         <h2>注册为Stripe用户</h2>
         <p>Stripe支付需要使用邮箱注册其服务，该邮箱将用于接收账单信息，是否使用当前邮箱注册（{passport.email}）？</p>
@@ -69,7 +69,7 @@ export function RequireStripeCustomer(
         />
 
         <div className="mt-3 text-end">
-          <BaseButton
+          <LoadButton
             text="注册"
             disabled={progress}
             onClick={handleClick}
@@ -77,6 +77,6 @@ export function RequireStripeCustomer(
           />
         </div>
       </>
-    </SingleCenterCol>
+    </CenterColumn>
   );
 }
