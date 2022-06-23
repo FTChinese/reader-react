@@ -1,16 +1,6 @@
 import Card from 'react-bootstrap/Card';
-import { useNavigate } from 'react-router-dom';
 import { PriceParts } from '../../data/localization';
-import {
-  CartItemUIParams,
-  CartItemFtc,
-  newFtcCartItemUIParams,
-  newStripeCartItemParams,
-  CartItemStripe
-} from '../../data/shopping-cart';
-import { useAuth } from '../../components/hooks/useAuth';
-import { sitemap } from '../../data/sitemap';
-import { useShoppingCart } from '../../components/hooks/useShoppingCart';
+import { CartItemUIParams } from '../../data/shopping-cart';
 
 function PriceHighlight(
   props: {
@@ -134,55 +124,3 @@ export function PriceCard(
   );
 }
 
-export function FtcPriceCard(
-  props: {
-    item: CartItemFtc;
-  }
-) {
-
-  const navigate = useNavigate();
-  const { putFtcItem } = useShoppingCart();
-
-  const handleClick = () => {
-    putFtcItem(props.item);
-    navigate(sitemap.checkout, { replace: false});
-  }
-
-  const params = newFtcCartItemUIParams(props.item)
-
-  return (
-    <PriceCard
-      params={params}
-      onClick={handleClick}
-    />
-  );
-}
-
-export function StripePriceCard(
-  props: {
-    item: CartItemStripe;
-  }
-) {
-
-  const { passport } = useAuth();
-  if (!passport) {
-    return <></>;
-  }
-
-  const navigate = useNavigate();
-  const { putStripeItem } = useShoppingCart();
-
-  const params = newStripeCartItemParams(props.item);
-
-  const handleClick = () => {
-    putStripeItem(props.item);
-    navigate(sitemap.checkout, { replace: false });
-  };
-
-  return (
-    <PriceCard
-      params={params}
-      onClick={handleClick}
-    />
-  );
-}
