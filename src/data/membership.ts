@@ -22,6 +22,15 @@ export type Membership =  {
   vip: boolean;
 };
 
+export function zeroMembership(): Membership {
+  return {
+    autoRenew: false,
+    standardAddOn: 0,
+    premiumAddOn: 0,
+    vip: false,
+  }
+}
+
 export type AutoRenewMoment = {
   year: string;
   month: string;
