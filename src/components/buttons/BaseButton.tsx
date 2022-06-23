@@ -1,11 +1,12 @@
 import Button from 'react-bootstrap/Button';
 import { ButtonVariant } from 'react-bootstrap/types';
 
-export function LoadButton(
+export function BaseButton(
   props: {
     text: string;
-    disabled: boolean;
     onClick: () => void;
+    disabled?: boolean;
+    size?: 'sm' | 'lg';
     startIcon?: JSX.Element;
     endIcon?: JSX.Element;
     variant?: ButtonVariant;
@@ -15,7 +16,7 @@ export function LoadButton(
     <Button
       disabled={props.disabled}
       variant={props.variant || 'link'}
-      size="sm"
+      size={props.size}
       onClick={props.onClick}
     >
       { props.startIcon }

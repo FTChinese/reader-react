@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { sitemap } from '../../data/sitemap';
 import { ResponseError } from '../../repository/response-error';
 import { createCustomer } from '../../repository/stripe';
-import { LoadButton } from '../buttons/LoadButton';
+import { BaseButton } from '../buttons/BaseButton';
 import { useAuth } from '../hooks/useAuth';
 import { SingleCenterCol } from '../layout/ContentLayout';
 import { ErrorAlert } from '../progress/ErrorAlert';
@@ -69,7 +69,7 @@ export function RequireStripeCustomer(
         />
 
         <div className="mt-3 text-end">
-          <LoadButton
+          <BaseButton
             text="注册"
             disabled={progress}
             onClick={handleClick}
