@@ -132,7 +132,7 @@ export type StripePaywallItem = {
   coupons: StripeCoupon[];
 };
 
-export function getCoupon(coupons: StripeCoupon[]): StripeCoupon | undefined {
+export function findStripeCoupon(coupons: StripeCoupon[]): StripeCoupon | undefined {
   switch (coupons.length) {
     case 0:
       return undefined;
