@@ -1,86 +1,11 @@
 import {
   Price,
   Discount,
-  isIntro,
 } from './price';
 import { newMoneyParts, localizeCycle, PriceParts } from './localization';
-import { Membership, applicableOfferKinds } from './membership';
-import { applicableOffer, PaywallPrice, PaywallProduct } from './paywall';
-import { cycleOfYMD, formatPeriods, isValidPeriod, isZeroYMD } from './period';
-import { CheckoutIntent, IntentKind, newOneTimeOrderIntent, newStripeOrderIntent } from './chekout-intent';
-import { StripePrice } from './stripe';
-
-type StripePriceIDs = {
-  recurrings: string[];
-  trial?: string;
-}
-
-type StripePriceGroup = {
-  recurring: StripePrice;
-  trial?: StripePrice;
-}
-
-type ProductPrices = {
-  ftcPrices: PaywallPrice[];
-  stripeIds: StripePriceIDs;
-}
-/**
- * @description Collect all ftc prices applicable to
- * current user, together with stripe ids associated with
- * each price
- */
- export function collectPaywallPrices(pp: PaywallProduct, isNewMember: boolean): ProductPrices {
-
-  const stripeRecurIds = pp.prices.map(p => p.stripePriceId);
-
-  if (!pp.introductory || !isValidPeriod(pp.introductory) || !isNewMember) {
-    return {
-      ftcPrices: pp.prices,
-      stripeIds: {
-        recurrings: stripeRecurIds,
-      },
-    };
-  }
-
-  const intro: PaywallPrice = {
-    ...pp.introductory,
-    offers: [],
-  };
-
-  return {
-    ftcPrices: [intro, ...pp.prices], // Put introductory price ahead of daily price.
-    stripeIds: {
-      recurrings: stripeRecurIds,
-      trial: pp.introductory.stripePriceId,
-    }
-  }
-}
-
-export function collectStripePrices(ids: StripePriceIDs, prices: Map<string, StripePrice>): StripePriceGroup[] {
-  if (prices.size == 0) {
-    return [];
-  }
-
-  const trial = ids.trial
-    ? prices.get(ids.trial)
-    : undefined
-
-  const items: StripePriceGroup[] = [];
-
-  for (const id of ids.recurrings) {
-    const p = prices.get(id);
-    if (p) {
-      items.push({
-        recurring: p,
-        trial,
-      });
-    } else {
-      console.error('Stripe price %s missing', id)
-    }
-  }
-
-  return items;
-}
+import { cycleOfYMD, formatPeriods, isZeroYMD } from './period';
+import { CheckoutIntent } from './chekout-intent';
+import { StripeCoupon, StripePrice } from './stripe';
 
 /**
  * @description FtcCartItem represents the item
@@ -92,38 +17,6 @@ export type CartItemFtc = {
   discount?: Discount;
   isIntro: boolean;
 };
-
-/**
- *
- * @todo Removed duplicate calculation of applicabledOfferKinds(m)
- * It might be better to create a list of CartItemFtc directly from a PaywallProduct.
- */
-export function newCartItemFtc(p: PaywallPrice, m: Membership): CartItemFtc {
-  if (isIntro(p)) {
-    return {
-      intent: {
-        kind: IntentKind.Create,
-        message: ''
-      },
-      price: p,
-      discount: undefined,
-      isIntro: true,
-    };
-  }
-
-  return {
-    intent: newOneTimeOrderIntent(
-      m,
-      p,
-    ),
-    price: p,
-    discount: applicableOffer(
-      p,
-      applicableOfferKinds(m),
-    ),
-    isIntro: false,
-  };
-}
 
 export type OrderParams = {
   priceId: string;
@@ -141,13 +34,7 @@ export type CartItemStripe = {
   intent: CheckoutIntent;
   recurring: StripePrice;
   trial?: StripePrice;
-}
-
-export function newCarItemStripe(pg: StripePriceGroup, m: Membership): CartItemStripe {
-  return {
-    intent: newStripeOrderIntent(m, pg.recurring),
-    ...pg,
-  };
+  coupon?: StripeCoupon;
 }
 
 export type SubsParams = {
@@ -172,7 +59,7 @@ export type CartItemUIParams = {
   isAutoRenew: boolean
 };
 
-export function newFtcCartItemUIParams(item: CartItemFtc): CartItemUIParams {
+export function cartItemUiOfFtc(item: CartItemFtc): CartItemUIParams {
 
   const header = item.isIntro
     ? '试用'
@@ -215,7 +102,7 @@ export function newFtcCartItemUIParams(item: CartItemFtc): CartItemUIParams {
   };
 }
 
-export function newStripeCartItemParams(item: CartItemStripe): CartItemUIParams {
+export function cartItemOfStripe(item: CartItemStripe): CartItemUIParams {
 
   const header = `连续包${localizeCycle(cycleOfYMD(item.recurring.periodCount))}`;
 
