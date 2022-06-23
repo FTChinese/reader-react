@@ -1,16 +1,17 @@
 import { atom, selector, useRecoilState } from 'recoil'
-import { Banner, isPromoValid, Paywall, PaywallProduct } from '../../data/paywall'
+import { Banner, isPromoValid, Paywall } from '../../data/paywall'
+import { PaywallProduct } from '../../data/paywall-product';
 import { StripePrice } from '../../data/stripe'
 
 type PriceData = {
-  ftc?: Paywall;
+  paywall?: Paywall;
   stripe: StripePrice[];
 }
 
 const paywallState = atom<PriceData>({
   key: 'PaywallState',
   default: {
-    ftc: undefined,
+    paywall: undefined,
     stripe: [],
   }
 });
@@ -22,7 +23,7 @@ export function usePaywall() {
     setPaywall((currVal) => {
       return {
         ...currVal,
-        ftc: pw,
+        paywall: pw,
       }
     });
   }
@@ -43,19 +44,19 @@ export function usePaywall() {
   };
 }
 
-export const paywallBannerState = selector<Banner | null>({
+export const paywallBannerState = selector<Banner | undefined>({
   key: 'paywallBannerState',
   get: ({ get }) => {
     const pw = get(paywallState);
-    if (!pw.ftc) {
-      return null;
+    if (!pw.paywall) {
+      return undefined;
     }
 
-    if (isPromoValid(pw.ftc.promo)) {
-      return pw.ftc.promo;
+    if (isPromoValid(pw.paywall.promo)) {
+      return pw.paywall.promo;
     }
 
-    return pw.ftc.banner;
+    return pw.paywall.banner;
   },
 });
 
@@ -63,11 +64,11 @@ export const paywallProductsState = selector<PaywallProduct[]>({
   key: 'paywallProductsState',
   get: ({ get }) => {
     const pw = get(paywallState);
-    if (!pw.ftc) {
+    if (!pw.paywall) {
       return [];
     }
 
-    return pw.ftc.products;
+    return pw.paywall.products;
   },
 });
 
