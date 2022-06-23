@@ -1,11 +1,19 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { ImageRatio } from '../components/graphics/ImageRatio';
 import { useAuth } from '../components/hooks/useAuth';
-import { paywallBannerState, paywallProductsState, usePaywall } from '../components/hooks/usePaywall';
+import { paywallBannerState, usePaywall } from '../components/hooks/usePaywall';
+import { useShoppingCart } from '../components/hooks/useShoppingCart';
 import { ErrorBoundary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
 import { Unauthorized } from '../components/routes/Unauthorized';
+import { isTestAccount } from '../data/account';
+import { Membership } from '../data/membership';
+import { Banner, buildProductItems, Paywall } from '../data/paywall';
+import { ProductItem } from '../data/paywall-product';
+import { CartItemFtc, CartItemStripe } from '../data/shopping-cart';
+import { sitemap } from '../data/sitemap';
 import { ProductCard } from '../features/product/ProductCard';
 import { listStripePrices, loadPaywall } from '../repository/paywall';
 import { ResponseError } from '../repository/response-error';
@@ -15,10 +23,13 @@ export function SubsPage() {
   const [ progress, setProgress ]= useState(true);
   const [ err, setErr ] = useState('');
 
-  const { setFtcPrice, setStripePrice } = usePaywall();
+  const { passport } = useAuth();
+  const { setFtcPrice, setStripePrice, paywall } = usePaywall();
+  const navigate = useNavigate();
+  const { putStripeItem, putFtcItem } = useShoppingCart();
 
   useEffect(() => {
-    loadPaywall()
+    loadPaywall(!isTestAccount(passport))
       .then(pw => {
         console.log(pw)
         setFtcPrice(pw);
@@ -45,20 +56,64 @@ export function SubsPage() {
   return (
     <ErrorBoundary errMsg={err}>
       <Loading loading={progress}>
-        <div className="mt-3">
-          <PaywallBanner/>
-          <PaywallProducts/>
-        </div>
+
+        <PaywallScreen
+          paywall={paywall.paywall}
+          membership={passport?.membership}
+          onFtcPay={(ftcItem) => {
+            putFtcItem(ftcItem);
+            navigate(sitemap.checkout, { replace: false});
+          }}
+          onStripePay={(stripeItem) => {
+            putStripeItem(stripeItem);
+            navigate(sitemap.checkout, { replace: false });
+          }}
+        />
       </Loading>
     </ErrorBoundary>
   );
 }
 
-function PaywallBanner() {
+function PaywallScreen(
+  props: {
+    paywall?: Paywall;
+    membership?: Membership;
+    onFtcPay: (item: CartItemFtc) => void;
+    onStripePay: (item: CartItemStripe) => void;
+  }
+) {
+
+  if (!props.paywall || !props.membership) {
+    return null;
+  }
 
   const banner = useRecoilValue(paywallBannerState);
+  const productItems = buildProductItems(
+    props.paywall,
+    props.membership,
+  )
 
-  if (!banner) {
+  return (
+    <div className="mt-3">
+      <PaywallBanner
+        banner={banner}
+      />
+      <PaywallProducts
+        productItems={productItems}
+        onFtcPay={props.onFtcPay}
+        onStripePay={props.onStripePay}
+      />
+    </div>
+  );
+}
+
+function PaywallBanner(
+  props: {
+    banner?: Banner;
+  }
+) {
+
+  if (!props.banner) {
     return null;
   }
 
@@ -66,40 +121,41 @@ function PaywallBanner() {
     <div className="row flex-row-reverse">
       <div className="col-sm-4">
         <ImageRatio
-          src={banner.coverUrl}
+          src={props.banner.coverUrl}
         />
       </div>
 
       <div className="col-sm-8">
-        <h2>{banner.heading}</h2>
-        <h3>{banner.subHeading}</h3>
-        <div>{banner.content}</div>
+        <h2>{props.banner.heading}</h2>
+        <h3>{props.banner.subHeading}</h3>
+        <div>{props.banner.content}</div>
       </div>
     </div>
   );
 }
 
-function PaywallProducts() {
+function PaywallProducts(
+  props: {
+    productItems: ProductItem[];
+    onFtcPay: (item: CartItemFtc) => void;
+    onStripePay: (item: CartItemStripe) => void;
+  }
+) {
   const { passport } = useAuth();
-
-  const products = useRecoilValue(paywallProductsState);
 
   if (!passport) {
     return <Unauthorized/>;
   }
 
-  if (products.length === 0) {
-    return null;
-  }
-
   return (
     <div className="mt-3">
       {
-        products.map(product => (
+        props.productItems.map(item => (
           <ProductCard
-            key={product.id}
-            product={product}
-            member={passport.membership}
+            key={item.content.id}
+            item={item}
+            onFtcPay={props.onFtcPay}
+            onStripePay={props.onStripePay}
           />
         ))
       }
