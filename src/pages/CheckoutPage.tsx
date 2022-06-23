@@ -1,7 +1,7 @@
 import { SingleCenterCol } from '../components/layout/ContentLayout';
 import { Tier } from '../data/enum';
 import { localizeTier } from '../data/localization';
-import { CartItemUIParams, newFtcCartItemUIParams, newStripeCartItemParams } from '../data/shopping-cart';
+import { CartItemUIParams, cartItemUiOfFtc, cartItemOfStripe } from '../data/shopping-cart';
 import { AliWxPay } from '../features/checkout/AliWxPay';
 import { PriceCard } from '../features/product/PriceCard';
 import { useShoppingCart } from '../components/hooks/useShoppingCart';
@@ -51,7 +51,7 @@ export function CheckoutPage() {
     return (
       <ChekcoutLayout
         tier={cart.ftc.price.tier}
-        params={newFtcCartItemUIParams(cart.ftc)}
+        params={cartItemUiOfFtc(cart.ftc)}
       >
         <AliWxPay
           item={cart.ftc}
@@ -63,7 +63,7 @@ export function CheckoutPage() {
       <RequireStripeCustomer>
         <ChekcoutLayout
           tier={cart.stripe.recurring.tier}
-          params={newStripeCartItemParams(cart.stripe)}
+          params={cartItemOfStripe(cart.stripe)}
         >
           <StripePay
             item={cart.stripe}
