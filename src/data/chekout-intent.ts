@@ -88,7 +88,7 @@ export const intentAutoRenewAddOn: CheckoutIntent = {
   message: '当前订阅为自动续订，购买额外时长将在自动续订关闭并结束后启用',
 };
 
-export function newOneTimeOrderIntent(m: Membership, p: Price): CheckoutIntent {
+export function buildFtcCheckoutIntent(m: Membership, p: Price): CheckoutIntent {
   if (m.vip) {
     return intentVip;
   }
@@ -160,7 +160,7 @@ export function newOneTimeOrderIntent(m: Membership, p: Price): CheckoutIntent {
   return intentUnknown;
 }
 
-export function newStripeOrderIntent(m: Membership, p: StripePrice): CheckoutIntent {
+export function buildStripeCheckoutIntent(m: Membership, p: StripePrice): CheckoutIntent {
   if (m.vip) {
     return intentVip;
   }
