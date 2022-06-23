@@ -2,16 +2,17 @@ import axios from 'axios';
 import { Paywall } from '../data/paywall';
 import { StripePrice } from '../data/stripe';
 import { endpoint } from './endpoint';
+import { Fetch, UrlBuilder } from './request';
 import { ResponseError } from './response-error';
 
-export function loadPaywall(): Promise<Paywall> {
-  return axios.get(endpoint.paywall)
-    .then(resp => {
-      return resp.data;
-    })
-    .catch(error => {
-      return Promise.reject(ResponseError.fromAxios(error));
-    });
+export function loadPaywall(live: boolean): Promise<Paywall> {
+  const url = new UrlBuilder(endpoint.paywall)
+    .setLive(live)
+    .toString();
+
+  return new Fetch()
+    .get(url)
+    .endJson<Paywall>();
 }
 
 export function listStripePrices(): Promise<StripePrice[]> {
