@@ -15,7 +15,7 @@ import { ProductItem } from '../data/paywall-product';
 import { CartItemFtc, CartItemStripe } from '../data/shopping-cart';
 import { sitemap } from '../data/sitemap';
 import { ProductCard } from '../features/product/ProductCard';
-import { listStripePrices, loadPaywall } from '../repository/paywall';
+import { loadPaywall } from '../repository/paywall';
 import { ResponseError } from '../repository/response-error';
 
 export function SubsPage() {
@@ -24,7 +24,7 @@ export function SubsPage() {
   const [ err, setErr ] = useState('');
 
   const { passport } = useAuth();
-  const { setFtcPrice, setStripePrice, paywall } = usePaywall();
+  const { setFtcPrice, paywall } = usePaywall();
   const navigate = useNavigate();
   const { putStripeItem, putFtcItem } = useShoppingCart();
 
@@ -39,17 +39,6 @@ export function SubsPage() {
         console.log(err);
         setErr(err.message);
         setProgress(false);
-      });
-  }, []);
-
-  useEffect(() => {
-    listStripePrices()
-      .then(prices => {
-        setStripePrice(prices);
-        console.log(prices);
-      })
-      .catch((err: ResponseError) => {
-        console.log(err);
       });
   }, []);
 

@@ -28,19 +28,9 @@ export function usePaywall() {
     });
   }
 
-  function setStripePrice(prices: StripePrice[]) {
-    setPaywall((currVal) => {
-      return {
-        ...currVal,
-        stripe: prices,
-      }
-    });
-  }
-
   return {
     paywall,
     setFtcPrice,
-    setStripePrice,
   };
 }
 
