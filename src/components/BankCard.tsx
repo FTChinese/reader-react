@@ -1,5 +1,5 @@
 import Card from 'react-bootstrap/Card';
-import { BaseButton } from './buttons/Button';
+import Button from 'react-bootstrap/esm/Button';
 import { PlusCircle } from './graphics/icons';
 
 export function BankCard(
@@ -10,12 +10,8 @@ export function BankCard(
     expMonth: number;
   }
 ) {
-  const style = {
-    width: '20em',
-  };
-
   return (
-    <Card className="mt-3 mb-3" style={style}>
+    <Card>
       <Card.Body>
         <Card.Title>
           {props.brand}
@@ -32,21 +28,34 @@ export function BankCard(
   );
 }
 
-export function AddBankCard(
+export function CardColumn(
+  props: {
+    children: JSX.Element;
+  }
+) {
+  return (
+    <div className="row justify-content-center">
+      <div className="col-12 col-md-10 col-lg-9 col-xl-8">
+        {props.children}
+      </div>
+    </div>
+  );
+}
+
+export function AddCardButton(
   props: {
     enabled: boolean;
     onClick: () => void;
   }
 ) {
   return (
-    <BaseButton
+    <Button
       disabled={!props.enabled}
       onClick={props.onClick}
+      variant="outline-primary"
     >
-      <>
-        <PlusCircle/>
-        <span className="pe-2">添加或选择默认支付方式</span>
-      </>
-    </BaseButton>
+      <PlusCircle/>
+      <span className="ps-2">添加或选择默认支付方式</span>
+    </Button>
   );
 }
