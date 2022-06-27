@@ -176,12 +176,6 @@ a:hover {
   border-color: var(--color-teal);
 }
 
-.btn-outline-primary :hover {
-  color: var(--color-teal);
-  background-color: rgba(13, 118, 128, 0.1);
-  border-color: var(--color-teal);
-}
-
 .btn-outline-primary :focus,
 .btn-outline-primary .focus {
   color: var(--color-teal);
