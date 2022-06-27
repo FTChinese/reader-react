@@ -1,6 +1,6 @@
 import { addYears, isAfter, parseISO } from 'date-fns';
 import { isExpired } from '../utils/now';
-import { Cycle, OfferKind, OrderKind, PaymentKind, SubStatus, Tier } from './enum';
+import { Cycle, isInvalidSubStatus, OfferKind, OrderKind, PaymentKind, SubStatus, Tier } from './enum';
 import { Edition } from './edition';
 import { localizeCycle } from './localization';
 
@@ -29,6 +29,10 @@ export function zeroMembership(): Membership {
     premiumAddOn: 0,
     vip: false,
   }
+}
+
+export function hasStripeSubs(m: Membership): boolean {
+  return m.payMethod === 'stripe' && !!m.stripeSubsId
 }
 
 export type AutoRenewMoment = {
