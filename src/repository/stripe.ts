@@ -43,7 +43,7 @@ export function loadCustomer(token: string, cusId: string): Promise<Customer> {
     .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
-export function loadCusDefaultPayMethod(token: string, cusId: string): Promise<PaymentMethod> {
+function loadCusDefaultPayMethod(token: string, cusId: string): Promise<PaymentMethod> {
   return axios.get<PaymentMethod>(
       endpoint.cusDefaultPayMethod(cusId),
       {
@@ -179,7 +179,7 @@ export function redoStripeSubsCancel(
   .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
-export function loadSubsDefaultPayMethod(
+function loadSubsDefaultPayMethod(
   token: string,
   subsId: string,
 ): Promise<PaymentMethod> {
@@ -193,28 +193,28 @@ export function loadSubsDefaultPayMethod(
   .catch(error => Promise.reject(ResponseError.fromAxios(error)));
 }
 
-/**
- * @description Try to find a stripe default payment method.
- * Use subscription's paymenet method if exists;
- * otherwise fallback to customer payment method.
- */
-export function loadStripeDefaultPayment(pp: ReaderPassport): Promise<PaymentMethod> {
-  if (pp.membership.stripeSubsId) {
-    return loadSubsDefaultPayMethod(pp.token, pp.membership.stripeSubsId);
-  }
-
-  if (pp.stripeId) {
-    return loadCusDefaultPayMethod(pp.token, pp.stripeId);
-  }
-
-  return Promise.reject(new Error('Neither stripe subscripiton nor customer found!'));
-}
-
 type PaymentMethodParams = {
   defaultPaymentMethod: string;
 };
 
 export const stripeRepo = {
+  /**
+   * @description Try to find a stripe default payment method.
+   * Use subscription's paymenet method if exists;
+   * otherwise fallback to customer payment method.
+   */
+  loadDefaultPayment: (pp: ReaderPassport): Promise<PaymentMethod> => {
+    if (pp.membership.stripeSubsId) {
+      return loadSubsDefaultPayMethod(pp.token, pp.membership.stripeSubsId);
+    }
+
+    if (pp.stripeId) {
+      return loadCusDefaultPayMethod(pp.token, pp.stripeId);
+    }
+
+    return Promise.reject(new Error('Neither stripe subscripiton nor customer found!'));
+  },
+
   setCusPayment: (
     args: {
       token: string,

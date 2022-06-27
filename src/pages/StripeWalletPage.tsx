@@ -12,7 +12,7 @@ import { ReaderPassport } from '../data/account';
 import { hasStripeSubs } from '../data/membership';
 import { PaymentMethod } from '../data/stripe';
 import { ResponseError } from '../repository/response-error';
-import { loadStripeDefaultPayment, stripeRepo } from '../repository/stripe';
+import { stripeRepo } from '../repository/stripe';
 
 /**
  * @description Payment method managment.
@@ -150,7 +150,7 @@ function useStripeWallet() {
     setError('');
     setProgress(true);
 
-    loadStripeDefaultPayment(passport)
+    stripeRepo.loadDefaultPayment(passport)
       .then(pm => {
         setProgress(false);
         setDefaultPaymentMethod(pm);

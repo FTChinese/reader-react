@@ -5,7 +5,7 @@ import { Loading } from '../../components/progress/Loading';
 import { PassportProp } from '../../data/account';
 import { PaymentMethod } from '../../data/stripe';
 import { ResponseError } from '../../repository/response-error';
-import { loadStripeDefaultPayment } from '../../repository/stripe';
+import { stripeRepo } from '../../repository/stripe';
 import { BankCardRow } from './BankCard';
 
 /**
@@ -45,7 +45,7 @@ export function StripeDefaultPaymentMethod(
     // subscription's default payment method;
     // otherwise, if ReaderAccount.stripeId exists,
     // user customer's default payment method.
-    loadStripeDefaultPayment(props.passport)
+    stripeRepo.loadDefaultPayment(props.passport)
       .then(pm => {
         console.log('Stripe payment method loaded');
         // Only set payment method if no one exists.
