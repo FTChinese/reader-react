@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { bearerAuthHeader, ReaderPassport } from '../data/account';
 import { PagedList } from '../data/paged-list';
-import { PubKey, SetupIntent, SetupIntentParams } from '../data/stripe';
+import { PubKey, SetupIntent, SetupIntentParams, Subs } from '../data/stripe';
 import { Customer, PaymentMethod, SubsParams, SubsResult } from '../data/stripe';
 import { endpoint } from './endpoint';
 import { Fetch, UrlBuilder } from './request';
@@ -208,4 +208,52 @@ export function loadStripeDefaultPayment(pp: ReaderPassport): Promise<PaymentMet
   }
 
   return Promise.reject(new Error('Neither stripe subscripiton nor customer found!'));
+}
+
+type PaymentMethodParams = {
+  defaultPaymentMethod: string;
+};
+
+export const stripeRepo = {
+  setCusPayment: (
+    args: {
+      token: string,
+      customerId: string,
+      methodId: string,
+    }
+  ): Promise<Customer> => {
+    const url = new UrlBuilder(endpoint.stripeCustomers)
+      .appendPath(args.customerId)
+      .appendPath('default-payment-method')
+      .toString();
+
+    return new Fetch()
+      .post(url)
+      .setBearerAuth(args.token)
+      .sendJson<PaymentMethodParams>({
+        defaultPaymentMethod: args.methodId
+      })
+      .endJson<Customer>();
+  },
+
+  updateSubsPayment: (
+    args: {
+      token: string,
+      subsId: string,
+      methodId: string,
+    }
+  ): Promise<Subs> => {
+    const url = new UrlBuilder(endpoint.stripeCustomers)
+      .appendPath(args.subsId)
+      .appendPath('default-payment-method')
+      .toString();
+
+    return new Fetch()
+      .post(url)
+      .setBearerAuth(args.token)
+      .sendJson<PaymentMethodParams>({
+        defaultPaymentMethod: args.methodId
+      })
+      .endJson<Subs>();
+  }
 }
