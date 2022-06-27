@@ -51,7 +51,7 @@ export class Fetch {
     return this;
   }
 
-  setBeaderAuth(token: string): Fetch {
+  setBearerAuth(token: string): Fetch {
     this.headers.set('Authorization', `Bearer ${token}`);
 
     return this;
