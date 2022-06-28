@@ -1,13 +1,20 @@
 import { CenterColumn } from '../components/layout/Column';
 import { Tier } from '../data/enum';
 import { localizeTier } from '../data/localization';
-import { CartItemUIParams, cartItemUiOfFtc, cartItemOfStripe } from '../data/shopping-cart';
+import { CartItemUIParams, cartItemUiOfFtc, CartItemStripe } from '../data/shopping-cart';
 import { AliWxPay } from '../features/checkout/AliWxPay';
 import { PriceCard } from '../features/product/PriceCard';
 import { useShoppingCart } from '../components/hooks/useShoppingCart';
-import { StripePay } from '../features/checkout/StripePay';
 import { useAuth } from '../components/hooks/useAuth';
 import { RequireStripeCustomer } from '../components/routes/RequireStripeCustomer';
+import { ReaderPassport } from '../data/account';
+import { StripePayScreen } from '../features/stripepay/StripePayScreen';
+import { useStripePay } from '../features/stripepay/useStripePay';
+import { useEffect, useState } from 'react';
+import { ResponseError } from '../repository/response-error';
+import { PaymentMethodDialog } from '../features/stripepay/PaymentMethodDialog';
+import { toast } from 'react-toastify';
+import { Membership } from '../data/membership';
 
 function ChekcoutLayout(
   props: {
@@ -40,7 +47,7 @@ function ChekcoutLayout(
  * - After a new stripe payment method is added and user is redirected here.
  */
 export function CheckoutPage() {
-  const { passport } = useAuth();
+  const { passport, setMembership } = useAuth();
   const { cart } = useShoppingCart();
 
   if (!passport) {
@@ -61,14 +68,13 @@ export function CheckoutPage() {
   } else if (cart.stripe) {
     return (
       <RequireStripeCustomer>
-        <ChekcoutLayout
-          tier={cart.stripe.recurring.tier}
-          params={cartItemOfStripe(cart.stripe)}
-        >
-          <StripePay
-            item={cart.stripe}
-          />
-        </ChekcoutLayout>
+        <StripePageScreen
+          item={cart.stripe}
+          passport={passport}
+          onSuccess={(m) => {
+            setMembership(m);
+          }}
+        />
       </RequireStripeCustomer>
     );
   } else {
@@ -76,4 +82,57 @@ export function CheckoutPage() {
   }
 }
 
+function StripePageScreen(
+  props: {
+    item: CartItemStripe;
+    passport: ReaderPassport;
+    onSuccess: (m: Membership) => void;
+  }
+) {
 
+  const [show, setShow] = useState(false);
+
+  const {
+    paymentMethodSelected,
+    selectPaymentMethod,
+    submitting,
+    subsCreated,
+    loadDefaultPaymentMethod,
+    subscribe,
+  } = useStripePay();
+
+  useEffect(() => {
+    loadDefaultPaymentMethod(props.passport);
+  }, []);
+
+  return (
+    <>
+      <StripePayScreen
+        cartItem={props.item}
+        submitting={submitting}
+        paymentMethod={paymentMethodSelected}
+        subs={subsCreated}
+        onPaymentMethod={() => {
+          setShow(true);
+        }}
+        onSubscribe={() => {
+          subscribe(props.passport, props.item)
+            .then(m => {
+              props.onSuccess(m);
+            })
+            .catch((err: ResponseError) => {
+              toast.error(err.message);
+            });
+        }}
+      />
+
+      <PaymentMethodDialog
+        show={show}
+        passport={props.passport}
+        onHide={() => setShow(false)}
+        onMethodSelected={selectPaymentMethod}
+      />
+    </>
+
+  );
+}
