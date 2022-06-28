@@ -102,7 +102,7 @@ export function cartItemUiOfFtc(item: CartItemFtc): CartItemUIParams {
   };
 }
 
-export function cartItemOfStripe(item: CartItemStripe): CartItemUIParams {
+export function priceCardParamsOfStripe(item: CartItemStripe): CartItemUIParams {
 
   const header = `连续包${localizeCycle(cycleOfYMD(item.recurring.periodCount))}`;
 
