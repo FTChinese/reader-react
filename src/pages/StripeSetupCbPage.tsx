@@ -8,9 +8,9 @@ import { sitemap } from '../data/sitemap';
 import { ReaderPassport } from '../data/account';
 import { useStripePaySetting } from '../components/hooks/useStripePaySetting';
 import { loadPaymentMethod } from '../repository/stripe';
-import { BankCard } from '../features/checkout/BankCard';
-import { PaySuccessLink } from '../features/checkout/PaySuccessLink';
-import { stripePromise } from '../features/checkout/StripeContext';
+import { stripePromise } from '../features/stripepay/StripeContext';
+import { PaySuccessLink } from '../components/text/Checkout';
+import { BankCard } from '../components/BankCard';
 
 export function StripeSetupCbPage() {
 
@@ -22,6 +22,8 @@ export function StripeSetupCbPage() {
 
   const [ progress, setProgress ] = useState(false);
   const [ err, setErr ] = useState('');
+
+  const card = paymentSetting.selectedMethod?.card;
 
   useEffect(() => {
 
@@ -105,9 +107,12 @@ export function StripeSetupCbPage() {
         <div className="d-flex flex-column align-items-center">
           <h5>Stripe支付已添加</h5>
           {
-            paymentSetting.selectedMethod &&
+            card &&
             <BankCard
-              paymentMethod={paymentSetting.selectedMethod}
+              brand={card.brand}
+              last4={card.last4}
+              expYear={card.expYear}
+              expMonth={card.expMonth}
             />
           }
           <PaySuccessLink/>
