@@ -10,10 +10,6 @@ const accountBase = `${readerBase}/account`;
 const memberBase = `${readerBase}/membership`;
 const iapBase = `${readerBase}/apple`;
 const ftcpayBase = `${readerBase}/ftc-pay`;
-const stripeCusBase = `${readerBase}/stripe/customers`;
-const stripeSubsBase = `${readerBase}/stripe/subs`;
-const stripePMBase = `${readerBase}/stripe/payment-methods`;
-const stripeSetupBase = `${readerBase}/stripe/setup-intents`;
 
 export const endpoint = {
   emailExists: `${emailAuthBase}/exists`,
@@ -65,48 +61,11 @@ export const endpoint = {
   },
 
   stripePubKey: `${paywallBasePath}/stripe/publishable-key`,
-  stripePrices: `${paywallBasePath}/stripe/prices`,
-  stripePriceOf: function(id: string): string {
-    return `${paywallBasePath}/stripe/prices/${id}`;
-  },
 
-  stripeCustomers: stripeCusBase,
-  customerOf: function(id: string): string {
-    return `${stripeCusBase}/${id}`;
-  },
-  cusPaymentMethods: function(id:  string): string {
-    return `${stripeCusBase}/${id}/payment-methods`;
-  },
-  cusDefaultPayMethod: function(id: string): string {
-    return `${stripeCusBase}/${id}/default-payment-method`;
-  },
-
-  setupIntent: stripeSetupBase,
-  payMethodOfSetup: function(id: string): string {
-    return `${stripeSetupBase}/${id}/payment-method`;
-  },
-
-  stripeSubs: stripeSubsBase,
-  stripeSubsOf: function(id: string): string {
-    return `${stripeSubsBase}/${id}`;
-  },
-  refreshSubs: function(id: string): string {
-    return `${stripeSubsBase}/${id}/refresh`;
-  },
-  cancelSubs: function(id: string): string {
-    return `${stripeSubsBase}/${id}/cancel`;
-  },
-  reactivateSubs: function(id: string): string {
-    return `${stripeSubsBase}/${id}/reactivate`;
-  },
-  subsDefaultPayMethod: function(id: string): string {
-    return `${stripeSubsBase}/${id}/default-payment-method`;
-  },
-
-  paymentMethods: stripePMBase,
-  paymentMethodOf: function(id: string): string {
-    return `${stripePMBase}/${id}`;
-  },
+  stripeCustomers: `${readerBase}/stripe/customers`,
+  setupIntent: `${readerBase}/stripe/setup-intents`,
+  stripeSubs: `${readerBase}/stripe/subs`,
+  paymentMethods: `${readerBase}/stripe/payment-methods`,
 
   qrSrc: function(url: string): string {
     const query = new URLSearchParams({

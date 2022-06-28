@@ -1,11 +1,9 @@
-import axios from 'axios';
-import { bearerAuthHeader, ReaderPassport } from '../data/account';
+import { ReaderPassport } from '../data/account';
 import { PagedList } from '../data/paged-list';
 import { PubKey, SetupIntent, SetupIntentParams, Subs } from '../data/stripe';
 import { Customer, PaymentMethod, SubsParams, SubsResult } from '../data/stripe';
 import { endpoint } from './endpoint';
 import { Fetch, UrlBuilder } from './request';
-import { ResponseError } from './response-error';
 
 // Load stripe publishable key from server.
 // It's impossible to load the key dynamically for
@@ -21,176 +19,135 @@ export function loadStripePubKey(): Promise<PubKey> {
 }
 
 export function createCustomer(token: string): Promise<Customer> {
-  return axios.post<Customer>(
-      endpoint.stripeCustomers,
-      null,
-      {
-        headers: bearerAuthHeader(token)
-      }
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+  return new Fetch()
+    .setBearerAuth(token)
+    .post(endpoint.stripeCustomers)
+    .endJson<Customer>();
 }
 
 export function loadCustomer(token: string, cusId: string): Promise<Customer> {
-  return axios.get<Customer>(
-      endpoint.customerOf(cusId),
-      {
-        headers: bearerAuthHeader(token)
-      }
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
-}
+  const url = new UrlBuilder(endpoint.stripeCustomers)
+    .appendPath(cusId)
+    .toString();
 
-function loadCusDefaultPayMethod(token: string, cusId: string): Promise<PaymentMethod> {
-  return axios.get<PaymentMethod>(
-      endpoint.cusDefaultPayMethod(cusId),
-      {
-        headers: bearerAuthHeader(token)
-      }
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
-}
-
-export function listCusPaymentMethods(token: string, cusId: string): Promise<PagedList<PaymentMethod>> {
-  return axios.get<PagedList<PaymentMethod>>(
-      endpoint.cusPaymentMethods(cusId),
-      {
-        headers: bearerAuthHeader(token)
-      }
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+  return new Fetch()
+    .setBearerAuth(token)
+    .get(url)
+    .endJson<Customer>();
 }
 
 export function createSetupIntent(token: string, p: SetupIntentParams): Promise<SetupIntent> {
-  return axios.post<SetupIntent>(
-      endpoint.setupIntent,
-      p,
-      {
-        headers: bearerAuthHeader(token)
-      }
-    )
-  .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+
+  return new Fetch()
+    .setBearerAuth(token)
+    .post(endpoint.setupIntent)
+    .sendJson(p)
+    .endJson<SetupIntent>();
 }
 
 export function loadSetupPaymentMethod(token: string, setupId: string): Promise<PaymentMethod> {
-  return axios.get<PaymentMethod>(
-      endpoint.payMethodOfSetup(setupId),
-      {
-        headers: bearerAuthHeader(token),
-        params: {
-          refresh: "true",
-        }
-      }
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+
+  const url = new UrlBuilder(endpoint.setupIntent)
+    .appendPath(setupId)
+    .toString();
+
+  return new Fetch()
+    .setBearerAuth(token)
+    .get(url)
+    .endJson<PaymentMethod>();
 }
 
 export function loadPaymentMethod(token: string, id: string): Promise<PaymentMethod> {
-  return axios.get<PaymentMethod>(
-      endpoint.paymentMethodOf(id),
-      {
-        headers: bearerAuthHeader(token)
-      }
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
-}
+  const url = new UrlBuilder(endpoint.paymentMethods)
+    .appendPath(id)
+    .toString();
 
-export function createStripeSubs(
-  token: string,
-  params: SubsParams
-): Promise<SubsResult> {
-  return axios.post<SubsResult>(
-      endpoint.stripeSubs,
-      params,
-      {
-        headers: bearerAuthHeader(token)
-      }
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
-}
-
-export function updateStripeSubs(
-  token: string,
-  params: SubsParams & {
-    id: string;
-  }
-): Promise<SubsResult> {
-  return axios.post<SubsResult>(
-      endpoint.stripeSubsOf(params.id),
-      params,
-      {
-        headers: bearerAuthHeader(token)
-      }
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+  return new Fetch()
+    .setBearerAuth(token)
+    .get(url)
+    .endJson<PaymentMethod>();
 }
 
 export function refreshStripeSubs(
   token: string,
   subsId: string,
 ): Promise<SubsResult> {
-  return axios.post<SubsResult>(
-      endpoint.refreshSubs(subsId),
-      undefined,
-      {
-        headers: bearerAuthHeader(token)
-      }
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+  const url = new UrlBuilder(endpoint.stripeSubs)
+    .appendPath(subsId)
+    .appendPath('refresh')
+    .toString();
+
+  return new Fetch()
+    .setBearerAuth(token)
+    .post(url)
+    .endJson<SubsResult>();
 }
 
 export function cancelStripeSubs(
   token: string,
   subsId: string,
 ): Promise<SubsResult> {
-  return axios.post<SubsResult>(
-      endpoint.cancelSubs(subsId),
-      undefined,
-      {
-        headers: bearerAuthHeader(token)
-      }
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+
+  const url = new UrlBuilder(endpoint.stripeSubs)
+    .appendPath(subsId)
+    .appendPath('cancel')
+    .toString();
+
+  return new Fetch()
+    .setBearerAuth(token)
+    .post(url)
+    .endJson<SubsResult>();
 }
 
 export function redoStripeSubsCancel(
   token: string,
   subsId: string,
 ): Promise<SubsResult> {
-  return axios.post<SubsResult>(
-    endpoint.reactivateSubs(subsId),
-    undefined,
-    {
-      headers: bearerAuthHeader(token)
-    }
-  )
-  .then(resp => resp.data)
-  .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+
+  const url = new UrlBuilder(endpoint.stripeSubs)
+    .appendPath(subsId)
+    .appendPath('reactivate')
+    .toString();
+
+  return new Fetch()
+    .setBearerAuth(token)
+    .post(url)
+    .endJson<SubsResult>();
 }
 
+/**
+ * @description Load a the default payment method set on customer.
+ * @param token
+ * @param cusId
+ */
+ function loadCusDefaultPayMethod(token: string, cusId: string): Promise<PaymentMethod> {
+  const url = new UrlBuilder(endpoint.stripeCustomers)
+    .appendPath(cusId)
+    .appendPath('default-payment-method')
+    .toString();
+
+  return new Fetch()
+    .setBearerAuth(token)
+    .get(url)
+    .endJson<PaymentMethod>();
+}
+
+/**
+ * @description Fetches an existing subscription's paymenmt method.
+ */
 function loadSubsDefaultPayMethod(
   token: string,
   subsId: string,
 ): Promise<PaymentMethod> {
-  return axios.get<PaymentMethod>(
-    endpoint.subsDefaultPayMethod(subsId),
-    {
-      headers: bearerAuthHeader(token)
-    }
-  )
-  .then(resp => resp.data)
-  .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+  const url = new UrlBuilder(endpoint.stripeSubs)
+    .appendPath(subsId)
+    .appendPath('default-payment-method')
+    .toString();
+
+  return new Fetch()
+    .setBearerAuth(token)
+    .get(url)
+    .endJson<PaymentMethod>();
 }
 
 type PaymentMethodParams = {
@@ -198,6 +155,41 @@ type PaymentMethodParams = {
 };
 
 export const stripeRepo = {
+  /**
+   * @description Create a new stripe subscription.
+   */
+  createSubs(
+    token: string,
+    params: SubsParams
+  ): Promise<SubsResult> {
+
+    return new Fetch()
+      .setBearerAuth(token)
+      .post(endpoint.stripeSubs)
+      .sendJson(params)
+      .endJson<SubsResult>();
+  },
+
+  /**
+   * @description Modify an existing stripe subscription.
+   */
+  updateSubs(
+    token: string,
+    params: SubsParams & {
+      subsId: string;
+    }
+  ): Promise<SubsResult> {
+    const url = new UrlBuilder(endpoint.stripeSubs)
+      .appendPath(params.subsId)
+      .toString();
+
+    return new Fetch()
+      .setBearerAuth(token)
+      .post(url)
+      .sendJson(params)
+      .endJson<SubsResult>();
+  },
+
   /**
    * @description Try to find a stripe default payment method.
    * Use subscription's paymenet method if exists;
@@ -215,6 +207,29 @@ export const stripeRepo = {
     return Promise.reject(new Error('Neither stripe subscripiton nor customer found!'));
   },
 
+  /**
+   * @description list a customer's payment methods.
+   * @param token - Passport token
+   * @param cusId - Customer id
+   */
+  listPaymentMethods(
+    token: string,
+    cusId: string
+  ): Promise<PagedList<PaymentMethod>> {
+    const url = new UrlBuilder(endpoint.stripeCustomers)
+      .appendPath(cusId)
+      .appendPath('payment-methods')
+      .toString();
+
+    return new Fetch()
+      .setBearerAuth(token)
+      .get(url)
+      .endJson<PagedList<PaymentMethod>>();
+  },
+
+  /**
+   * @description Set default payment methods on customer.
+   */
   setCusPayment: (
     args: {
       token: string,
@@ -236,6 +251,10 @@ export const stripeRepo = {
       .endJson<Customer>();
   },
 
+  /**
+   * @description Modify an existing subscription's default payment method.
+   * This will affect next invoice.
+   */
   updateSubsPayment: (
     args: {
       token: string,
