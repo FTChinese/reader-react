@@ -1,4 +1,4 @@
-import { BorderHeader } from '../../components/header/BorderHeader';
+import { BorderHeader } from '../../components/text/BorderHeader';
 
 export function CustomerService() {
   return (
