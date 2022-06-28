@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { PaySuccessLink } from '../../components/text/Checkout';
 import { useAuth } from '../../components/hooks/useAuth';
 import { useShoppingCart } from '../../components/hooks/useShoppingCart';
 import { HeadTailTable } from '../../components/list/HeadTailTable';
@@ -11,7 +12,6 @@ import { ConfirmationResult, PayResult } from '../../data/order';
 import { StringPair } from '../../data/pair';
 import { verifyAliWxPay } from '../../repository/ftcpay';
 import { ResponseError } from '../../repository/response-error';
-import { PaySuccessLink } from './PaySuccessLink';
 
 export function FtcPayResult(
   props: {
