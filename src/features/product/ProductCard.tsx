@@ -1,13 +1,13 @@
 import { TextList } from '../../components/list/TextList';
 import {
   CartItemFtc,
-  cartItemOfStripe,
+  priceCardParamsOfStripe,
   CartItemStripe,
   cartItemUiOfFtc,
 } from '../../data/shopping-cart';
 import { PriceCard } from './PriceCard';
-import { StripePayLink } from './StripePayLink';
 import { ProductItem } from '../../data/paywall-product';
+import { StripePayLink } from '../../components/text/Checkout';
 
 export function ProductCard(
   props: {
@@ -61,7 +61,7 @@ export function ProductCard(
               key={cartItem.recurring.id}
             >
               <PriceCard
-                params={cartItemOfStripe(cartItem)}
+                params={priceCardParamsOfStripe(cartItem)}
                 onClick={ () => props.onStripePay(cartItem) }
               />
             </div>

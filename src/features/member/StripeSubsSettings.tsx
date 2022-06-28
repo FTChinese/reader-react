@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../../components/hooks/useAuth';
 import { ChevronDown, ChevronRight, ChevronUp } from '../../components/graphics/icons';
 import { cancelStripeSubs } from '../../repository/stripe';
-import { BorderHeader } from '../../components/header/BorderHeader';
+import { BorderHeader } from '../../components/text/BorderHeader';
 import Modal from 'react-bootstrap/Modal';
 import Alert from 'react-bootstrap/Alert';
 import { ResponseError } from '../../repository/response-error';
@@ -12,7 +12,7 @@ import { IconButton } from '../../components/buttons/IconButton';
 import { TwoLineRow } from '../../components/layout/TwoLineRow';
 import { LoadButton } from '../../components/buttons/LoadButton';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
-import { StripeDefaultPaymentMethod } from '../checkout/StripDefaultPaymentMethod';
+import { StripeDefaultPaymentMethod } from '../stripepay/StripDefaultPaymentMethod';
 
 /**
  * @description Show stripe payment setting.
