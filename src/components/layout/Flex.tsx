@@ -4,13 +4,22 @@ export function Flex(
     justify?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly';
     align?: 'start' | 'end' | 'center' | 'baseline' | 'stretch';
     border?: boolean;
+    className?: string;
   }
 ) {
 
   const justify = props.justify || 'between';
   const align = props.align || 'start';
 
-  const className = `d-flex justify-content-${justify} align-items-${align}${props.border ? ' border-bottom' : ''}`;
+  let className = `d-flex justify-content-${justify} align-items-${align}`;
+
+  if (props.border) {
+    className += ' border-bottom';
+  }
+
+  if (props.className) {
+    className += ` ${props.className}`;
+  }
 
   return (
     <div className={className}>
