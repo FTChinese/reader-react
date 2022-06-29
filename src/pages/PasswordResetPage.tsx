@@ -91,6 +91,7 @@ function ResetPassword(
             />
             <FormikSubmitButton
               text="重置"
+              wrapped='block'
             />
           </Form>
         )}
