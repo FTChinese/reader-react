@@ -1,6 +1,7 @@
 import { BankCard } from '../../components/BankCard';
-import { OButton, SpinnerOrText } from '../../components/buttons/Buttons';
+import { LeadIconButton, OButton, SpinnerOrText } from '../../components/buttons/Buttons';
 import { Flex } from '../../components/layout/Flex';
+import { CircleLoader } from '../../components/progress/LoadIndicator';
 import { PaymentMethodSelector } from '../../components/text/Checkout';
 import { StripePayMethod } from '../../data/stripe';
 
@@ -65,16 +66,13 @@ function SetAsDefault(
 ) {
   return (
     <Flex justify="end">
-      <OButton
+      <LeadIconButton
+        text="设为默认"
+        icon={<CircleLoader progress={props.submitting} />}
         onClick={props.onClick}
         disabled={props.isDefault || props.submitting}
         variant="link"
-      >
-        <SpinnerOrText
-          text="设为默认"
-          progress={props.submitting}
-        />
-      </OButton>
+      />
     </Flex>
   );
 }

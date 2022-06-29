@@ -7,8 +7,8 @@ import Card from 'react-bootstrap/Card';
 import { TwoColList } from '../../components/list/TwoColList';
 import { rowExpiration, rowTier } from '../member/member-status';
 import { ErrorAlert } from '../../components/progress/ErrorAlert';
-import { LoadButton } from '../../components/buttons/LoadButton';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
+import { LeadIconButton } from '../../components/buttons/Buttons';
 
 /**
  * @description Display the two accounts to be linked and a button
@@ -74,12 +74,12 @@ export function LinkAccounts(
       />
       {
         !denied &&
-        <LoadButton
+        <LeadIconButton
           disabled={submitting}
           text="绑定账号"
           onClick={handleSubmit}
           variant="primary"
-          startIcon={<CircleLoader progress={submitting} />}
+          icon={<CircleLoader progress={submitting} />}
         />
       }
     </div>

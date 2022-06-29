@@ -12,10 +12,10 @@ import { createSetupIntent } from '../../repository/stripe';
 import { toast } from 'react-toastify';
 import { ResponseError } from '../../repository/response-error';
 import { Flex } from '../../components/layout/Flex';
-import { LoadButton } from '../../components/buttons/LoadButton';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
 import { Loading } from '../../components/progress/Loading';
 import { StripePaymentElementChangeEvent } from '@stripe/stripe-js';
+import { LeadIconButton } from '../../components/buttons/Buttons';
 
 export function SetupPaymentMethod(
   props: PassportProp & {
@@ -84,11 +84,11 @@ function CreateSetupIntent(
   // Once the setup intent is used, do remember to clean up it.
   return (
     <Flex justify="end">
-      <LoadButton
+      <LeadIconButton
         disabled={progress || !!setupIntent.id}
         text="添加新卡片"
         onClick={handleClick}
-        startIcon={
+        icon={
           <CircleLoader progress={progress} />
         }
       />

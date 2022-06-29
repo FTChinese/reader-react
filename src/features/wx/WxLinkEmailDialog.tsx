@@ -5,7 +5,6 @@ import { OnReaderAccount, ReaderAccount, ReaderPassport } from '../../data/accou
 import { Credentials, EmailVal, invalidMessages } from '../../data/form-value';
 import { emailExists, emailLogin } from '../../repository/email-auth';
 import { isCodeAlreadyExists, ResponseError } from '../../repository/response-error';
-import { BackButton } from '../../components/buttons/BackButton';
 import { EmailForm } from '../../components/forms/EmailForm';
 import { EmailLoginForm } from '../../components/forms/EmailLoginForm';
 import { LinkAccounts } from './LinkAccounts';
@@ -14,6 +13,8 @@ import { SignupFormVal } from '../../data/authentication';
 import { wxLinkNewEmail } from '../../repository/wx-auth';
 import { emailVerificationUrl } from '../../data/sitemap';
 import { FullscreenSingleCol } from '../../components/layout/FullscreenSingleCol';
+import { IconButton } from '../../components/buttons/Buttons';
+import { ArrowLeft } from '../../components/graphics/icons';
 
 /**
  * @description Show a dialog to let a user logged
@@ -115,7 +116,10 @@ function SignInOrUp(
   if (props.found) {
     return (
       <>
-        <BackButton onBack={props.onCancel}/>
+        <IconButton
+          icon={<ArrowLeft />}
+          onClick={props.onCancel}
+        />
         <EmailLogIn
           passport={props.passport}
           email={props.email}
@@ -128,7 +132,10 @@ function SignInOrUp(
   // Otherwise ask user to create a new account.
   return (
     <>
-      <BackButton onBack={props.onCancel}/>
+      <IconButton
+        icon={<ArrowLeft />}
+        onClick={props.onCancel}
+      />
       <EmailSignUp
         token={props.passport.token}
         email={props.email}

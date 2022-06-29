@@ -9,10 +9,9 @@ import { ResponseError } from '../../repository/response-error';
 import { isStripeRenewOn } from '../../data/membership';
 import { PassportProp } from '../../data/account';
 import { TwoLineRow } from '../../components/layout/TwoLineRow';
-import { LoadButton } from '../../components/buttons/LoadButton';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
 import { StripeDefaultPaymentMethod } from '../stripepay/StripDefaultPaymentMethod';
-import { TrailIconButton } from '../../components/buttons/Buttons';
+import { LeadIconButton, TrailIconButton } from '../../components/buttons/Buttons';
 
 /**
  * @description Show stripe payment setting.
@@ -158,12 +157,12 @@ function CancelSubsDialog(
         <p>当前订阅周期结束前您可以随时恢复自动续订。</p>
       </Modal.Body>
       <Modal.Footer>
-        <LoadButton
+        <LeadIconButton
           disabled={progress}
           variant="danger"
           text="是的，我要关闭"
           onClick={handleClick}
-          startIcon={<CircleLoader progress={progress} />}
+          icon={<CircleLoader progress={progress} />}
         />
       </Modal.Footer>
     </Modal>

@@ -4,7 +4,7 @@ import { priceCardParamsOfStripe, CartItemStripe } from '../../data/shopping-car
 import { StripePayMethod, Subs } from '../../data/stripe';
 import { PriceCard } from '../product/PriceCard';
 import { StripeSubsDetails } from './StripeSubsDetails';
-import { DisplayGrid, OButton, SpinnerOrText } from '../../components/buttons/Buttons';
+import { BlockLoadButton, DisplayGrid, OButton, SpinnerOrText } from '../../components/buttons/Buttons';
 import { IntentKind, stripeBtnText } from '../../data/chekout-intent';
 import { BankCard } from '../../components/BankCard';
 
@@ -84,17 +84,13 @@ function SubscribeButton(
 ) {
   return (
     <>
-      <DisplayGrid className="mt-3">
-        <OButton
-          onClick={props.onClick}
-          disabled={props.disabled}
-        >
-          <SpinnerOrText
-            text={props.text}
-            progress={props.progress}
-          />
-        </OButton>
-      </DisplayGrid>
+      <BlockLoadButton
+        text={props.text}
+        progress={props.progress}
+        onClick={props.onClick}
+        disabled={props.disabled}
+        className="mt-3"
+      />
 
       <StripePayLink/>
     </>

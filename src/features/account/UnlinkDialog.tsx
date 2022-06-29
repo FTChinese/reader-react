@@ -12,8 +12,8 @@ import { UnlinkableSubs } from '../member/UnlinkableSubs';
 import { TwoColList } from '../../components/list/TwoColList';
 import { useAuth } from '../../components/hooks/useAuth';
 import { toast } from 'react-toastify';
-import { LoadButton } from '../../components/buttons/LoadButton';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
+import { LeadIconButton } from '../../components/buttons/Buttons';
 
 export function UnlinkDialog(
   props: {
@@ -99,11 +99,11 @@ export function UnlinkDialog(
         </>
       </Modal.Body>
       <Modal.Footer>
-        <LoadButton
+        <LeadIconButton
           disabled={submitting || !valid}
           text="解除绑定"
           onClick={handleSubmit}
-          startIcon={<CircleLoader progress={submitting} />}
+          icon={<CircleLoader progress={submitting} />}
         />
       </Modal.Footer>
     </Modal>

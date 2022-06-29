@@ -7,9 +7,8 @@ import { Modal } from 'react-bootstrap';
 import { ResponseError } from '../../repository/response-error';
 import { getWxOAuthCodeReq } from '../../repository/wx-auth';
 import { wxOAuthCbSession } from '../../store/wxOAuthCbSession';
-import { LoadButton } from '../../components/buttons/LoadButton';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
-import { TextButton } from '../../components/buttons/Buttons';
+import { LeadIconButton, TextButton } from '../../components/buttons/Buttons';
 
 export function WechatRow(
   props: {
@@ -102,12 +101,12 @@ function EmailLinkWxDialog(
         </p>
       </Modal.Body>
       <Modal.Footer>
-        <LoadButton
+        <LeadIconButton
           disabled={submitting}
           text="获取微信授权"
           variant="primary"
           onClick={handleClick}
-          startIcon={<CircleLoader progress={submitting} />}
+          icon={<CircleLoader progress={submitting} />}
         />
       </Modal.Footer>
     </Modal>

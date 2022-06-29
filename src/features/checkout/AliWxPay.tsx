@@ -8,7 +8,6 @@ import { useAuth } from '../../components/hooks/useAuth';
 import { ReaderPassport } from '../../data/account';
 import { IntentKind } from '../../data/chekout-intent';
 import { FtcPayProvider } from './FtcPayProvider';
-import { BlockLoadButton } from '../../components/buttons/BlockLoadButton';
 import { useFtcPay } from '../../components/hooks/useFtcPay';
 import { toast } from 'react-toastify';
 import Modal from 'react-bootstrap/Modal';
@@ -18,6 +17,7 @@ import { CircleLoader } from '../../components/progress/LoadIndicator';
 import { ConfirmationResult } from '../../data/order';
 import { FtcPayDetails } from './FtcPayResult';
 import { Alert } from 'react-bootstrap';
+import { BlockLoadButton } from '../../components/buttons/Buttons';
 
 type OnConfirmationResult = (r: ConfirmationResult) => void;
 
