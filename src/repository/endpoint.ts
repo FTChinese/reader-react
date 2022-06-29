@@ -8,7 +8,6 @@ const wxAuthBase = `${readerBase}/auth/wx`;
 const pwResetBase = `${readerBase}/auth/password-reset`;
 const accountBase = `${readerBase}/account`;
 const memberBase = `${readerBase}/membership`;
-const iapBase = `${readerBase}/apple`;
 const ftcpayBase = `${readerBase}/ftc-pay`;
 
 export const endpoint = {
@@ -56,9 +55,7 @@ export const endpoint = {
   },
   paywall: paywallBasePath,
 
-  iapSubsOf: function(id: string): string {
-    return `${iapBase}/subs/${id}`;
-  },
+  iapSubs: `${readerBase}/apple/subs`,
 
   stripePubKey: `${paywallBasePath}/stripe/publishable-key`,
 
