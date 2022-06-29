@@ -1,12 +1,11 @@
-import { CheckoutHeader, CheckoutMessage, StripePayLink } from '../../components/text/Checkout'
+import { CheckoutHeader, CheckoutMessage, PaymentMethodSelector, StripePayLink } from '../../components/text/Checkout'
 import { CenterColumn } from '../../components/layout/Column';
 import { priceCardParamsOfStripe, CartItemStripe } from '../../data/shopping-cart';
-import { PaymentMethod, Subs } from '../../data/stripe';
+import { StripePayMethod, Subs } from '../../data/stripe';
 import { PriceCard } from '../product/PriceCard';
 import { StripeSubsDetails } from './StripeSubsDetails';
-import { DisplayGrid, PrimaryButton, SpinnerOrText } from '../../components/buttons/Buttons';
+import { DisplayGrid, OButton, SpinnerOrText } from '../../components/buttons/Buttons';
 import { IntentKind, stripeBtnText } from '../../data/chekout-intent';
-import { PaymentMethodSelector } from './PaymentMethodSelector';
 import { BankCard } from '../../components/BankCard';
 
 /**
@@ -18,7 +17,7 @@ export function StripePayScreen(
   props: {
     cartItem: CartItemStripe;
     submitting: boolean;
-    paymentMethod?: PaymentMethod;
+    paymentMethod?: StripePayMethod;
     subs?: Subs;
     onPaymentMethod: () => void;
     onSubscribe: () => void;
@@ -86,7 +85,7 @@ function SubscribeButton(
   return (
     <>
       <DisplayGrid className="mt-3">
-        <PrimaryButton
+        <OButton
           onClick={props.onClick}
           disabled={props.disabled}
         >
@@ -94,7 +93,7 @@ function SubscribeButton(
             text={props.text}
             progress={props.progress}
           />
-        </PrimaryButton>
+        </OButton>
       </DisplayGrid>
 
       <StripePayLink/>
