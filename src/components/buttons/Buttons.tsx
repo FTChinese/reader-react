@@ -1,4 +1,5 @@
 import Button from 'react-bootstrap/Button';
+import { ButtonVariant } from 'react-bootstrap/esm/types';
 import Spinner from 'react-bootstrap/Spinner';
 
 export function LeadIconText(
@@ -8,10 +9,10 @@ export function LeadIconText(
   }
 ) {
   return (
-    <>
+    <span className="d-flex align-items-center">
       {props.icon}
-      <span className='ps-2'>{props.text}</span>
-    </>
+      <span className='ps-1'>{props.text}</span>
+    </span>
   );
 }
 
@@ -22,10 +23,10 @@ export function TrailIconText(
   }
 ) {
   return (
-    <>
-      <span className='pe-2'>{props.text}</span>
+    <span className="d-flex align-items-center">
+      <span className='pe-1'>{props.text}</span>
       {props.icon}
-    </>
+    </span>
   );
 }
 
@@ -50,58 +51,19 @@ export function SpinnerOrText(
   }
 }
 
-export function PrimaryButton(
+export function OButton(
   props: {
     children: JSX.Element;
     onClick: () => void;
     disabled?: boolean;
     size?: 'sm' | 'lg';
+    variant?: ButtonVariant
   }
 ) {
   return (
     <Button
       disabled={props.disabled}
-      variant="primary"
-      size={props.size}
-      onClick={props.onClick}
-    >
-      {props.children}
-    </Button>
-  );
-}
-
-export function SecondaryButton(
-  props: {
-    children: JSX.Element;
-    onClick: () => void;
-    disabled?: boolean;
-    size?: 'sm' | 'lg';
-  }
-) {
-  return (
-    <Button
-      disabled={props.disabled}
-      variant="outline-primary"
-      size={props.size}
-      onClick={props.onClick}
-    >
-      {props.children}
-    </Button>
-  );
-}
-
-export function DangerButton(
-  props: {
-    children: JSX.Element;
-    onClick: () => void;
-    disabled?: boolean;
-    size?: 'sm' | 'lg';
-  }
-) {
-  return (
-    <Button
-      disabled={props.disabled}
-      variant="outline-danger"
+      variant={props.variant || 'primary'}
       size={props.size}
       onClick={props.onClick}
     >
@@ -112,7 +74,7 @@ export function DangerButton(
 
 export function TextButton(
   props: {
-    children: JSX.Element;
+    children: JSX.Element | string;
     onClick: () => void;
     disabled?: boolean;
   }
