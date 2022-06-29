@@ -2,6 +2,9 @@ import { Link } from 'react-router-dom';
 import { Tier } from '../../data/enum';
 import { localizeTier } from '../../data/localization';
 import { sitemap } from '../../data/sitemap';
+import { LeadIconText, TextButton, TrailIconText } from '../buttons/Buttons';
+import { ChevronRight, PlusCircle } from '../graphics/icons';
+import { Flex } from '../layout/Flex';
 
 export function CheckoutHeader(
   props: {
@@ -41,4 +44,26 @@ export function PaySuccessLink() {
       <Link to={sitemap.membership}>完成</Link>
     </div>
   );
+}
+
+export function PaymentMethodSelector(
+  props: {
+    onClick: () => void;
+  }
+) {
+  return (
+    <Flex border={true}>
+      <>
+        <h6>支付方式</h6>
+        <TextButton
+          onClick={props.onClick}
+        >
+          <LeadIconText
+            icon={<PlusCircle />}
+            text="添加或选择"
+          />
+        </TextButton>
+      </>
+    </Flex>
+  )
 }
