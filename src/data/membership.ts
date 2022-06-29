@@ -1,6 +1,6 @@
 import { addYears, isAfter, parseISO } from 'date-fns';
 import { isExpired } from '../utils/now';
-import { Cycle, isInvalidSubStatus, OfferKind, OrderKind, PaymentKind, SubStatus, Tier } from './enum';
+import { Cycle, OfferKind, OrderKind, PaymentKind, SubStatus, Tier } from './enum';
 import { Edition } from './edition';
 import { localizeCycle } from './localization';
 
@@ -104,6 +104,10 @@ export function isStripeRenewOn(m: Membership): boolean {
   return m.payMethod === 'stripe' && m.autoRenew
 }
 
+export function isStripeCancelled(m: Membership): boolean {
+  return m.payMethod === 'stripe' && !m.autoRenew && !isMemberExpired(m);
+}
+
 export function isMemberExpired(m: Membership): boolean {
   if (!m.expireDate) {
     return true;
@@ -130,14 +134,6 @@ export function isBeyondMaxRenewalPeriod(expireDate?: string): boolean {
  */
 export function hasAddOn(m: Membership): boolean {
   return m.standardAddOn > 0 || m.premiumAddOn > 0;
-}
-
-function hasStdAddOn(m: Membership): boolean {
-  return m.standardAddOn > 0;
-}
-
-function hasPrmAddOn(m: Membership): boolean {
-  return m.premiumAddOn > 0;
 }
 
 function shouldUseAddOn(m: Membership): boolean {
