@@ -1,27 +1,30 @@
-import { useState } from 'react';
-import { useAuth } from '../../components/hooks/useAuth';
-import { ChevronDown, ChevronRight, ChevronUp } from '../../components/graphics/icons';
-import { cancelStripeSubs } from '../../repository/stripe';
+import { ArrowClockwise, ChevronRight, XLarge } from '../../components/graphics/icons';
 import { BorderHeader } from '../../components/text/BorderHeader';
-import Modal from 'react-bootstrap/Modal';
-import Alert from 'react-bootstrap/Alert';
-import { ResponseError } from '../../repository/response-error';
-import { isStripeRenewOn } from '../../data/membership';
-import { PassportProp } from '../../data/account';
 import { TwoLineRow } from '../../components/layout/TwoLineRow';
+import { TrailIconButton, TrailIconText } from '../../components/buttons/Buttons';
+import { Link } from 'react-router-dom';
+import { sitemap } from '../../data/sitemap';
+import { getStripeAction, StripeAction } from './member-status';
+import { Membership } from '../../data/membership';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
-import { StripeDefaultPaymentMethod } from '../stripepay/StripDefaultPaymentMethod';
-import { LeadIconButton, TrailIconButton } from '../../components/buttons/Buttons';
 
 /**
  * @description Show stripe payment setting.
  * This is visible as long as user has a stripe subscription.
  */
-export function StripeSubsSettings(props: PassportProp) {
+export function StripeSubsSettings(
+  props: {
+    membership: Membership;
+    onAction: (action: StripeAction) => void;
+    reactivating: boolean;
+  }
+) {
 
-  if (!props.passport.membership.stripeSubsId) {
+  if (!props.membership.stripeSubsId) {
     return null;
   }
+
+  const action = getStripeAction(props.membership);
 
   return (
     <div className="mt-4">
@@ -30,141 +33,74 @@ export function StripeSubsSettings(props: PassportProp) {
         level={5}
       />
 
-      <RowDefaultPaymentMethod
-        passport={props.passport}
+      <TwoLineRow
+        primary="默认支付方式"
+        secondary="自动续订时使用的默认支付方式"
+        icon={
+          <Link to={sitemap.stripeSetting} className="btn btn-link btn-sm">
+            <TrailIconText
+              text='设置'
+              icon={<ChevronRight />}
+            />
+          </Link>
+        }
       />
-      {
-        isStripeRenewOn(props.passport.membership) &&
-        <RowCancelSubs />
-      }
+
+      <RowCancelOrReactivate
+        action={action}
+        onClick={() => props.onAction(action)}
+        reactivating={props.reactivating}
+      />
     </div>
   );
 }
 
-function RowDefaultPaymentMethod(
-  props: PassportProp,
-) {
-
-  const [ show, setShow ] = useState(false);
-
-  const icon = show ? <ChevronUp/> : <ChevronDown/>;
-
-  return (
-    <TwoLineRow
-      primary="默认支付方式"
-      secondary="自动续订时使用的默认支付方式"
-      icon={
-        <TrailIconButton
-          text="查看"
-          icon={icon}
-          onClick={() => setShow(!show)}
-        />
-      }
-    >
-      {
-        show ?
-        <StripeDefaultPaymentMethod
-          passport={props.passport}
-        /> :
-        undefined
-      }
-    </TwoLineRow>
-  );
-}
-
-/**
- * @description Cancel subscription.
- * Only show this when the subscription.cancelAtPeriodEnd is true.
- */
-function RowCancelSubs() {
-
-  const [ show, setShow ] = useState(false);
-
-  return (
-    <>
-      <TwoLineRow
-        primary="关闭自动续订"
-        secondary="关闭自动续订将在本次订阅到期后停止扣款"
-        icon={
-          <TrailIconButton
-            text="关闭"
-            icon={<ChevronRight />}
-            onClick={() => setShow(true)}
-          />
-        }
-      />
-
-      <CancelSubsDialog
-        show={show}
-        onHide={() => setShow(false)}
-      />
-    </>
-  );
-}
-
-function CancelSubsDialog(
+function RowCancelOrReactivate(
   props: {
-    show: boolean;
-    onHide: () => void;
+    action: StripeAction;
+    onClick: () => void;
+    reactivating: boolean;
   }
 ) {
 
-  const { passport, setMembership } = useAuth();
-  const [ progress, setProgress ] = useState(false);
-  const [ err, setErr ] = useState('');
-
-  const handleClick = () => {
-    if (!passport) {
-      return;
-    }
-
-    const subsId = passport.membership.stripeSubsId;
-    if (!subsId) {
-      return;
-    }
-
-    setProgress(true);
-    cancelStripeSubs(passport.token, subsId)
-      .then( result => {
-        console.log(result);
-        props.onHide();
-        //
-        setMembership(result.membership);
-      })
-      .catch((err: ResponseError) => {
-        console.error(err);
-        setErr(err.message);
-        setProgress(false);
-      });
-  };
-
-  return (
-    <Modal
-      show={props.show}
-      onHide={props.onHide}
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>
-          关闭自动续订？
-        </Modal.Title>
-      </Modal.Header>
-
-      <Modal.Body>
-        {
-          err && <Alert>{err}</Alert>
-        }
-        <p>当前订阅周期到期后将不再从您的默认支付方式中扣款。</p>
-        <p>当前订阅周期结束前您可以随时恢复自动续订。</p>
-      </Modal.Body>
-      <Modal.Footer>
-        <LeadIconButton
-          disabled={progress}
-          variant="danger"
-          text="是的，我要关闭"
-          onClick={handleClick}
-          icon={<CircleLoader progress={progress} />}
+  switch (props.action) {
+    case StripeAction.Cancel:
+      return (
+        <TwoLineRow
+          primary="关闭自动续订"
+          secondary="关闭自动续订将在本次订阅到期后停止扣款"
+          icon={
+            <TrailIconButton
+              text="关闭"
+              onClick={props.onClick}
+              icon={<XLarge />}
+            />
+          }
         />
-      </Modal.Footer>
-    </Modal>
-  );
+      )
+
+    case StripeAction.Activate:
+      return (
+        <TwoLineRow
+          primary="打开自动续订"
+          secondary="订阅到期前可重新启用自动续订"
+          icon={
+            <TrailIconButton
+              text="打开"
+              onClick={props.onClick}
+              icon={
+                props.reactivating ?
+                <CircleLoader progress={true} /> :
+                <ArrowClockwise />
+              }
+            />
+          }
+        />
+      );
+
+    default:
+      return null;
+  }
 }
+
+
