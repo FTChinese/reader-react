@@ -1,7 +1,8 @@
 import { ReaderPassport } from '../data/account';
 import { PagedList } from '../data/paged-list';
+import { SubsParams } from '../data/shopping-cart';
 import { PubKey, SetupIntent, SetupIntentParams, Subs } from '../data/stripe';
-import { Customer, PaymentMethod, SubsParams, SubsResult } from '../data/stripe';
+import { Customer, StripePayMethod, SubsResult } from '../data/stripe';
 import { endpoint } from './endpoint';
 import { Fetch, UrlBuilder } from './request';
 
@@ -45,7 +46,7 @@ export function createSetupIntent(token: string, p: SetupIntentParams): Promise<
     .endJson<SetupIntent>();
 }
 
-export function loadSetupPaymentMethod(token: string, setupId: string): Promise<PaymentMethod> {
+export function loadSetupPaymentMethod(token: string, setupId: string): Promise<StripePayMethod> {
 
   const url = new UrlBuilder(endpoint.setupIntent)
     .appendPath(setupId)
@@ -54,10 +55,10 @@ export function loadSetupPaymentMethod(token: string, setupId: string): Promise<
   return new Fetch()
     .setBearerAuth(token)
     .get(url)
-    .endJson<PaymentMethod>();
+    .endJson<StripePayMethod>();
 }
 
-export function loadPaymentMethod(token: string, id: string): Promise<PaymentMethod> {
+export function loadPaymentMethod(token: string, id: string): Promise<StripePayMethod> {
   const url = new UrlBuilder(endpoint.paymentMethods)
     .appendPath(id)
     .toString();
@@ -65,7 +66,7 @@ export function loadPaymentMethod(token: string, id: string): Promise<PaymentMet
   return new Fetch()
     .setBearerAuth(token)
     .get(url)
-    .endJson<PaymentMethod>();
+    .endJson<StripePayMethod>();
 }
 
 export function refreshStripeSubs(
@@ -120,7 +121,7 @@ export function redoStripeSubsCancel(
  * @param token
  * @param cusId
  */
- function loadCusDefaultPayMethod(token: string, cusId: string): Promise<PaymentMethod> {
+ function loadCusDefaultPayMethod(token: string, cusId: string): Promise<StripePayMethod> {
   const url = new UrlBuilder(endpoint.stripeCustomers)
     .appendPath(cusId)
     .appendPath('default-payment-method')
@@ -129,7 +130,7 @@ export function redoStripeSubsCancel(
   return new Fetch()
     .setBearerAuth(token)
     .get(url)
-    .endJson<PaymentMethod>();
+    .endJson<StripePayMethod>();
 }
 
 /**
@@ -138,7 +139,7 @@ export function redoStripeSubsCancel(
 function loadSubsDefaultPayMethod(
   token: string,
   subsId: string,
-): Promise<PaymentMethod> {
+): Promise<StripePayMethod> {
   const url = new UrlBuilder(endpoint.stripeSubs)
     .appendPath(subsId)
     .appendPath('default-payment-method')
@@ -147,7 +148,7 @@ function loadSubsDefaultPayMethod(
   return new Fetch()
     .setBearerAuth(token)
     .get(url)
-    .endJson<PaymentMethod>();
+    .endJson<StripePayMethod>();
 }
 
 type PaymentMethodParams = {
@@ -175,12 +176,11 @@ export const stripeRepo = {
    */
   updateSubs(
     token: string,
-    params: SubsParams & {
-      subsId: string;
-    }
+    subsId: string,
+    params: SubsParams,
   ): Promise<SubsResult> {
     const url = new UrlBuilder(endpoint.stripeSubs)
-      .appendPath(params.subsId)
+      .appendPath(subsId)
       .toString();
 
     return new Fetch()
@@ -195,7 +195,7 @@ export const stripeRepo = {
    * Use subscription's paymenet method if exists;
    * otherwise fallback to customer payment method.
    */
-  loadDefaultPayment: (pp: ReaderPassport): Promise<PaymentMethod> => {
+  loadDefaultPayment: (pp: ReaderPassport): Promise<StripePayMethod> => {
     if (pp.membership.stripeSubsId) {
       return loadSubsDefaultPayMethod(pp.token, pp.membership.stripeSubsId);
     }
@@ -215,7 +215,7 @@ export const stripeRepo = {
   listPaymentMethods(
     token: string,
     cusId: string
-  ): Promise<PagedList<PaymentMethod>> {
+  ): Promise<PagedList<StripePayMethod>> {
     const url = new UrlBuilder(endpoint.stripeCustomers)
       .appendPath(cusId)
       .appendPath('payment-methods')
@@ -224,7 +224,7 @@ export const stripeRepo = {
     return new Fetch()
       .setBearerAuth(token)
       .get(url)
-      .endJson<PagedList<PaymentMethod>>();
+      .endJson<PagedList<StripePayMethod>>();
   },
 
   /**
