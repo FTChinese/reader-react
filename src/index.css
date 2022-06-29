@@ -158,8 +158,7 @@ a:hover {
 }
 
 .btn-primary:not(:disabled):not(.disabled):active,
-.btn-primary:not(:disabled):not(.disabled).active,
-.show > .btn-primary.dropdown-toggle {
+.btn-primary:not(:disabled):not(.disabled).active {
   color: #fff;
   background-color: rgb(64, 133, 139);
   border-color: transparent;
@@ -168,6 +167,7 @@ a:hover {
 .btn-link {
   color: var(--color-teal);
   padding: 0;
+  text-decoration: none;
 }
 
 .btn-outline-primary {
@@ -176,23 +176,23 @@ a:hover {
   border-color: var(--color-teal);
 }
 
-.btn-outline-primary :focus,
-.btn-outline-primary .focus {
+.btn-outline-primary:focus,
+.btn-outline-primary.focus {
   color: var(--color-teal);
   background-color: rgba(13, 118, 128, 0.1);
   border-color: var(--color-teal);
 }
 
-.btn-outline-primary .disabled,
-.btn-outline-primary :disabled {
+.btn-outline-primary.disabled,
+.btn-outline-primary:disabled {
   pointer-events: none;
+  color: var(--color-teal);
   opacity: 0.4;
   cursor: default;
 }
 
-.btn-outline-primary :not(:disabled):not(.disabled):active,
-.btn-outline-primary :not(:disabled):not(.disabled).active,
-.show > .btn-outline-primary .dropdown-toggle {
+.btn-outline-primary:not(:disabled):not(.disabled):active,
+.btn-outline-primary:not(:disabled):not(.disabled).active {
   color: #fff;
   background-color: var(--color-teal);
   border-color: var(--color-teal);
