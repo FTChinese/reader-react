@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom';
 import { Tier } from '../../data/enum';
 import { localizeTier } from '../../data/localization';
 import { sitemap } from '../../data/sitemap';
-import { LeadIconText, TextButton, TrailIconText } from '../buttons/Buttons';
-import { ChevronRight, PlusCircle } from '../graphics/icons';
+import { LeadIconText, TextButton } from '../buttons/Buttons';
+import { PlusCircle } from '../graphics/icons';
 import { Flex } from '../layout/Flex';
 
 export function CheckoutHeader(
