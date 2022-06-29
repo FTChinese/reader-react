@@ -1,4 +1,4 @@
-import { PaymentMethod as StripePayMethod, PaymentMethodResult } from '@stripe/stripe-js';
+import { PaymentMethod } from '@stripe/stripe-js';
 import { Edition } from './edition';
 import { PriceKind, SubStatus, Tier } from './enum';
 import { Membership } from './membership';
@@ -18,12 +18,6 @@ export type Customer = {
   defaultPaymentMethodId?: string;
   email: string;
   liveMode: boolean;
-};
-
-export type SubsParams = {
-  priceId: string;
-  introductoryPriceId?: string;
-  defaultPaymentMethod?: string;
 };
 
 export type Subs = Edition & {
@@ -74,15 +68,13 @@ export type PaymentIntent = {
   paymentMethodId: string;
 };
 
-export type PaymentMethod = {
+/**
+ * A reduced version of stripe.js PaymentMethod
+ */
+export type StripePayMethod = {
   id: string;
   customerId: string;
   card: PaymentCard;
-};
-
-export type PaymentMethodInUse = {
-  current?: PaymentMethod;
-  isDefault: boolean;
 };
 
 export type PaymentCard = {
@@ -93,7 +85,7 @@ export type PaymentCard = {
   last4: string;
 };
 
-export function convertPaymentMthod(pm: StripePayMethod): PaymentMethod {
+export function convertPaymentMthod(pm: PaymentMethod): StripePayMethod {
   return {
     id: pm.id,
     customerId: pm.customer || '',
