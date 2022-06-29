@@ -69,53 +69,6 @@ export function loadPaymentMethod(token: string, id: string): Promise<StripePayM
     .endJson<StripePayMethod>();
 }
 
-export function refreshStripeSubs(
-  token: string,
-  subsId: string,
-): Promise<SubsResult> {
-  const url = new UrlBuilder(endpoint.stripeSubs)
-    .appendPath(subsId)
-    .appendPath('refresh')
-    .toString();
-
-  return new Fetch()
-    .setBearerAuth(token)
-    .post(url)
-    .endJson<SubsResult>();
-}
-
-export function cancelStripeSubs(
-  token: string,
-  subsId: string,
-): Promise<SubsResult> {
-
-  const url = new UrlBuilder(endpoint.stripeSubs)
-    .appendPath(subsId)
-    .appendPath('cancel')
-    .toString();
-
-  return new Fetch()
-    .setBearerAuth(token)
-    .post(url)
-    .endJson<SubsResult>();
-}
-
-export function redoStripeSubsCancel(
-  token: string,
-  subsId: string,
-): Promise<SubsResult> {
-
-  const url = new UrlBuilder(endpoint.stripeSubs)
-    .appendPath(subsId)
-    .appendPath('reactivate')
-    .toString();
-
-  return new Fetch()
-    .setBearerAuth(token)
-    .post(url)
-    .endJson<SubsResult>();
-}
-
 /**
  * @description Load a the default payment method set on customer.
  * @param token
@@ -187,6 +140,53 @@ export const stripeRepo = {
       .setBearerAuth(token)
       .post(url)
       .sendJson(params)
+      .endJson<SubsResult>();
+  },
+
+  refreshSubs(
+    token: string,
+    subsId: string,
+  ): Promise<SubsResult> {
+    const url = new UrlBuilder(endpoint.stripeSubs)
+      .appendPath(subsId)
+      .appendPath('refresh')
+      .toString();
+
+    return new Fetch()
+      .setBearerAuth(token)
+      .post(url)
+      .endJson<SubsResult>();
+  },
+
+  cancelSubs(
+    token: string,
+    subsId: string,
+  ): Promise<SubsResult> {
+
+    const url = new UrlBuilder(endpoint.stripeSubs)
+      .appendPath(subsId)
+      .appendPath('cancel')
+      .toString();
+
+    return new Fetch()
+      .setBearerAuth(token)
+      .post(url)
+      .endJson<SubsResult>();
+  },
+
+  reactivateSubs(
+    token: string,
+    subsId: string,
+  ): Promise<SubsResult> {
+
+    const url = new UrlBuilder(endpoint.stripeSubs)
+      .appendPath(subsId)
+      .appendPath('reactivate')
+      .toString();
+
+    return new Fetch()
+      .setBearerAuth(token)
+      .post(url)
       .endJson<SubsResult>();
   },
 
