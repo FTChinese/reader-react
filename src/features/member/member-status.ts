@@ -1,8 +1,8 @@
 import { parseISO } from 'date-fns';
 import { SubStatus, isInvalidSubStatus, PaymentKind, Tier, isTrialing } from '../../data/enum';
 import { localizePaymentMethod, localizeSubsStatus, localizeTier } from '../../data/localization';
-import { Membership, isMembershipZero, concatAutoRenewMoment, parseAutoRenewMoment } from '../../data/membership';
-import { diffToday, isExpired } from '../../utils/now';
+import { Membership, isMembershipZero, concatAutoRenewMoment, parseAutoRenewMoment, hasAddOn, isStripeRenewOn, isStripeCancelled } from '../../data/membership';
+import { diffToday } from '../../utils/now';
 import { StringPair } from '../../data/pair';
 
 /**
@@ -12,7 +12,6 @@ export type MemberStatus = {
   productName: string;
   details: StringPair[];
   reminder?: string;
-  reactivateStripe?: boolean;
 }
 
 function formatRemainingDays(expiresAt?: Date, subStatus?: SubStatus | null): string | undefined {
@@ -159,9 +158,6 @@ function autoRenewalSubsStatus(m: Membership): MemberStatus {
   const expiresAt = m.expireDate
     ? parseISO(m.expireDate)
     : undefined;
-  const expired = expiresAt
-    ? isExpired(expiresAt)
-    : true;
 
   return {
     productName,
@@ -172,12 +168,6 @@ function autoRenewalSubsStatus(m: Membership): MemberStatus {
       rowSubsStatus(m)
     ],
     reminder: formatRemainingDays(expiresAt, m.status),
-    // For stripe, if auto renew is off and expiration date is not past.
-    // You could only reactivate stripe subscripiton if
-    // if is not auto renewal and not expired yet.
-    // After expiration, this subscription is gone and to
-    // re-subscribe, you should create a new subscription.
-    reactivateStripe: (m.payMethod === 'stripe') && !expired,
   };
 }
 
@@ -225,3 +215,36 @@ export function buildMemberStatus(m: Membership): MemberStatus {
   }
 }
 
+export function buildAddOnRows(m: Membership): StringPair[] {
+  if (!hasAddOn(m)) {
+    return [];
+  }
+
+  return [
+    ['高端版', `${m.premiumAddOn}天`],
+    ['标准版', `${m.standardAddOn}天`],
+  ];
+}
+
+// For stripe, if auto renew is off and expiration date is not past.
+// You could only reactivate stripe subscripiton if
+// if is not auto renewal and not expired yet.
+// After expiration, this subscription is gone and to
+// re-subscribe, you should create a new subscription.
+export enum StripeAction {
+  None,
+  Cancel,
+  Activate,
+}
+
+export function getStripeAction(m: Membership): StripeAction {
+  if (isStripeRenewOn(m)) {
+    return StripeAction.Cancel;
+  }
+
+  if (isStripeCancelled(m)) {
+    return StripeAction.Activate;
+  }
+
+  return StripeAction.None;
+}
