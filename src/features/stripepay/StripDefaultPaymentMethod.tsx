@@ -4,7 +4,7 @@ import { useStripePaySetting } from '../../components/hooks/useStripePaySetting'
 import { ErrorBoundary } from '../../components/progress/ErrorBoundary';
 import { Loading } from '../../components/progress/Loading';
 import { PassportProp } from '../../data/account';
-import { PaymentMethod } from '../../data/stripe';
+import { StripePayMethod } from '../../data/stripe';
 import { ResponseError } from '../../repository/response-error';
 import { stripeRepo } from '../../repository/stripe';
 
@@ -28,13 +28,18 @@ export function StripeDefaultPaymentMethod(
   const [ err, setErr ] = useState('');
   const [ progress, setProgress ] = useState(false);
 
-  const { paymentSetting, setDefaultPaymentMethod, selectPaymentMethod } = useStripePaySetting();
+  const {
+    defaultPayMethod,
+    selectedPayMethod,
+    setSelectedPayMethod,
+    onPayMethodUpdated,
+  } = useStripePaySetting();
 
   // If there's already a default payment method, stop;
   // otherwise load either customer's invoice default payment method,
   // or current subscription's default payment method.
   useEffect(() => {
-    if (paymentSetting.defaultMethod) {
+    if (defaultPayMethod) {
       return;
     }
 
@@ -51,11 +56,11 @@ export function StripeDefaultPaymentMethod(
         // Only set payment method if no one exists.
         // It might happen when network is very slow, the data is loaded
         // after user added a new card.
-        setDefaultPaymentMethod(pm);
+        onPayMethodUpdated(pm);
         // If we found out user has not seleteced
         // any payment method, use the default one.
-        if (!paymentSetting.selectedMethod) {
-          selectPaymentMethod(pm);
+        if (selectedPayMethod) {
+          setSelectedPayMethod(pm);
         }
 
         setProgress(false);
@@ -76,7 +81,7 @@ export function StripeDefaultPaymentMethod(
           props.children ?
           props.children :
           <DisplayPaymentMethod
-            paymentMethod={paymentSetting.defaultMethod}
+            paymentMethod={defaultPayMethod}
           />
         }
       </Loading>
@@ -95,7 +100,7 @@ export function StripeDefaultPaymentMethod(
  */
 export function DisplayPaymentMethod(
   props: {
-    paymentMethod?: PaymentMethod;
+    paymentMethod?: StripePayMethod;
   }
 ) {
 
