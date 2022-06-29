@@ -152,7 +152,7 @@ function SubsPayMethodDialog(
       </Modal.Body>
 
       <Modal.Footer>
-        <TextButton onClick={props.onHide}>取消</TextButton>
+        <TextButton onClick={props.onHide} text="取消" />
         <OButton
           onClick={props.onConfirm}
           variant="danger"

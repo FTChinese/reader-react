@@ -1,5 +1,5 @@
 import { BankCard } from '../../components/BankCard';
-import { SpinnerOrText, TextButton } from '../../components/buttons/Buttons';
+import { OButton, SpinnerOrText } from '../../components/buttons/Buttons';
 import { Flex } from '../../components/layout/Flex';
 import { PaymentMethodSelector } from '../../components/text/Checkout';
 import { StripePayMethod } from '../../data/stripe';
@@ -65,15 +65,16 @@ function SetAsDefault(
 ) {
   return (
     <Flex justify="end">
-      <TextButton
+      <OButton
         onClick={props.onClick}
         disabled={props.isDefault || props.submitting}
+        variant="link"
       >
         <SpinnerOrText
           text="设为默认"
           progress={props.submitting}
         />
-      </TextButton>
+      </OButton>
     </Flex>
   );
 }

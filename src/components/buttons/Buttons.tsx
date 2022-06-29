@@ -74,7 +74,7 @@ export function OButton(
 
 export function TextButton(
   props: {
-    children: JSX.Element | string;
+    text: string;
     onClick: () => void;
     disabled?: boolean;
   }
@@ -86,7 +86,7 @@ export function TextButton(
       size="sm"
       onClick={props.onClick}
     >
-      {props.children}
+      {props.text}
     </Button>
   );
 }

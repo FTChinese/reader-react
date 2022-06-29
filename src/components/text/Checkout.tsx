@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { Tier } from '../../data/enum';
 import { localizeTier } from '../../data/localization';
 import { sitemap } from '../../data/sitemap';
-import { LeadIconText, TextButton } from '../buttons/Buttons';
+import { LeadIconText, OButton } from '../buttons/Buttons';
 import { PlusCircle } from '../graphics/icons';
 import { Flex } from '../layout/Flex';
 
@@ -55,14 +55,15 @@ export function PaymentMethodSelector(
     <Flex border={true}>
       <>
         <h6>支付方式</h6>
-        <TextButton
+        <OButton
           onClick={props.onClick}
+          variant="link"
         >
           <LeadIconText
             icon={<PlusCircle />}
             text="添加或选择"
           />
-        </TextButton>
+        </OButton>
       </>
     </Flex>
   )
