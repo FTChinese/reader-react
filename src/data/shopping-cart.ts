@@ -5,7 +5,7 @@ import {
 import { newMoneyParts, localizeCycle, PriceParts } from './localization';
 import { cycleOfYMD, formatPeriods, isZeroYMD } from './period';
 import { CheckoutIntent } from './chekout-intent';
-import { StripeCoupon, StripePrice } from './stripe';
+import { StripePayMethod, StripeCoupon, StripePrice } from './stripe';
 
 /**
  * @description FtcCartItem represents the item
@@ -42,6 +42,17 @@ export type SubsParams = {
   introductoryPriceId?: string;
   defaultPaymentMethod?: string;
 };
+
+export function newSubsParams(
+  item: CartItemStripe,
+  payMethod: StripePayMethod,
+): SubsParams {
+  return {
+    priceId: item.recurring.id,
+    introductoryPriceId: item.trial?.id,
+    defaultPaymentMethod: payMethod.id,
+  };
+}
 
 export type ShoppingCart = {
   ftc?: CartItemFtc;
