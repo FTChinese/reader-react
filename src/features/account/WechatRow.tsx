@@ -3,13 +3,13 @@ import { isAccountLinked, ReaderPassport } from "../../data/account";
 import { UnlinkDialog } from './UnlinkDialog';
 import { WxAvatar } from '../wx/WxAvatar';
 import { SecondaryLine, TwoLineRow } from '../../components/layout/TwoLineRow';
-import { IconButton } from '../../components/buttons/IconButton';
 import { Modal } from 'react-bootstrap';
 import { ResponseError } from '../../repository/response-error';
 import { getWxOAuthCodeReq } from '../../repository/wx-auth';
 import { wxOAuthCbSession } from '../../store/wxOAuthCbSession';
 import { LoadButton } from '../../components/buttons/LoadButton';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
+import { TextButton } from '../../components/buttons/Buttons';
 
 export function WechatRow(
   props: {
@@ -34,7 +34,7 @@ export function WechatRow(
       <TwoLineRow
         primary="微信"
         icon={
-          <IconButton
+          <TextButton
             text={isLinked ? '解除绑定' : '去绑定'}
             onClick={handleClick}
           />

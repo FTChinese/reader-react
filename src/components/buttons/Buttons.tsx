@@ -72,6 +72,30 @@ export function OButton(
   );
 }
 
+export function TrailIconButton(
+  props: {
+    text: string;
+    icon: JSX.Element;
+    onClick: () => void;
+    disabled?: boolean;
+    size?: 'sm' | 'lg';
+    variant?: ButtonVariant
+  }
+) {
+  return (
+    <Button
+      disabled={props.disabled}
+      variant={props.variant || 'link'}
+      size={props.size || 'sm'}
+      onClick={props.onClick}
+      className="d-flex align-items-center"
+    >
+      <span className='pe-1'>{props.text}</span>
+      {props.icon}
+    </Button>
+  );
+}
+
 export function TextButton(
   props: {
     text: string;

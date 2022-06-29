@@ -8,11 +8,11 @@ import Alert from 'react-bootstrap/Alert';
 import { ResponseError } from '../../repository/response-error';
 import { isStripeRenewOn } from '../../data/membership';
 import { PassportProp } from '../../data/account';
-import { IconButton } from '../../components/buttons/IconButton';
 import { TwoLineRow } from '../../components/layout/TwoLineRow';
 import { LoadButton } from '../../components/buttons/LoadButton';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
 import { StripeDefaultPaymentMethod } from '../stripepay/StripDefaultPaymentMethod';
+import { TrailIconButton } from '../../components/buttons/Buttons';
 
 /**
  * @description Show stripe payment setting.
@@ -55,9 +55,9 @@ function RowDefaultPaymentMethod(
       primary="默认支付方式"
       secondary="自动续订时使用的默认支付方式"
       icon={
-        <IconButton
+        <TrailIconButton
           text="查看"
-          end={icon}
+          icon={icon}
           onClick={() => setShow(!show)}
         />
       }
@@ -87,9 +87,9 @@ function RowCancelSubs() {
         primary="关闭自动续订"
         secondary="关闭自动续订将在本次订阅到期后停止扣款"
         icon={
-          <IconButton
+          <TrailIconButton
             text="关闭"
-            end={<ChevronRight />}
+            icon={<ChevronRight />}
             onClick={() => setShow(true)}
           />
         }
