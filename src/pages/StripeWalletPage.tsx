@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
+import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
-import { AddCardButton, BankCard, CardColumn } from '../components/BankCard';
-import { DisplayGrid, SpinnerOrText, TextButton } from '../components/buttons/Buttons';
+import { OButton, SpinnerOrText, TextButton } from '../components/buttons/Buttons';
 import { useAuth } from '../components/hooks/useAuth';
+import { useStripePaySetting } from '../components/hooks/useStripePaySetting';
+import { useStripeWallet } from '../components/hooks/useStripeWallet';
 import { CenterColumn } from '../components/layout/Column';
-import { Flex } from '../components/layout/Flex';
 import { ErrorBoundary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
 import { Unauthorized } from '../components/routes/Unauthorized';
-import { ReaderPassport } from '../data/account';
 import { hasStripeSubs } from '../data/membership';
-import { PaymentMethod } from '../data/stripe';
-import { ResponseError } from '../repository/response-error';
-import { stripeRepo } from '../repository/stripe';
+import { StripePayMethod } from '../data/stripe';
+import { StripeWalletScreen } from '../features/account/StripeWalletScreen';
+import { PaymentMethodDialog } from '../features/stripepay/PaymentMethodDialog';
 
 /**
  * @description Payment method managment.
@@ -27,14 +27,21 @@ export function StripeWalletPage() {
     return <Unauthorized/>;
   }
 
+  const [ showSelectPayMethod, setShowSelectPayMethod ] = useState(false);
+  const [ subsPayMethod, setSubsPayMethod ] = useState<StripePayMethod | undefined>(undefined);
+
   const {
-    progress,
-    error,
+    loadErr,
+    loading,
+    loadDefaultPaymentMethod,
+    defaultPayMethod,
+    selectedPayMethod,
+    onPayMethodUpdated,
+  } = useStripePaySetting();
+
+  const {
     submitErr,
     submitting,
-    defaultPaymentMethod,
-    paymentMethodSelected,
-    loadDefaultPaymentMethod,
     setCusDefaultPayment,
     setSubsDefaultPayment,
   } = useStripeWallet();
@@ -49,11 +56,15 @@ export function StripeWalletPage() {
     }
   }, [submitErr]);
 
+  const payMethodInUse = selectedPayMethod || defaultPayMethod;
+
+  const isDefault = selectedPayMethod?.id === defaultPayMethod?.id;
+
   return (
 
     <CenterColumn>
-      <ErrorBoundary errMsg={error}>
-        <Loading loading={progress}>
+      <ErrorBoundary errMsg={loadErr}>
+        <Loading loading={loading}>
 
           <>
             <h2 className="text-center">
@@ -61,17 +72,49 @@ export function StripeWalletPage() {
             </h2>
 
             <StripeWalletScreen
-              paymentMethod={paymentMethodSelected || defaultPaymentMethod}
-              isDefault={paymentMethodSelected?.id == defaultPaymentMethod?.id}
+              paymentMethod={payMethodInUse}
+              isDefault={isDefault}
               submitting={submitting}
               onSetDefault={(method) => {
+                // When user has valid subscription, ask user
+                // to confirm upon modifying payment method.
                 if (hasStripeSubs(passport.membership)) {
-                  setSubsDefaultPayment(passport, method);
+                  setSubsPayMethod(method)
                 } else {
-                  setCusDefaultPayment(passport, method);
+                  setCusDefaultPayment(passport, method)
+                    .then(ok => {
+                      if (ok) {
+                        onPayMethodUpdated(method);
+                      }
+                    });
                 }
               }}
-              onAddCard={ () => {} }
+              onAddCard={ () => setShowSelectPayMethod(true) }
+            />
+
+            <PaymentMethodDialog
+              show={showSelectPayMethod}
+              passport={passport}
+              onHide={() => setShowSelectPayMethod(false)}
+            />
+
+            <SubsPayMethodDialog
+              show={!!subsPayMethod}
+              onHide={() => setSubsPayMethod(undefined)}
+              progress={submitting}
+              onConfirm={() => {
+                const method = subsPayMethod;
+                if (!method) {
+                  return;
+                }
+
+                setSubsDefaultPayment(passport, method)
+                  .then(ok => {
+                    if (ok) {
+                      onPayMethodUpdated(method);
+                    }
+                  });
+              }}
             />
           </>
 
@@ -83,142 +126,43 @@ export function StripeWalletPage() {
   );
 }
 
-function StripeWalletScreen(
+/**
+ * Dialog when user is trying to modify a subscription's
+ * payment method.
+ */
+function SubsPayMethodDialog(
   props: {
-    paymentMethod?: PaymentMethod;
-    isDefault: boolean;
-    submitting: boolean;
-    onSetDefault: (method: PaymentMethod) => void;
-    onAddCard: () => void;
+    show: boolean;
+    onHide: () => void;
+    progress: boolean;
+    onConfirm: () => void;
   }
 ) {
-
-  const card = props.paymentMethod?.card;
-
   return (
-    <CardColumn>
-      <>
-        {
-          props.paymentMethod &&
-          <Flex justify="end">
-            <TextButton
-              onClick={() => {
-                if (props.paymentMethod) {
-                  props.onSetDefault(props.paymentMethod);
-                }
-              }}
-              disabled={props.isDefault}
-            >
-              <SpinnerOrText
-                text="设为默认"
-                progress={props.submitting}
-              />
-            </TextButton>
-          </Flex>
-        }
+    <Modal
+      show={props.show}
+      onHide={props.onHide}
+    >
+      <Modal.Header closeButton>
+        更改订阅默认支付方式
+      </Modal.Header>
 
-        {
-          card &&
-          <BankCard
-            brand={card.brand}
-            last4={card.last4}
-            expYear={card.expYear}
-            expMonth={card.expMonth}
-          />
-        }
+      <Modal.Body>
+      是否更改当前订阅的默认支付方式？这将影响自动续订日后的支付，请确保该支付方式有效。
+      </Modal.Body>
 
-        <DisplayGrid className="mt-2">
-          <AddCardButton
-            enabled={true}
-            onClick={props.onAddCard}
+      <Modal.Footer>
+        <TextButton onClick={props.onHide}>取消</TextButton>
+        <OButton
+          onClick={props.onConfirm}
+          variant="danger"
+        >
+          <SpinnerOrText
+            text="确认更改"
+            progress={props.progress}
           />
-        </DisplayGrid>
-      </>
-    </CardColumn>
+        </OButton>
+      </Modal.Footer>
+    </Modal>
   );
-}
-
-function useStripeWallet() {
-  const [progress, setProgress] = useState(false);
-  const [error, setError] = useState('');
-  const [defaultPaymentMethod, setDefaultPaymentMethod] = useState<PaymentMethod | undefined>(undefined);
-  const [paymentMethodSelected, selectPaymentMethod] = useState<PaymentMethod | undefined>(undefined);
-  const [ submitting, setSubmitting ] = useState(false);
-  const [ submitErr, setSubmitErr ] = useState('');
-
-  const loadDefaultPaymentMethod = (passport: ReaderPassport) => {
-    setError('');
-    setProgress(true);
-
-    stripeRepo.loadDefaultPayment(passport)
-      .then(pm => {
-        setProgress(false);
-        setDefaultPaymentMethod(pm);
-      })
-      .catch((err: ResponseError) => {
-        setProgress(false);
-        setError(err.message);
-      });
-  };
-
-  const setCusDefaultPayment = (pp: ReaderPassport, method: PaymentMethod) => {
-    setSubmitErr('');
-    setSubmitting(false);
-
-    if (!pp.stripeId) {
-      setSubmitErr('Not a stripe customer');
-      return;
-    }
-
-    stripeRepo.setCusPayment({
-        token: pp.token,
-        customerId: pp.stripeId,
-        methodId: method.id
-      })
-      .then(cus => {
-        setSubmitting(false);
-        selectPaymentMethod(method);
-      })
-      .catch((err: ResponseError) => {
-        setSubmitting(false);
-        setSubmitErr(err.message);
-      });
-  }
-
-  const setSubsDefaultPayment = (pp: ReaderPassport, method: PaymentMethod) => {
-    setSubmitErr('');
-    setSubmitting(false);
-
-    const subsId = pp.membership.stripeSubsId
-    if (!subsId) {
-      setSubmitErr('No stripe subscritpion!');
-      return;
-    }
-
-    stripeRepo.updateSubsPayment({
-        token: pp.token,
-        subsId: subsId,
-        methodId: method.id
-      })
-      .then(subs => {
-        setSubmitting(false);
-        selectPaymentMethod(method);
-      })
-      .catch((err: ResponseError) => {
-        setSubmitting(false);
-        setSubmitErr(err.message);
-      });
-  }
-
-  return {
-    progress,
-    error,
-    defaultPaymentMethod,
-    paymentMethodSelected,
-    submitErr,
-    submitting,
-    loadDefaultPaymentMethod,
-    setCusDefaultPayment,
-    setSubsDefaultPayment,
-  }
 }
