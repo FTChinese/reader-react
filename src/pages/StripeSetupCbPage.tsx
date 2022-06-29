@@ -15,7 +15,7 @@ import { BankCard } from '../components/BankCard';
 export function StripeSetupCbPage() {
 
   const { passport } = useAuth();
-  const { paymentSetting, selectPaymentMethod } = useStripePaySetting();
+  const { selectedPayMethod, setSelectedPayMethod } = useStripePaySetting();
 
   const [ searchParams, _ ] = useSearchParams();
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ export function StripeSetupCbPage() {
   const [ progress, setProgress ] = useState(false);
   const [ err, setErr ] = useState('');
 
-  const card = paymentSetting.selectedMethod?.card;
+  const card = selectedPayMethod?.card;
 
   useEffect(() => {
 
@@ -83,7 +83,7 @@ export function StripeSetupCbPage() {
     try {
       const pm = await loadPaymentMethod(pp.token, pmId);
 
-      selectPaymentMethod(pm);
+      setSelectedPayMethod(pm);
       // If user is setting up payment upon subscription,
       // navigate back to checkout page.
       if (usage === SetupUsage.PayNow) {
