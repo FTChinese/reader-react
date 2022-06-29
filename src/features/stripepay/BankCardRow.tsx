@@ -1,40 +1,21 @@
 import { CheckLarge } from '../../components/graphics/icons';
-import { PaymentMethod } from '../../data/stripe';
-import { useStripePaySetting } from '../../components/hooks/useStripePaySetting';
+import { StripePayMethod } from '../../data/stripe';
 
 export function BankCardRow(
   props: {
-    paymentMethod: PaymentMethod;
-    border?: boolean;
-    showDefault?: boolean;
-    selectable?: boolean;
+    paymentMethod: StripePayMethod;
+    selected: boolean;
+    isDefault: boolean;
+    onSelect: () => void;
   }
 ) {
 
-  const { paymentSetting, selectPaymentMethod } = useStripePaySetting();
-
   const card = props.paymentMethod.card;
 
-  const handleSelect = () => {
-    if (!props.selectable) {
-      return;
-    }
-    selectPaymentMethod(props.paymentMethod);
-  };
-
-  let className = 'd-flex align-items-center pt-1 pb-1';
-  if (props.border) {
-    className += ' border-bottom';
-  }
-
-  const showDefault = !!props.showDefault && (props.paymentMethod.id === paymentSetting.defaultMethod?.id);
-
-  const showCheck = !!props.selectable && (props.paymentMethod.id === paymentSetting.selectedMethod?.id);
-
   return (
-    <div className={className}>
+    <div className="d-flex align-items-center pt-1 pb-1 border-bottom">
       <div className="flex-grow-1"
-        onClick={handleSelect}
+        onClick={props.onSelect}
       >
         <div>
           <span className="me-2">
@@ -44,7 +25,7 @@ export function BankCardRow(
             **** {card.last4}
           </span>
           {
-             showDefault && <DefaultIndicator />
+             props.isDefault && <DefaultIndicator />
           }
         </div>
         <div className="text-black60 scale-down8">
@@ -55,7 +36,7 @@ export function BankCardRow(
 
       <div className="text-teal">
         {
-          showCheck &&
+          props.selected &&
           <CheckLarge />
         }
       </div>
