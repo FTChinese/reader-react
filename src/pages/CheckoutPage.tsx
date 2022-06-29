@@ -9,12 +9,13 @@ import { useAuth } from '../components/hooks/useAuth';
 import { RequireStripeCustomer } from '../components/routes/RequireStripeCustomer';
 import { ReaderPassport } from '../data/account';
 import { StripePayScreen } from '../features/stripepay/StripePayScreen';
-import { useStripePay } from '../features/stripepay/useStripePay';
+import { useStripeSubs } from '../features/stripepay/useStripeSubs';
 import { useEffect, useState } from 'react';
 import { ResponseError } from '../repository/response-error';
 import { PaymentMethodDialog } from '../features/stripepay/PaymentMethodDialog';
 import { toast } from 'react-toastify';
 import { Membership } from '../data/membership';
+import { useStripePaySetting } from '../components/hooks/useStripePaySetting';
 
 function ChekcoutLayout(
   props: {
@@ -93,30 +94,38 @@ function StripePageScreen(
   const [show, setShow] = useState(false);
 
   const {
-    paymentMethodSelected,
-    selectPaymentMethod,
     submitting,
     subsCreated,
-    loadDefaultPaymentMethod,
     subscribe,
-  } = useStripePay();
+  } = useStripeSubs();
+
+  const {
+    defaultPayMethod,
+    selectedPayMethod,
+    loadDefaultPaymentMethod,
+  } = useStripePaySetting();
 
   useEffect(() => {
     loadDefaultPaymentMethod(props.passport);
   }, []);
+
+  const payMethodInUse = selectedPayMethod || defaultPayMethod;
 
   return (
     <>
       <StripePayScreen
         cartItem={props.item}
         submitting={submitting}
-        paymentMethod={paymentMethodSelected}
+        paymentMethod={payMethodInUse}
         subs={subsCreated}
-        onPaymentMethod={() => {
-          setShow(true);
-        }}
+        onPaymentMethod={() => setShow(true)}
         onSubscribe={() => {
-          subscribe(props.passport, props.item)
+          if (!payMethodInUse) {
+            toast.error('No payment method selected');
+            return;
+          }
+
+          subscribe(props.passport, props.item, payMethodInUse)
             .then(m => {
               props.onSuccess(m);
             })
@@ -130,7 +139,6 @@ function StripePageScreen(
         show={show}
         passport={props.passport}
         onHide={() => setShow(false)}
-        onMethodSelected={selectPaymentMethod}
       />
     </>
 
