@@ -6,7 +6,7 @@ import { VerifySMSFormVal } from '../../data/mobile';
 import { changeMobile, requestVerifyMobile } from '../../repository/email-account';
 import { ResponseError } from '../../repository/response-error';
 import { MobileLoginForm, SMSHelper } from '../../components/forms/MobileLoginForm';
-import { AccountRow } from "./AccountRow";
+import { AccountRow, useEditState } from "./AccountRow";
 import { SecondaryLine } from '../../components/layout/TwoLineRow';
 import { OnAccountUpdated } from '../../data/account';
 
@@ -18,8 +18,11 @@ export function MobileRow(
   }
 ) {
 
-  const [editing, setEditing] = useState(false);
   const [errMsg, setErrMsg] = useState('');
+  const {
+    onOff,
+    toggle,
+  } = useEditState();
 
   const handleSMSRequest = (mobile: string, helper: SMSHelper) => {
     setErrMsg('');
@@ -55,7 +58,7 @@ export function MobileRow(
         helper.setSubmitting(false);
         toast.success(toastMessages.updateSuccess);
         props.onUpdated(ba);
-        setEditing(false);
+        toggle;
       })
       .catch((err: ResponseError) => {
         helper.setSubmitting(false);
@@ -71,21 +74,22 @@ export function MobileRow(
   return (
     <AccountRow
       title="手机号"
-      isEditing={editing}
-      onEdit={() => setEditing(!editing)}
-    >
-      { editing ?
+      isEditing={onOff}
+      onEdit={toggle}
+      editContent={
         <MobileLoginForm
           onSubmit={handleSubmit}
           onRequestSMS={handleSMSRequest}
           errMsg={errMsg}
           isLogin={false}
           mobile={props.mobile}
-        /> :
+        />
+      }
+      nonEditContent={
         <SecondaryLine
           text={props.mobile || '未设置'}
         />
       }
-    </AccountRow>
+    />
   );
 }

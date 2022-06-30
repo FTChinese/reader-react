@@ -7,7 +7,7 @@ import { emailVerificationUrl } from '../../data/sitemap';
 import { updateEmail } from '../../repository/email-account';
 import { ResponseError } from '../../repository/response-error';
 import { EmailForm } from '../../components/forms/EmailForm';
-import { AccountRow } from "./AccountRow";
+import { AccountRow, useEditState } from "./AccountRow";
 import { SecondaryLine } from '../../components/layout/TwoLineRow';
 
 export function EmailRow(
@@ -18,8 +18,12 @@ export function EmailRow(
     onUpdated: OnAccountUpdated;
   }
 ) {
-  const [editing, setEditing] = useState(false);
+
   const [errMsg, setErrMsg] = useState('');
+  const {
+    onOff,
+    toggle,
+  } = useEditState();
 
   const email = normalizeEmail(props.email);
 
@@ -45,7 +49,7 @@ export function EmailRow(
         helpers.setSubmitting(false);
         toast.success(toastMessages.updateSuccess);
         props.onUpdated(ba);
-        setEditing(false);
+        toggle();
       })
       .catch((err: ResponseError) => {
         helpers.setSubmitting(false);
@@ -61,11 +65,9 @@ export function EmailRow(
   return (
     <AccountRow
       title="邮箱"
-      isEditing={editing}
-      onEdit={() => setEditing(!editing)}
-    >
-      {
-        editing ?
+      isEditing={onOff}
+      onEdit={toggle}
+      editContent={
         <EmailForm
           onSubmit={handleSubmit}
           errMsg={errMsg}
@@ -73,12 +75,14 @@ export function EmailRow(
           btnText="保存"
           btnInline={true}
           hideLabel={true}
-        /> :
+        />
+      }
+      nonEditContent={
         <SecondaryLine
           text={emailText}
         />
       }
-    </AccountRow>
+    />
   );
 }
 

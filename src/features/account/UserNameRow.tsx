@@ -6,7 +6,7 @@ import { UpdateNameFormVal } from '../../data/update-account';
 import { updateUserName } from '../../repository/email-account';
 import { ResponseError } from '../../repository/response-error';
 import { UserNameForm } from '../../components/forms/UserNameForm';
-import { AccountRow } from "./AccountRow";
+import { AccountRow, useEditState } from "./AccountRow";
 import { SecondaryLine } from '../../components/layout/TwoLineRow';
 import { OnAccountUpdated } from '../../data/account';
 
@@ -17,8 +17,9 @@ export function UserNameRow(
     onUpdated: OnAccountUpdated;
   }
 ) {
-  const [editing, setEditing] = useState(false);
+
   const [errMsg, setErrMsg] = useState('');
+  const { onOff, toggle } = useEditState();
 
   const handleSubmit = (
     values: UpdateNameFormVal,
@@ -32,7 +33,7 @@ export function UserNameRow(
         helpers.setSubmitting(false);
         toast.success(toastMessages.updateSuccess);
         props.onUpdated(ba);
-        setEditing(false);
+        toggle();
       })
       .catch((err: ResponseError) => {
         helpers.setSubmitting(false);
@@ -48,21 +49,21 @@ export function UserNameRow(
   return (
     <AccountRow
       title="用户名"
-      isEditing={editing}
-      onEdit={() => setEditing(!editing)}
-    >
-      {
-        editing ?
+      isEditing={onOff}
+      onEdit={toggle}
+      editContent={
         <UserNameForm
           onSubmit={handleSubmit}
           errMsg={errMsg}
           userName={props.userName}
-        /> :
+        />
+      }
+      nonEditContent={
         <SecondaryLine
           text={props.userName || '未设置'}
         />
       }
-    </AccountRow>
+    />
   );
 }
 

@@ -6,7 +6,7 @@ import { UpdatePasswordFormVal } from '../../data/update-account';
 import { updatePassword } from '../../repository/email-account';
 import { ResponseError } from '../../repository/response-error';
 import { UpdatePasswordForm } from '../../components/forms/UpdatePasswordForm';
-import { AccountRow } from './AccountRow';
+import { AccountRow, useEditState } from './AccountRow';
 import { SecondaryLine } from '../../components/layout/TwoLineRow';
 
 export function PasswordRow(
@@ -15,8 +15,11 @@ export function PasswordRow(
   }
 ) {
 
-  const [editing, setEditing] = useState(false);
   const [errMsg, setErrMsg] = useState('');
+  const {
+    onOff,
+    toggle,
+  } = useEditState();
 
   const handleSubmit = (
     values: UpdatePasswordFormVal,
@@ -36,7 +39,7 @@ export function PasswordRow(
         helpers.setSubmitting(!ok);
         if (ok) {
           toast.success(toastMessages.updateSuccess);
-          setEditing(false);
+          toggle();
         } else {
           toast.error(toastMessages.unknownErr);
         }
@@ -55,21 +58,20 @@ export function PasswordRow(
   return (
     <AccountRow
       title="密码"
-      isEditing={editing}
-      onEdit={() => setEditing(!editing)}
-    >
-      {
-        editing ?
-
+      isEditing={onOff}
+      onEdit={toggle}
+      editContent={
         <UpdatePasswordForm
           onSubmit={handleSubmit}
           errMsg={errMsg}
-        /> :
+        />
+      }
+      nonEditContent={
         <SecondaryLine
           text="*******"
         />
       }
-    </AccountRow>
+    />
   )
 }
 
