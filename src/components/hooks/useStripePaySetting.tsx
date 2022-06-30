@@ -10,7 +10,7 @@ const defaultPayMethodState = atom<StripePayMethod | undefined>({
   default: undefined,
 });
 
-const selectedPayMethodState = atom<StripePayMethod | undefined>({
+export const selectedPayMethodState = atom<StripePayMethod | undefined>({
   key: 'stripeSelectedPayMethod',
   default: undefined,
 });
