@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { stripePromise } from '../../features/stripepay/StripeContext';
+import { stripePromise } from '../../features/stripesetup/StripeContext';
 import { Loading } from '../progress/Loading';
 
 export function RequireStripe(
