@@ -172,7 +172,7 @@ export function IconButton(
   return (
     <Button
       disabled={props.disabled}
-      variant={props.variant || 'light'}
+      variant={props.variant || 'link'}
       size={props.size || 'sm'}
       onClick={props.onClick}
     >
