@@ -6,7 +6,7 @@ import Modal from 'react-bootstrap/esm/Modal';
 import { LeadIconButton } from '../components/buttons/Buttons';
 import { CircleLoader } from '../components/progress/LoadIndicator';
 import { useState } from 'react';
-import { useMembership } from '../features/member/useMembership';
+import { useMemberState } from '../features/member/useMemberState';
 import { ResponseError } from '../repository/response-error';
 import { MemberScreen } from '../features/member/MemberScreen';
 import { toast } from 'react-toastify';
@@ -21,7 +21,7 @@ export function MembershipPage() {
     stripeProgress,
     reactivateStripe,
     cancelStripe,
-  } = useMembership();
+  } = useMemberState();
 
   if (!passport) {
     return <Unauthorized/>;

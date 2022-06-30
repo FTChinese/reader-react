@@ -6,7 +6,7 @@ import { reloadMembership } from '../../repository/membership';
 import { ResponseError } from '../../repository/response-error';
 import { stripeRepo } from '../../repository/stripe';
 
-export function useMembership() {
+export function useMemberState() {
   const [ refreshing, setRefreshing ] = useState(false);
   const [ stripeProgress, setStripeProgress ] = useState(false);
 
