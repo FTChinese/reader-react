@@ -1,12 +1,13 @@
-import { CheckoutHeader, CheckoutMessage, PaymentMethodSelector, StripePayLink } from '../../components/text/Checkout'
+import { CheckoutHeader, CheckoutMessage, StripePayLink } from '../../components/text/Checkout'
 import { CenterColumn } from '../../components/layout/Column';
 import { priceCardParamsOfStripe, CartItemStripe } from '../../data/shopping-cart';
 import { StripePayMethod, Subs } from '../../data/stripe';
 import { PriceCard } from '../product/PriceCard';
 import { StripeSubsDetails } from './StripeSubsDetails';
-import { BlockLoadButton, DisplayGrid, OButton, SpinnerOrText } from '../../components/buttons/Buttons';
+import { BlockLoadButton } from '../../components/buttons/Buttons';
 import { IntentKind, stripeBtnText } from '../../data/chekout-intent';
-import { BankCard } from '../../components/BankCard';
+import { BankCard } from '../stripewallet/BankCard';
+import { PaymentMethodSelector } from '../stripesetup/PaymentMethodSelector';
 
 /**
  * @description Handles Stripe pay actions.

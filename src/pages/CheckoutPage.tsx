@@ -12,10 +12,11 @@ import { StripePayScreen } from '../features/stripepay/StripePayScreen';
 import { useStripeSubs } from '../features/stripepay/useStripeSubs';
 import { useEffect, useState } from 'react';
 import { ResponseError } from '../repository/response-error';
-import { PaymentMethodDialog } from '../features/stripepay/PaymentMethodDialog';
 import { toast } from 'react-toastify';
 import { Membership } from '../data/membership';
 import { useStripePaySetting } from '../components/hooks/useStripePaySetting';
+import { PaymentMethodDialog } from '../features/stripesetup/PaymentMethodDialog';
+import { SetupUsage } from '../store/stripeSetupSession';
 
 function ChekcoutLayout(
   props: {
@@ -139,6 +140,7 @@ function StripePageScreen(
         show={show}
         passport={props.passport}
         onHide={() => setShow(false)}
+        usage={SetupUsage.PayNow}
       />
     </>
 
