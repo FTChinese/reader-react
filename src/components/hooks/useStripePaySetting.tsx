@@ -38,6 +38,8 @@ export function useStripePaySetting() {
     setDefaultPayMethod(method);
   };
 
+  // Load default payment method from of an active subscription if exists,
+  // otherwise fallback to customer invoice setting's payment method.
   const loadDefaultPaymentMethod = (passport: ReaderPassport) => {
     setLoadErr('');
     setLoading(true);
@@ -45,7 +47,16 @@ export function useStripePaySetting() {
     stripeRepo.loadDefaultPayment(passport)
       .then(pm => {
         setLoading(false);
-        onPayMethodUpdated(pm);
+        // User might access stripe setting/payment page directly.
+        // In such case we assume neither default payment method nor selected payment exists.
+        // The page might also be accessed by redirection from stripe setup callback page.
+        // In such case the selectedPaymentMethod already exists and we want to sho
+        // this newly added payment method.
+        if (selectedPayMethod) {
+          setDefaultPayMethod(pm)
+        } else {
+          onPayMethodUpdated(pm);
+        }
       })
       .catch((err: ResponseError) => {
         setLoading(false);

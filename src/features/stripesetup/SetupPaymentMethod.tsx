@@ -110,6 +110,9 @@ function PaymentMethodForm(
     stripe.confirmSetup({
         elements,
         confirmParams: {
+          // If everything works fine, stripe will automatically redirect you to this path
+          // in the next step. There the new payment method will be retrieve from server
+          // and redirected back to this component's hosting page.
           return_url: stripeSetupCbUrl(document.location.origin),
         }
       })

@@ -17,6 +17,8 @@ export const setupIntentState = atom<SetupIntent | undefined>({
 export function useStripeSetup() {
   const [ progress, setProgress ] = useState(false);
   const [ setupIntent, setSetupIntent ] = useRecoilState(setupIntentState);
+  // After a new payment method is created, save it to selectedPayMethodState
+  // so that after redirection user could see it.
   const [ _, setSelectedPayMethod ] = useRecoilState(selectedPayMethodState);
 
   const onSetupCallback = (
@@ -74,6 +76,8 @@ export function useStripeSetup() {
         }
       })
       .then(method => {
+        // User will see this payment method after redirection as long as they
+        // do not force-refresh the page.
         setSelectedPayMethod(method);
         setProgress(false);
         return Promise.resolve(sess.usage)
