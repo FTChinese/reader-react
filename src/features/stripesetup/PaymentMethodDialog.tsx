@@ -7,7 +7,7 @@ import { StripePayMethod } from '../../data/stripe';
 import { useStripePaySetting } from '../../components/hooks/useStripePaySetting';
 import { ErrorBoundary } from '../../components/progress/ErrorBoundary';
 import { Loading } from '../../components/progress/Loading';
-import { BankCardRow } from './BankCardRow';
+import { BankCardRow } from '../stripewallet/BankCardRow';
 import { useEffect } from 'react';
 
 export function PaymentMethodDialog(
@@ -15,6 +15,7 @@ export function PaymentMethodDialog(
     show: boolean;
     passport: ReaderPassport;
     onHide: () => void;
+    usage: SetupUsage;
   }
 ) {
 
@@ -63,7 +64,7 @@ export function PaymentMethodDialog(
 
             <SetupPaymentMethod
               passport={props.passport}
-              usage={SetupUsage.PayNow}
+              usage={props.usage}
             />
           </>
         </FullscreenSingleCol>

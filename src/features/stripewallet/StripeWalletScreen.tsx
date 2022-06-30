@@ -1,9 +1,9 @@
-import { BankCard } from '../../components/BankCard';
-import { LeadIconButton, OButton, SpinnerOrText } from '../../components/buttons/Buttons';
+import { BankCard } from './BankCard';
+import { LeadIconButton } from '../../components/buttons/Buttons';
 import { Flex } from '../../components/layout/Flex';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
-import { PaymentMethodSelector } from '../../components/text/Checkout';
 import { StripePayMethod } from '../../data/stripe';
+import { PaymentMethodSelector } from '../stripesetup/PaymentMethodSelector';
 
 /**
  * onSetDefault callback is used to set default payment method. * A default payment method could be set

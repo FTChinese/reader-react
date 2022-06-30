@@ -5,10 +5,8 @@ import { stripeSetupCbUrl } from '../../data/sitemap';
 import { SetupUsage, stripeSetupSession } from '../../store/stripeSetupSession';
 import { SetupIntent } from '../../data/stripe';
 import { SubmitButton } from '../../components/controls/SubmitButton';
-import { PassportProp } from '../../data/account';
+import { ReaderPassport } from '../../data/account';
 import { StripeContext } from './StripeContext';
-import { useStripeSetupIntent } from '../../components/hooks/useStripeSetupIntent';
-import { createSetupIntent } from '../../repository/stripe';
 import { toast } from 'react-toastify';
 import { ResponseError } from '../../repository/response-error';
 import { Flex } from '../../components/layout/Flex';
@@ -16,21 +14,46 @@ import { CircleLoader } from '../../components/progress/LoadIndicator';
 import { Loading } from '../../components/progress/Loading';
 import { StripePaymentElementChangeEvent } from '@stripe/stripe-js';
 import { LeadIconButton } from '../../components/buttons/Buttons';
+import { useStripeSetup } from '../../components/hooks/useStripeSetup';
 
 export function SetupPaymentMethod(
-  props: PassportProp & {
+  props: {
+    passport: ReaderPassport;
     usage: SetupUsage;
   },
 ) {
-  const { setupIntent } = useStripeSetupIntent();
 
-  // As long as there's a setup intent exsits, display
-  // the form.
+  const {
+    progress,
+    setupIntent,
+    createSetupIntent
+  } = useStripeSetup();
+
+  // Handle clicking add payment method button.
+  // To add a new payment method for future use,
+  // you have to ask Stripe to create a setup intent.
   return (
     <div className="mb-3">
-      <CreateSetupIntent passport={props.passport} />
+      <Flex justify="end">
+        <LeadIconButton
+          disabled={progress || !!setupIntent?.id}
+          text="添加新卡片"
+          onClick={() => {
+            createSetupIntent(props.passport)
+              .catch((err: ResponseError) => {
+                toast.error(err.message);
+              })
+          }}
+          icon={
+            <CircleLoader progress={progress} />
+          }
+        />
+      </Flex>
+
       {
-        setupIntent.id &&
+        // As long as there's a setup intent exsits, display
+        // the form.
+        setupIntent &&
         <StripeContext
           secret={setupIntent.clientSecret}
         >
@@ -41,58 +64,6 @@ export function SetupPaymentMethod(
         </StripeContext>
       }
     </div>
-  );
-}
-
-function CreateSetupIntent(
-  props: PassportProp,
-) {
-  const [ progress, setProgress ] = useState(false);
-  const { setupIntent, setSetupIntent } = useStripeSetupIntent();
-
-  // Handle clicking add payment method button.
-  // To add a new payment method for future use,
-  // you have to ask Stripe to create a setup intent.
-  const handleClick = () => {
-    const cusId = props.passport.stripeId;
-    if (!cusId) {
-      toast.error('Not a stripe customer yet!');
-      return;
-    }
-
-    setProgress(true);
-
-    createSetupIntent(
-        props.passport.token,
-        {
-          customer: cusId,
-        }
-      )
-      .then(si => {
-        setProgress(false);
-        console.log(si);
-        setSetupIntent(si);
-      })
-      .catch((err: ResponseError) => {
-        setProgress(false);
-        toast.error(err.toString());
-      });
-  };
-
-  // Disabled setup intent button as long as there's one.
-  // We want to limit creating setup intent frequently.
-  // Once the setup intent is used, do remember to clean up it.
-  return (
-    <Flex justify="end">
-      <LeadIconButton
-        disabled={progress || !!setupIntent.id}
-        text="添加新卡片"
-        onClick={handleClick}
-        icon={
-          <CircleLoader progress={progress} />
-        }
-      />
-    </Flex>
   );
 }
 

@@ -1,6 +1,6 @@
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
-import { loadStripePubKey } from '../../repository/stripe';
+import { stripeRepo } from '../../repository/stripe';
 
 // See https://stripe.com/docs/stripe-js/react
 // The requirment of Stripe.js initialization makes
@@ -8,7 +8,7 @@ import { loadStripePubKey } from '../../repository/stripe';
 // simutaneously.
 // A possible solution is is to set up two
 // servers using different keys.
-export const stripePromise = loadStripePubKey()
+export const stripePromise = stripeRepo.loadPubKey()
 .then(pk => {
   console.log(`Initializing Stripe with ${pk.live ? 'live' : 'test'} publishable key`);
   return loadStripe(pk.key);
