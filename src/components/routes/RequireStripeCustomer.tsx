@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { sitemap } from '../../data/sitemap';
 import { ResponseError } from '../../repository/response-error';
-import { createCustomer } from '../../repository/stripe';
+import { stripeRepo } from '../../repository/stripe';
 import { LeadIconButton } from '../buttons/Buttons';
 import { useAuth } from '../hooks/useAuth';
 import { CenterColumn } from '../layout/Column';
@@ -26,7 +26,7 @@ export function RequireStripeCustomer(
   const handleClick = () => {
     setProgress(true);
 
-    createCustomer(passport.token)
+    stripeRepo.createCustomer(passport.token)
       .then(cus => {
         console.log('Stripe customer created');
         setProgress(false);
