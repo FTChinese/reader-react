@@ -2,29 +2,14 @@ import { Flex } from './Flex';
 
 export function TwoLineRow(
   props: {
-    primary?: string;
-    secondary?: string;
-    icon?: JSX.Element;
-    children?: JSX.Element;
+    first: JSX.Element;
+    second: JSX.Element;
   }
 ) {
-
   return (
     <div className="border-bottom pt-2 pb-2">
-      {
-        props.primary &&
-        <PrimaryLine
-          text={props.primary}
-          trailIcon={props.icon}
-        />
-      }
-      {
-        props.secondary &&
-        <SecondaryLine
-          text={props.secondary}
-        />
-      }
-      {props.children}
+      {props.first}
+      {props.second}
     </div>
   );
 }
