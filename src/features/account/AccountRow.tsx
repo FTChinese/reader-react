@@ -1,34 +1,65 @@
-import { Button } from 'react-bootstrap';
+import { useState } from 'react';
+import { IconButton } from '../../components/buttons/Buttons';
 import { XLarge, Pencil } from '../../components/graphics/icons';
-import { TwoLineRow } from '../../components/layout/TwoLineRow';
+import { PrimaryLine, TwoLineRow } from '../../components/layout/TwoLineRow';
 
 export function AccountRow(
   props: {
     title: string;
-    children: JSX.Element;
-    isEditing?: boolean;
-    onEdit?: () => void
+    isEditing: boolean;
+    onEdit: () => void;
+    editContent: JSX.Element;
+    nonEditContent: JSX.Element;
   }
 ) {
 
-  const editBtn = (
-    <Button
-      variant="link"
-      onClick={props.onEdit}
-    >
-      { props.isEditing ?
+  return (
+    <TwoLineRow
+      first={<PrimaryLine
+        text={props.title}
+        trailIcon={<EditButton
+          editing={props.isEditing}
+          onEdit={props.onEdit}
+        />}
+      />}
+      second={
+        props.isEditing ?
+        props.editContent :
+        props.nonEditContent
+      }
+    />
+  );
+}
+
+export function EditButton(
+  props: {
+    editing: boolean;
+    onEdit: () => void;
+  }
+) {
+  return (
+    <IconButton
+      icon={
+        props.editing ?
         <XLarge /> :
         <Pencil />
       }
-    </Button>
+      onClick={props.onEdit}
+    />
   );
+}
 
-  return (
-    <TwoLineRow
-      primary={props.title}
-      icon={editBtn}
-    >
-      {props.children}
-    </TwoLineRow>
-  );
+export function useEditState() {
+  const [ onOff, setOnOff ] = useState(false);
+
+  const toggle = () => {
+    setOnOff(prev => {
+      return !prev;
+    });
+  };
+
+  return {
+    onOff,
+    toggle,
+  };
 }
