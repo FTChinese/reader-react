@@ -5,8 +5,8 @@ import { unixNow } from '../utils/now';
 const key = 'stripe_setup_sess';
 
 export enum SetupUsage {
-  PayNow,
-  Future,
+  PayNow, // Go to checkout after redirect
+  Future, // Go to settings/stripe after redirect.
 };
 
 type SetupSession = {
