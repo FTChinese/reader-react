@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { isAccountLinked, ReaderPassport } from "../../data/account";
 import { UnlinkDialog } from './UnlinkDialog';
 import { WxAvatar } from '../wx/WxAvatar';
-import { SecondaryLine, TwoLineRow } from '../../components/layout/TwoLineRow';
+import { PrimaryLine, SecondaryLine, TwoLineRow } from '../../components/layout/TwoLineRow';
 import { Modal } from 'react-bootstrap';
 import { ResponseError } from '../../repository/response-error';
 import { getWxOAuthCodeReq } from '../../repository/wx-auth';
@@ -31,19 +31,20 @@ export function WechatRow(
   return (
     <>
       <TwoLineRow
-        primary="微信"
-        icon={
-          <TextButton
-            text={isLinked ? '解除绑定' : '去绑定'}
-            onClick={handleClick}
-          />
-        }
-      >
-        { isLinked ?
+        first={<PrimaryLine
+          text="微信"
+          trailIcon={
+            <TextButton
+              text={isLinked ? '解除绑定' : '去绑定'}
+              onClick={handleClick}
+            />
+          }
+        />}
+        second={ isLinked ?
           <WxAvatar wechat={props.passport.wechat} /> :
           <SecondaryLine text="未绑定" />
         }
-      </TwoLineRow>
+      />
 
       <UnlinkDialog
         passport={props.passport}
