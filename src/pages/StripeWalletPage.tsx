@@ -11,8 +11,9 @@ import { Loading } from '../components/progress/Loading';
 import { Unauthorized } from '../components/routes/Unauthorized';
 import { hasStripeSubs } from '../data/membership';
 import { StripePayMethod } from '../data/stripe';
-import { StripeWalletScreen } from '../features/account/StripeWalletScreen';
-import { PaymentMethodDialog } from '../features/stripepay/PaymentMethodDialog';
+import { PaymentMethodDialog } from '../features/stripesetup/PaymentMethodDialog';
+import { StripeWalletScreen } from '../features/stripewallet/StripeWalletScreen';
+import { SetupUsage } from '../store/stripeSetupSession';
 
 /**
  * @description Payment method managment.
@@ -96,6 +97,7 @@ export function StripeWalletPage() {
               show={showSelectPayMethod}
               passport={passport}
               onHide={() => setShowSelectPayMethod(false)}
+              usage={SetupUsage.Future}
             />
 
             <SubsPayMethodDialog
