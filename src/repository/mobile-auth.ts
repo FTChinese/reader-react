@@ -1,58 +1,45 @@
-import axios, { AxiosResponse } from 'axios';
 import { endpoint } from './endpoint';
 import { MobileFormVal, MobileLinkExistingEmailReq, MobileLinkNewEmailReq, VerifySMSFormVal } from '../data/mobile';
-import { ResponseError } from './response-error';
 import { ReaderPassport } from '../data/account';
+import { Fetch } from './request';
 
 
 export function requestMobileLoginSMS(v: MobileFormVal): Promise<boolean> {
-  return axios.put<MobileFormVal, AxiosResponse<boolean>>(endpoint.smsLogin, v)
+  return new Fetch()
+    .put(endpoint.smsLogin)
+    .sendJson(v)
+    .endOrReject()
     .then(resp => {
-      return resp.status == 204;
-    })
-    .catch(err => {
-      return Promise.reject(
-        ResponseError.fromAxios(err)
-      );
+      return resp.status === 204;
     });
 }
 
 export function verifyMobileLoginSMS(v: VerifySMSFormVal): Promise<ReaderPassport> {
-  return axios.post<ReaderPassport, AxiosResponse<ReaderPassport>, VerifySMSFormVal>(endpoint.smsLogin, v)
-    .then(resp => {
-      return resp.data;
-    })
-    .catch(err => {
-      return Promise.reject(
-        ResponseError.fromAxios(err),
-      );
-    });
+  return new Fetch()
+    .post(endpoint.smsLogin)
+    .sendJson(v)
+    .endJson<ReaderPassport>();
 }
 
 // Create mobile-only account
 export function mobileSignUp(v: MobileFormVal): Promise<ReaderPassport> {
-  return axios.post<MobileFormVal, AxiosResponse<ReaderPassport>>(endpoint.mobileSignUp, v)
-    .then(resp => resp.data)
-    .catch(err => {
-      return Promise.reject(ResponseError.fromAxios(err));
-    });
+  return new Fetch()
+    .post(endpoint.mobileSignUp)
+    .sendJson(v)
+    .endJson<ReaderPassport>();
 }
 
 // A mobile number wants to link to an existing email account.
 export function mobileLinkExistingEmail(req: MobileLinkExistingEmailReq): Promise<ReaderPassport> {
-  return axios.post<MobileLinkExistingEmailReq, AxiosResponse<ReaderPassport>>(
-      endpoint.mobileLinkEmail,
-      req
-    )
-    .then(resp => resp.data)
-    .catch(err => Promise.reject(ResponseError.fromAxios(err)));
+  return new Fetch()
+    .post(endpoint.mobileLinkEmail)
+    .sendJson(req)
+    .endJson<ReaderPassport>();
 }
 
 export function mobileLinkNewEmail(req: MobileLinkNewEmailReq): Promise<ReaderPassport> {
-  return axios.post<MobileLinkNewEmailReq, AxiosResponse<ReaderPassport>>(
-      endpoint.emailSignUp,
-      req,
-    )
-    .then(resp => resp.data)
-    .catch(err => Promise.reject(ResponseError.fromAxios(err)));
+  return new Fetch()
+    .post(endpoint.emailSignUp)
+    .sendJson(req)
+    .endJson<ReaderPassport>();
 }

@@ -1,4 +1,4 @@
-import { Membership } from '../data/membership';
+import { Membership } from './membership';
 
 export type IAPSubsResult = {
   membership: Membership;

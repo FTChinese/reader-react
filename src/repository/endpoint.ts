@@ -11,26 +11,23 @@ const memberBase = `${readerBase}/membership`;
 const ftcpayBase = `${readerBase}/ftc-pay`;
 
 export const endpoint = {
+  emailAuth: emailAuthBase,
   emailExists: `${emailAuthBase}/exists`,
   emailLogin: `${emailAuthBase}/login`,
   emailSignUp: `${emailAuthBase}/signup`,
-  verifyEmail: function (token: string): string {
-    return `${emailAuthBase}/verification/${token}`;
-  },
+
   smsLogin: `${mobileAuthBase}/verification`,
   mobileLinkEmail: `${mobileAuthBase}/link`,
   mobileSignUp: `${mobileAuthBase}/signup`,
-  requestPasswordReset: `${pwResetBase}/letter`,
-  verifyResetToken: function (token: string): string {
-    return `${pwResetBase}/tokens/${token}`;
-  },
+
   resetPassword: `${pwResetBase}`,
-  emailAccount: `${accountBase}`,
+  requestPasswordReset: `${pwResetBase}/letter`,
 
   wxCode: `${wxAuthBase}/code`,
   wxLogin: `${wxAuthBase}/login`,
   wxRefresh: `${wxAuthBase}/refresh`,
 
+  emailAccount: accountBase,
   // Update account fields
   changeEmail: `${accountBase}/email`,
   requestVerification: `${accountBase}/request-verification`,
@@ -48,11 +45,10 @@ export const endpoint = {
   membership: memberBase,
   memberAddon: `${memberBase}/addons`,
 
+  ftcPayBase: ftcpayBase,
   aliOrder: `${ftcpayBase}/ali/desktop`,
   wxOrder: `${ftcpayBase}/wx/desktop`,
-  verifyOrderOf: function(id: string): string {
-    return `${ftcpayBase}/orders/${id}/verify`;
-  },
+
   paywall: paywallBasePath,
 
   iapSubs: `${readerBase}/apple/subs`,

@@ -1,74 +1,53 @@
-import axios, { AxiosResponse } from 'axios';
-import { authHeader, BaseAccount, bearerAuthHeader, ReaderPassport } from '../data/account';
+import { BaseAccount, ReaderPassport } from '../data/account';
 import { ReaderAccount } from '../data/account';
 import { endpoint } from './endpoint';
-import { ResponseError } from './response-error';
 import { Address, AddressFormVal } from '../data/address';
 import { Profile, ProfileFormVal } from '../data/profile';
 import { UpdateEmailReq, UpdateNameFormVal, UpdatePasswordReq } from '../data/update-account';
 import { MobileFormVal, VerifySMSFormVal } from '../data/mobile';
+import { Fetch } from './request';
 
 export function loadAccount(p: ReaderPassport): Promise<ReaderAccount> {
-  return axios.get<undefined, AxiosResponse<ReaderAccount>>(endpoint.emailAccount, {
-    headers: authHeader(p),
-  })
-    .then(resp => {
-      return resp.data;
-    })
-    .catch(error => {
-      return Promise.reject(ResponseError.fromAxios(error));
-    });
+  return new Fetch()
+    .setBearerAuth(p.token)
+    .get(endpoint.emailAccount)
+    .endJson<ReaderAccount>();
 }
 
 export function requestEmailVerification(p: ReaderPassport): Promise<boolean> {
-  return axios.post(endpoint.requestVerification, {}, {
-    headers: authHeader(p)
-  })
+  return new Fetch()
+    .setBearerAuth(p.token)
+    .post(endpoint.requestVerification)
+    .endOrReject()
     .then(resp => {
-      return resp.status === 204;
-    })
-    .catch(error => {
-      return Promise.reject(ResponseError.fromAxios(error));
+      return resp.status === 204
     });
 }
 
 export function updateUserName(v: UpdateNameFormVal, token: string): Promise<BaseAccount> {
-  return axios.patch<BaseAccount, AxiosResponse<BaseAccount>, UpdateNameFormVal>(
-      endpoint.displayName,
-      v,
-      {
-        headers: bearerAuthHeader(token)
-      }
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+  return new Fetch()
+    .setBearerAuth(token)
+    .patch(endpoint.displayName)
+    .sendJson(v)
+    .endJson<BaseAccount>();
 }
 
 export function updateEmail(v: UpdateEmailReq, token: string): Promise<BaseAccount> {
-  return axios.patch<BaseAccount, AxiosResponse<BaseAccount>, UpdateEmailReq>(
-      endpoint.changeEmail,
-      v,
-      {
-        headers: bearerAuthHeader(token)
-      }
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+  return new Fetch()
+    .setBearerAuth(token)
+    .patch(endpoint.changeMobile)
+    .sendJson(v)
+    .endJson<BaseAccount>();
 }
 
 export function updatePassword(v: UpdatePasswordReq, token: string,): Promise<boolean> {
-  return axios.patch(
-    endpoint.changePassword,
-    v,
-    {
-      headers: bearerAuthHeader(token),
-    },
-  )
+  return new Fetch()
+    .setBearerAuth(token)
+    .patch(endpoint.changePassword)
+    .sendJson(v)
+    .endOrReject()
     .then(resp => {
       return resp.status === 204;
-    })
-    .catch(error => {
-      return Promise.reject(ResponseError.fromAxios(error));
     });
 }
 
@@ -77,71 +56,49 @@ export function updatePassword(v: UpdatePasswordReq, token: string,): Promise<bo
  * @returns True if success, false if failure.
  */
 export function requestVerifyMobile(v: MobileFormVal, token: string): Promise<boolean> {
-  return axios.put<MobileFormVal, AxiosResponse<boolean>>(
-      endpoint.verifyMobile,
-      v,
-      {
-        headers: bearerAuthHeader(token)
-      }
-    )
-    .then(resp => resp.status === 204)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+  return new Fetch()
+    .setBearerAuth(token)
+    .put(endpoint.verifyMobile)
+    .sendJson(v)
+    .endOrReject()
+    .then(resp => {
+      return resp.status === 204;
+    });
 }
 
 export function changeMobile(v: VerifySMSFormVal, token: string): Promise<BaseAccount> {
-  return axios.patch<BaseAccount, AxiosResponse<BaseAccount>, VerifySMSFormVal>(
-      endpoint.changeMobile,
-      v,
-      {
-        headers: bearerAuthHeader(token),
-      }
-    )
-    .then(resp => resp.data)
-    .catch(err => Promise.reject(ResponseError.fromAxios(err)));
+  return new Fetch()
+    .setBearerAuth(token)
+    .patch(endpoint.changeMobile)
+    .sendJson(v)
+    .endJson<BaseAccount>();
 }
 
 export function loadAddress(token: string): Promise<Address> {
-  return axios.get<Address>(
-    endpoint.address,
-    {
-      headers: bearerAuthHeader(token)
-    }
-  )
-  .then(resp => resp.data)
-  .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+  return new Fetch()
+    .setBearerAuth(token)
+    .get(endpoint.address)
+    .endJson<Address>();
 }
 
 export function updateAddress(v: AddressFormVal, token: string): Promise<Address> {
-  return axios.patch<Address, AxiosResponse<Address>, AddressFormVal>(
-    endpoint.address,
-    v,
-    {
-      headers: bearerAuthHeader(token)
-    }
-  )
-  .then(resp => resp.data)
-  .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+  return new Fetch()
+    .setBearerAuth(token)
+    .patch(endpoint.address)
+    .sendJson(v)
+    .endJson<Address>();
 }
 
 export function loadProfile(token: string): Promise<Profile> {
-  return axios.get<Profile>(
-      endpoint.profile,
-      {
-        headers: bearerAuthHeader(token)
-      }
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+  return new Fetch()
+    .setBearerAuth(token)
+    .get(endpoint.profile)
+    .endJson<Profile>();
 }
 
 export function updateProfile(v: ProfileFormVal, token: string): Promise<Profile> {
-  return axios.patch<Profile, AxiosResponse<Profile>, ProfileFormVal>(
-      endpoint.profile,
-      v,
-      {
-        headers: bearerAuthHeader(token)
-      }
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+  return new Fetch()
+    .setBearerAuth(token)
+    .patch(endpoint.profile)
+    .endJson<Profile>();
 }

@@ -1,66 +1,54 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
 import { endpoint } from './endpoint';
 import { Credentials } from '../data/form-value';
-import { ApiErrorPayload, ResponseError } from './response-error';
+import { ResponseError } from './response-error';
 import { ReaderPassport } from '../data/account';
 import { EmailSignUpReq } from '../data/authentication';
+import { Fetch, UrlBuilder } from './request';
 
 export function emailExists(email: string): Promise<boolean> {
-  return axios.get<boolean>(
-      endpoint.emailExists,
-      {
-        params: {
-          v: email,
-        }
-      }
-    )
-    .then(resp => resp.status === 204)
-    .catch(err => {
-      const respErr = ResponseError.fromAxios(err);
-      if (respErr.statusCode === 404) {
+  const url = new UrlBuilder(endpoint.emailExists)
+    .setQuery("v", email).toString();
+  return new Fetch()
+    .get(url)
+    .endOrReject()
+    .then(resp => {
+      return resp.status === 204
+    })
+    .catch((err: ResponseError) => {
+      if (err.statusCode === 404) {
         return false;
       }
 
-      return Promise.reject(respErr);
+      return Promise.reject(err);
     });
+
 }
 
 export function emailLogin(c: Credentials): Promise<ReaderPassport> {
-  return axios.post<Credentials, AxiosResponse<ReaderPassport>>(
-      endpoint.emailLogin,
-      c
-    )
-    .then(resp => {
-      return resp.data;
-    })
-    .catch((error: AxiosError<ApiErrorPayload>) => {
-      return Promise.reject(
-        ResponseError.fromAxios(error),
-      );
-    });
+  return new Fetch()
+    .post(endpoint.emailLogin)
+    .sendJson(c)
+    .endJson<ReaderPassport>();
 }
 
 export function emailSignUp(v: EmailSignUpReq): Promise<ReaderPassport> {
-  return axios.post<EmailSignUpReq, AxiosResponse<ReaderPassport>>(endpoint.emailSignUp, v)
-    .then(resp => {
-      return resp.data;
-    })
-    .catch(error => {
-      return Promise.reject(
-        ResponseError.fromAxios(error),
-      );
-    });
+  return new Fetch()
+    .post(endpoint.emailSignUp)
+    .sendJson(v)
+    .endJson<ReaderPassport>();
 }
 
 export function verifyEmail(token: string): Promise<boolean> {
-  return axios.post(endpoint.verifyEmail(token))
+  const url = new UrlBuilder(endpoint.emailAuth)
+    .appendPath('verification')
+    .appendPath(token)
+    .toString();
+
+  return new Fetch()
+    .post(url)
+    .endOrReject()
     .then(resp => {
       return resp.status === 204;
-    })
-    .catch(error => {
-      return Promise.reject(
-        ResponseError.fromAxios(error),
-      );
     });
 }
 

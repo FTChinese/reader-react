@@ -1,49 +1,34 @@
-import axios, { AxiosResponse } from 'axios';
 import { endpoint } from './endpoint';
-import { ResponseError } from './response-error';
 import { PasswordResetVerified, PasswordResetReqParams, PwResetLetterReq } from '../data/password-reset';
-import { cancelSource } from './cancel';
+import { Fetch, UrlBuilder } from './request';
 
 
 export function requestPasswordReset(req: PwResetLetterReq): Promise<boolean> {
-  return axios.post(endpoint.requestPasswordReset, req)
+  return new Fetch()
+    .post(endpoint.requestPasswordReset)
+    .sendJson(req)
+    .endOrReject()
     .then(resp => {
       return resp.status === 204;
-    })
-    .catch(error => {
-      return Promise.reject(
-        ResponseError.fromAxios(error)
-      );
     });
 }
 
 export function verifyPwToken(token: string): Promise<PasswordResetVerified> {
-  return axios.get<never, AxiosResponse<PasswordResetVerified>>(endpoint.verifyResetToken(token), {
-    cancelToken: cancelSource.token,
-  })
-    .then(resp => {
-      return resp.data;
-    })
-    .catch(error => {
-      if (axios.isCancel(error)) {
-        console.log('Verify password token cancelled', error.message);
-        return Promise.reject(new Error('Cancelled'));
-      }
+  const url = new UrlBuilder(endpoint.resetPassword)
+    .appendPath('tokens')
+    .appendPath(token)
+    .toString();
 
-      return Promise.reject(
-        ResponseError.fromAxios(error),
-      );
-    });
+  return new Fetch()
+    .get(url)
+    .endJson<PasswordResetVerified>();
 }
 
 export function resetPassword(v: PasswordResetReqParams): Promise<boolean> {
-  return axios.post(endpoint.resetPassword, v)
+  return new Fetch()
+    .post(endpoint.resetPassword)
+    .endOrReject()
     .then(resp => {
       return resp.status === 204;
-    })
-    .catch(error => {
-      return Promise.reject(
-        ResponseError.fromAxios(error),
-      );
     });
 }

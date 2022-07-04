@@ -1,5 +1,5 @@
 import { endpoint } from './endpoint';
-import { IAPSubsResult } from './iap';
+import { IAPSubsResult } from '../data/iap';
 import { Fetch, UrlBuilder } from './request';
 
 export function refreshIAP(token: string, originalTxId: string): Promise<IAPSubsResult> {

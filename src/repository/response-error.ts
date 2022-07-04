@@ -1,5 +1,3 @@
-import { AxiosError } from "axios";
-
 // Server-side validation error.
 interface InvalidReason {
   field: string; // Which field goes wrong.
@@ -90,29 +88,5 @@ export class ResponseError extends Error{
         message: msg
       },
     )
-  }
-
-  static fromAxios(error: AxiosError<ApiErrorPayload>): ResponseError {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    if (error.response) {
-      return new ResponseError(
-        error.response.status,
-        error.response.data,
-      );
-    }
-
-    // The request was made but no response was received
-    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-    // http.ClientRequest in node.js
-    if (error.request) {
-      return new ResponseError(400, {
-        message: 'No response received',
-      });
-    }
-
-    return new ResponseError(-1, {
-      message: error.message,
-    });
   }
 }

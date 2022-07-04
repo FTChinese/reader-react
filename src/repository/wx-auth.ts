@@ -1,23 +1,20 @@
-import axios, { AxiosResponse } from 'axios';
-import { bearerAuthHeader, ReaderPassport } from '../data/account';
+import { ReaderPassport } from '../data/account';
 import { WxEmailLinkReq, WxEmailUnlinkReq } from '../data/account-wx';
 import { WxLoginReq, EmailSignUpReq, WxOAuthCodeReq } from '../data/authentication';
 import { endpoint } from './endpoint';
-import { ResponseError } from './response-error';
+import { Fetch } from './request';
 
 export function getWxOAuthCodeReq(): Promise<WxOAuthCodeReq> {
-  return axios.get<WxOAuthCodeReq>(endpoint.wxCode)
-    .then(resp => resp.data)
-    .catch(err => Promise.reject(ResponseError.fromAxios(err)));
+  return new Fetch()
+    .get(endpoint.wxCode)
+    .endJson<WxOAuthCodeReq>();
 }
 
 export function wxLogin(code: string): Promise<ReaderPassport> {
-  return axios.post<ReaderPassport, AxiosResponse<ReaderPassport>, WxLoginReq>(
-      endpoint.wxLogin,
-      { code, }
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+  return new Fetch()
+    .post(endpoint.wxLogin)
+    .sendJson<WxLoginReq>({code})
+    .endJson<ReaderPassport>();
 }
 
 export function wxLinkExistingEmail(
@@ -26,39 +23,25 @@ export function wxLinkExistingEmail(
     token: string
   }
 ): Promise<ReaderPassport> {
-  return axios.post<ReaderPassport, AxiosResponse<ReaderPassport>, WxEmailLinkReq>(
-      endpoint.wxLink,
-      {
-        ftcId,
-      },
-      {
-        headers: bearerAuthHeader(token)
-      }
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+  return new Fetch()
+    .setBearerAuth(token)
+    .post(endpoint.wxLink)
+    .sendJson<WxEmailLinkReq>({ftcId})
+    .endJson<ReaderPassport>();
 }
 
 export function wxLinkNewEmail(v: EmailSignUpReq, token: string): Promise<ReaderPassport> {
-  return axios.post<ReaderPassport, AxiosResponse<ReaderPassport>, EmailSignUpReq>(
-      endpoint.wxSignUp,
-      v,
-      {
-        headers: bearerAuthHeader(token)
-      }
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+  return new Fetch()
+    .setBearerAuth(token)
+    .post(endpoint.wxSignUp)
+    .sendJson(v)
+    .endJson<ReaderPassport>();
 }
 
 export function wxUnlinkEmail(v: WxEmailUnlinkReq, token: string): Promise<ReaderPassport> {
-  return axios.post<ReaderPassport, AxiosResponse<ReaderPassport>, WxEmailUnlinkReq>(
-      endpoint.wxUnlink,
-      v,
-      {
-        headers: bearerAuthHeader(token)
-      }
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.fromAxios(error)));
+  return new Fetch()
+    .setBearerAuth(token)
+    .post(endpoint.wxUnlink)
+    .sendJson(v)
+    .endJson<ReaderPassport>();
 }
