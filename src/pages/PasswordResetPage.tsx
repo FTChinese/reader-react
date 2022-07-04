@@ -9,7 +9,6 @@ import { PasswordResetFormVal, PasswordResetVerified } from '../data/password-re
 import { sitemap } from '../data/sitemap';
 import { ResponseError } from '../repository/response-error';
 import { resetPassword, verifyPwToken } from '../repository/password-reset';
-import { cancelSource } from '../repository/cancel';
 import { ErrorBoundary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
 import { FormikSubmitButton } from '../components/controls/FormikSubmitButton';
@@ -124,10 +123,6 @@ function VerifyToken(props: {
 
         setErrMsg(err.message);
       });
-
-    return function() {
-      cancelSource.cancel('Operation cancelled by the user.');
-    };
   }, []);
 
   return (
