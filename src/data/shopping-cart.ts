@@ -23,6 +23,10 @@ export type OrderParams = {
   discountId?: string;
 };
 
+export type AliOrderParams = OrderParams & {
+  returnUrl: string
+}
+
 export function newOrderParams(item: CartItemFtc): OrderParams {
   return {
     priceId: item.price.id,
@@ -70,7 +74,7 @@ export type CartItemUIParams = {
   isAutoRenew: boolean
 };
 
-export function cartItemUiOfFtc(item: CartItemFtc): CartItemUIParams {
+export function priceCardParamsOfFtc(item: CartItemFtc): CartItemUIParams {
 
   const header = item.isIntro
     ? '试用'
