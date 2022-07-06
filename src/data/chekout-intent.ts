@@ -93,6 +93,7 @@ export function buildFtcCheckoutIntent(m: Membership, p: Price): CheckoutIntent 
     return intentVip;
   }
 
+  // IntentKind.Create
   if (!m.tier) {
     return intentNewMember;
   }
@@ -100,21 +101,27 @@ export function buildFtcCheckoutIntent(m: Membership, p: Price): CheckoutIntent 
   switch (normalizePayMethod(m)) {
     case 'alipay':
     case 'wechat':
+      // IntentKind.Renew
+      // IntentKind.Forbidden
       if (m.tier == p.tier) {
         return intentOneTimeRenewal(m.expireDate);
       }
 
+      // IntentKind.Upgrade
+      // IntentKind.AddOn
       return intentOneTimeDiffTier(p.tier);
 
     case 'stripe':
       // Stripe standard -> Onetime standard
       // Stripe premium -> Onetime premium
+      // IntentKind.AddOn
       if (m.tier === p.tier) {
         return intentAutoRenewAddOn;
       }
 
       switch (p.tier) {
         // Stripe standard -> Onetime premium
+        // IntentKind.Forbidden
         case 'premium':
           return {
             kind: IntentKind.Forbidden,
@@ -122,12 +129,14 @@ export function buildFtcCheckoutIntent(m: Membership, p: Price): CheckoutIntent 
           }
 
         // Stripe premium -> Onetime standard
+        // IntentKind.AddOn
         case 'standard':
           return intentAutoRenewAddOn;
       }
 
     case 'apple':
       // Apple standard -> Onetime premium
+      // IntentKind.Forbidden
       if (m.tier === 'standard' && p.tier === 'premium') {
         return {
           kind: IntentKind.Forbidden,
@@ -138,9 +147,11 @@ export function buildFtcCheckoutIntent(m: Membership, p: Price): CheckoutIntent 
       // Apple standard -> Onetime standard
       // Apple premium -> Onetime premium
       // Apple premium -> Onetime standard
+      // IntentKind.AddOn
       return intentAutoRenewAddOn;
 
     case 'b2b':
+      // IntentKind.Forbidden
       if (m.tier === 'standard' && p.tier === 'premium') {
         return {
           kind: IntentKind.Forbidden,
@@ -157,6 +168,7 @@ export function buildFtcCheckoutIntent(m: Membership, p: Price): CheckoutIntent 
       };
   }
 
+  // IntentKind.Forbidden
   return intentUnknown;
 }
 
