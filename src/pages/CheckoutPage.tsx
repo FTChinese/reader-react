@@ -1,9 +1,5 @@
-import { CenterColumn } from '../components/layout/Column';
-import { Tier } from '../data/enum';
-import { localizeTier } from '../data/localization';
-import { CartItemUIParams, cartItemUiOfFtc, CartItemStripe } from '../data/shopping-cart';
-import { AliWxPay } from '../features/checkout/AliWxPay';
-import { PriceCard } from '../features/product/PriceCard';
+import { PaymentKind } from '../data/enum';
+import { CartItemStripe, CartItemFtc, newOrderParams } from '../data/shopping-cart';
 import { useShoppingCart } from '../components/hooks/useShoppingCart';
 import { useAuth } from '../components/hooks/useAuth';
 import { RequireStripeCustomer } from '../components/routes/RequireStripeCustomer';
@@ -17,30 +13,13 @@ import { Membership } from '../data/membership';
 import { useStripePaySetting } from '../components/hooks/useStripePaySetting';
 import { PaymentMethodDialog } from '../features/stripesetup/PaymentMethodDialog';
 import { SetupUsage } from '../store/stripeSetupSession';
+import { useFtcPay } from '../features/ftcpay/useFtcPay';
+import { FtcPayScreen } from '../features/ftcpay/FtcPayScreen';
+import { ConfirmationResult, WxPayIntent } from '../data/order';
+import { alipayCallback } from '../data/sitemap';
+import { aliwxPaySession } from '../store/aliwxPaySession';
+import { PresentWxQR } from '../features/ftcpay/PresentWxQR';
 
-function ChekcoutLayout(
-  props: {
-    tier: Tier,
-    params: CartItemUIParams,
-    children: JSX.Element,
-  }
-) {
-  return (
-    <CenterColumn>
-      <>
-        <h2 className="text-center mb-3">
-          订阅{localizeTier(props.tier)}
-        </h2>
-
-        <PriceCard
-          params={props.params}
-        />
-
-        {props.children}
-      </>
-    </CenterColumn>
-  );
-}
 
 /**
  * @description Perform checkout part of the payment flow.
@@ -58,24 +37,19 @@ export function CheckoutPage() {
 
   if (cart.ftc) {
     return (
-      <ChekcoutLayout
-        tier={cart.ftc.price.tier}
-        params={cartItemUiOfFtc(cart.ftc)}
-      >
-        <AliWxPay
-          item={cart.ftc}
-        />
-      </ChekcoutLayout>
-    )
+      <FtcPayPageScreen
+        item={cart.ftc}
+        passport={passport}
+        onSuccess={setMembership}
+      />
+    );
   } else if (cart.stripe) {
     return (
       <RequireStripeCustomer>
         <StripePageScreen
           item={cart.stripe}
           passport={passport}
-          onSuccess={(m) => {
-            setMembership(m);
-          }}
+          onSuccess={setMembership}
         />
       </RequireStripeCustomer>
     );
@@ -144,5 +118,98 @@ function StripePageScreen(
       />
     </>
 
+  );
+}
+
+function FtcPayPageScreen(
+  props: {
+    item: CartItemFtc;
+    passport: ReaderPassport;
+    onSuccess: (m: Membership) => void;
+  }
+) {
+
+  const [ confirmed, setConfirmed ] = useState<ConfirmationResult | undefined>();
+  const [ wxQrIntent, setWxQrIntent ] = useState<WxPayIntent | undefined>();
+
+  const {
+    progress,
+    createWxOrder,
+    createAliOrder,
+  } = useFtcPay();
+
+  const handlePayment = (payMethod: PaymentKind) => {
+    switch (payMethod) {
+      case 'alipay':
+        createAliOrder(
+            props.passport.token,
+            {
+              ...newOrderParams(props.item),
+              returnUrl: alipayCallback(document.location.origin)
+            }
+          )
+          .then(pi => {
+            aliwxPaySession.save(pi.order);
+            // Redirect to alipay website.
+            window.location.href = pi.params.browserRedirect;
+            // After payment finished, user will
+            // be redirected back to /callback/alipay.
+          })
+          .catch((err: ResponseError) => {
+            toast.error(err.message);
+          });
+        break;
+
+      case 'wechat':
+        createWxOrder(
+            props.passport.token,
+            newOrderParams(props.item)
+          )
+          .then(pi => {
+            if (pi.params.desktopQr) {
+              console.log(pi);
+              setWxQrIntent(pi);
+              return;
+            }
+
+            if (pi.params.mobileRedirect) {
+              aliwxPaySession.save(pi.order);
+              // Then where it should go?
+              window.location.href = pi.params.mobileRedirect;
+              return;
+            }
+          })
+          .catch((err: ResponseError) => {
+            toast.error(err.message);
+          });
+        break;
+    }
+  };
+
+  return (
+    <>
+      <FtcPayScreen
+        cartItem={props.item}
+        submitting={progress}
+        onClickPay={handlePayment}
+        confirmed={confirmed}
+      />
+
+      {
+        wxQrIntent &&
+        <PresentWxQR
+          passport={props.passport}
+          orderId={wxQrIntent.order.id}
+          qrCode={wxQrIntent.params.desktopQr}
+          show={!!wxQrIntent}
+          onHide={() => setWxQrIntent(undefined)}
+          onConfirmed={(result) => {
+            setWxQrIntent(undefined);
+            setConfirmed(result);
+            props.onSuccess(result.membership);
+          }}
+        />
+      }
+    </>
   );
 }
