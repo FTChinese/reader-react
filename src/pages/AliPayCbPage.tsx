@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '../components/hooks/useQuery';
 import { CenterColumn } from '../components/layout/Column';
 import { newAliPayCbParams, validateAliPayResp } from '../data/order';
-import { FtcPayResult } from '../features/checkout/FtcPayResult';
+import { FtcPayResult } from '../features/ftcpay/FtcPayResult';
 import { aliwxPaySession } from '../store/aliwxPaySession';
 
 export function AliPayCbPage() {
