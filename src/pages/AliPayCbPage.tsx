@@ -1,37 +1,42 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import { useAuth } from '../components/hooks/useAuth';
 import { useQuery } from '../components/hooks/useQuery';
 import { CenterColumn } from '../components/layout/Column';
-import { newAliPayCbParams, validateAliPayResp } from '../data/order';
-import { FtcPayResult } from '../features/ftcpay/FtcPayResult';
+import { ErrorBoundary } from '../components/progress/ErrorBoundary';
+import { Loading } from '../components/progress/Loading';
+import { ConfirmationResult } from '../data/order';
+import { FtcPayDetails } from '../features/ftcpay/FtcPayResult';
+import { useFtcPay } from '../features/ftcpay/useFtcPay';
+import { ResponseError } from '../repository/response-error';
 import { aliwxPaySession } from '../store/aliwxPaySession';
 
 export function AliPayCbPage() {
 
+  const { passport, setMembership } = useAuth();
   const query = useQuery();
+  const [ cfmResult, setCfmResult] = useState<ConfirmationResult>();
+  const {
+    progress,
+    onAliPayRedirect,
+  } = useFtcPay();
 
-  const [ progress, setProgress ] = useState(true);
   const [ err, setErr ] = useState('');
-  const [ orderId, setOrderId ] = useState('');
 
   useEffect(() => {
-    const o = aliwxPaySession.load();
-
-    if (!o) {
-      setErr('Order not found');
-      setProgress(false);
+    if (!passport) {
+      toast.error('Not logged in');
       return;
     }
 
-    const p = newAliPayCbParams(query);
-
-    const invalid = validateAliPayResp(o, p);
-    if (invalid) {
-      setErr(invalid);
-      setProgress(false);
-      return;
-    }
-
-    setOrderId(o.id);
+    onAliPayRedirect(passport.token, query)
+      .then(result => {
+        setCfmResult(result);
+        setMembership(result.membership);
+      })
+      .catch((err: ResponseError) => {
+        setErr(err.message);
+      });
 
     return function clean() {
       aliwxPaySession.clear();
@@ -39,12 +44,19 @@ export function AliPayCbPage() {
   }, []);
 
   return (
-    <CenterColumn>
-      <FtcPayResult
-        progress={progress}
-        errMsg={err}
-        orderId={orderId}
-      />
-    </CenterColumn>
+    <ErrorBoundary errMsg={err}>
+      <Loading loading={progress}>
+        <CenterColumn>
+          {
+            cfmResult ?
+             <FtcPayDetails
+              method={cfmResult.order.payMethod}
+              result={cfmResult.payment}
+            /> :
+            <></>
+          }
+        </CenterColumn>
+      </Loading>
+    </ErrorBoundary>
   );
 }
