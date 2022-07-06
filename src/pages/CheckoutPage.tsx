@@ -148,10 +148,8 @@ function FtcPayPageScreen(
               returnUrl: alipayCallback(document.location.origin)
             }
           )
-          .then(pi => {
-            aliwxPaySession.save(pi.order);
-            // Redirect to alipay website.
-            window.location.href = pi.params.browserRedirect;
+          .then(redirectUrl => {
+            window.location.href = redirectUrl;
             // After payment finished, user will
             // be redirected back to /callback/alipay.
           })
