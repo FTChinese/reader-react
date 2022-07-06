@@ -1,75 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { PaySuccessLink } from '../../components/text/Checkout';
-import { useAuth } from '../../components/hooks/useAuth';
 import { useShoppingCart } from '../../components/hooks/useShoppingCart';
 import { HeadTailTable } from '../../components/list/HeadTailTable';
-import { ErrorBoundary } from '../../components/progress/ErrorBoundary';
-import { Loading } from '../../components/progress/Loading';
-import { Unauthorized } from '../../components/routes/Unauthorized';
 import { PaymentKind } from '../../data/enum';
 import { formatMoney, localizePaymentMethod } from '../../data/localization';
-import { ConfirmationResult, PayResult } from '../../data/order';
+import { PayResult } from '../../data/order';
 import { StringPair } from '../../data/pair';
-import { verifyAliWxPay } from '../../repository/ftcpay';
-import { ResponseError } from '../../repository/response-error';
-
-export function FtcPayResult(
-  props: {
-    progress: boolean;
-    errMsg: string;
-    orderId: string;
-  }
-) {
-
-  const { passport, setMembership } = useAuth();
-  const [ progress, setProgress ] = useState(true);
-  const [ err, setErr ] = useState('');
-  const [ cfmResult, setCfmResult] = useState<ConfirmationResult>();
-
-  if (!passport) {
-    return <Unauthorized/>
-  }
-
-  useEffect(() => {
-    setProgress(props.progress);
-    setErr(props.errMsg);
-  }, [props.progress, props.errMsg]);
-
-  useEffect(() => {
-    if (!props.orderId) {
-      return;
-    }
-
-    setProgress(true);
-    setErr('');
-    verifyAliWxPay(passport.token, props.orderId)
-      .then(result => {
-        setMembership(result.membership);
-        setProgress(false);
-        setCfmResult(result);
-      })
-      .catch((err: ResponseError) => {
-        setErr(err.message);
-        setProgress(false);
-      });
-  }, [props.orderId]);
-
-  return (
-    <ErrorBoundary errMsg={err}>
-      <Loading loading={progress}>
-        <>
-          {
-            cfmResult &&
-            <FtcPayDetails
-              method={cfmResult.order.payMethod}
-              result={cfmResult.payment}
-            />
-          }
-        </>
-      </Loading>
-    </ErrorBoundary>
-  );
-}
 
 export function FtcPayDetails(
   props: {
