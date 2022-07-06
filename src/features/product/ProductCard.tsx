@@ -3,7 +3,7 @@ import {
   CartItemFtc,
   priceCardParamsOfStripe,
   CartItemStripe,
-  cartItemUiOfFtc,
+  priceCardParamsOfFtc,
 } from '../../data/shopping-cart';
 import { PriceCard } from './PriceCard';
 import { ProductItem } from '../../data/paywall-product';
@@ -45,7 +45,7 @@ export function ProductCard(
               key={cartItem.price.id}
             >
               <PriceCard
-                params={ cartItemUiOfFtc(cartItem) }
+                params={ priceCardParamsOfFtc(cartItem) }
                 onClick={ () => props.onFtcPay(cartItem) }
               />
             </div>
