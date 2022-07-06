@@ -28,4 +28,11 @@ export function isTrialing(s: SubStatus): boolean {
   return s === 'trialing';
 }
 
+export const paymentMethodIcons: Record<PaymentKind, string> = {
+  'alipay': 'https://www.ftacademy.cn/images/alipay-68x24.png',
+  'wechat': 'https://www.ftacademy.cn/images/wxpay-113x24.png',
+  'stripe': 'https://www.ftacademy.cn/images/stripe-58x24.png',
+  'apple': '',
+  'b2b': '',
+};
 
