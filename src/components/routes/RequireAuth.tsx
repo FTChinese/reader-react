@@ -4,6 +4,7 @@ import { isTestAccount } from '../../data/account';
 import { sitemap } from '../../data/sitemap';
 import { useAuth } from '../hooks/useAuth';
 import { Loading } from '../progress/Loading';
+import { WarningBanner } from '../text/WarningBanner';
 
 /**
  * @description RequireAuth acts like a middleware
@@ -11,6 +12,7 @@ import { Loading } from '../progress/Loading';
  */
 export function RequireAuth(
   props: {
+    live: boolean;
     children: JSX.Element;
   }
 ) {
@@ -41,13 +43,39 @@ export function RequireAuth(
   return (
     <Loading loading={loadingAuth}>
       <>
-        {
-          isTestAccount(passport) &&
-          <div className="text-center bg-danger text-white">Test Mode</div>
-        }
+        <TestModeMessage
+          liveMode={props.live}
+          testAccount={isTestAccount(passport)}
+        />
         {props.children}
       </>
     </Loading>
+  );
+}
+
+function TestModeMessage(
+  props: {
+    liveMode: boolean;
+    testAccount: boolean
+  }
+) {
+  if (props.liveMode) {
+    if (!props.testAccount) {
+      return null;
+    }
+    // When stripe mode is live, you can use test account for ali/wx pay.
+    return <WarningBanner text='Test Account' />
+  }
+
+  const text = props.testAccount
+    ? 'Test Account.'
+    : 'Only test accounts are allowed for payment.';
+
+  // When stripe mode is test, you must use test account for any payment.
+  return (
+    <WarningBanner
+      text={`Test Mode. ${text}`}
+    />
   );
 }
 
