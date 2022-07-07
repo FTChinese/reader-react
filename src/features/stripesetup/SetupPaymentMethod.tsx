@@ -6,7 +6,6 @@ import { SetupUsage, stripeSetupSession } from '../../store/stripeSetupSession';
 import { SetupIntent } from '../../data/stripe';
 import { SubmitButton } from '../../components/controls/SubmitButton';
 import { ReaderPassport } from '../../data/account';
-import { StripeContext } from './StripeContext';
 import { toast } from 'react-toastify';
 import { ResponseError } from '../../repository/response-error';
 import { Flex } from '../../components/layout/Flex';
@@ -15,6 +14,7 @@ import { Loading } from '../../components/progress/Loading';
 import { StripePaymentElementChangeEvent } from '@stripe/stripe-js';
 import { LeadIconButton } from '../../components/buttons/Buttons';
 import { useStripeSetup } from '../../components/hooks/useStripeSetup';
+import { StripeContext } from '../../components/routes/StripeContext';
 
 export function SetupPaymentMethod(
   props: {

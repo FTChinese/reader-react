@@ -7,7 +7,7 @@ import { convertPaymentMthod, SetupIntent } from '../../data/stripe';
 import { ResponseError } from '../../repository/response-error';
 import { stripeRepo } from '../../repository/stripe';
 import { newSetupCbParams, SetupUsage, stripeSetupSession, validateSetupSession } from '../../store/stripeSetupSession';
-import { stripePromise } from '../../features/stripesetup/StripeContext';
+import { stripePromise } from '../routes/stripePromise';
 
 export const setupIntentState = atom<SetupIntent | undefined>({
   key: 'stripeSetupIntent',
