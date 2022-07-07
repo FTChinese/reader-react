@@ -66,12 +66,28 @@ export type Discount = {
 } & OptionalPeriod;
 
 
-export function filterOffers(offers: Discount[], filters: OfferKind[]): Discount[] {
+function filterOffers(offers: Discount[], filters: OfferKind[]): Discount[] {
   return offers
     .filter(offer => {
       return isValidPeriod(offer) && filters.includes(offer.kind);
     })
-    .sort((a, b) => {
-      return b.priceOff - a.priceOff
-    });
+    .sort((a, b) => b.priceOff - a.priceOff);
+}
+
+/**
+ * @description aplicableOffer finds the most applicable discount
+ * attached to a price based on user's current membership.
+ */
+ export function applicableOffer(offers: Discount[], filters: OfferKind[]): Discount | undefined {
+  if (offers.length === 0) {
+    return undefined;
+  }
+
+  const filtered = filterOffers(offers, filters);
+
+  if (filtered.length === 0) {
+    return undefined;
+  }
+
+  return filtered[0];
 }
