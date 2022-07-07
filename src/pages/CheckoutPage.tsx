@@ -1,9 +1,9 @@
 import { PaymentKind } from '../data/enum';
-import { CartItemStripe, CartItemFtc, newOrderParams } from '../data/shopping-cart';
+import { newOrderParams } from '../data/shopping-cart';
 import { useShoppingCart } from '../components/hooks/useShoppingCart';
 import { useAuth } from '../components/hooks/useAuth';
 import { RequireStripeCustomer } from '../components/routes/RequireStripeCustomer';
-import { ReaderPassport } from '../data/account';
+import { isTestAccount, ReaderPassport } from '../data/account';
 import { StripePayScreen } from '../features/stripepay/StripePayScreen';
 import { useStripeSubs } from '../features/stripepay/useStripeSubs';
 import { useEffect, useState } from 'react';
@@ -19,6 +19,7 @@ import { ConfirmationResult, WxPayIntent } from '../data/order';
 import { alipayCallback } from '../data/sitemap';
 import { aliwxPaySession } from '../store/aliwxPaySession';
 import { PresentWxQR } from '../features/ftcpay/PresentWxQR';
+import { CartItemFtc, CartItemStripe } from '../data/paywall-product';
 
 
 /**
@@ -27,7 +28,11 @@ import { PresentWxQR } from '../features/ftcpay/PresentWxQR';
  * - When user clicked an item in ProductCard;
  * - After a new stripe payment method is added and user is redirected here.
  */
-export function CheckoutPage() {
+export function CheckoutPage(
+  props: {
+    liveMode: boolean;
+  }
+) {
   const { passport, setMembership } = useAuth();
   const { cart } = useShoppingCart();
 
@@ -47,6 +52,7 @@ export function CheckoutPage() {
     return (
       <RequireStripeCustomer>
         <StripePageScreen
+          liveMode={props.liveMode}
           item={cart.stripe}
           passport={passport}
           onSuccess={setMembership}
@@ -60,6 +66,7 @@ export function CheckoutPage() {
 
 function StripePageScreen(
   props: {
+    liveMode: boolean;
     item: CartItemStripe;
     passport: ReaderPassport;
     onSuccess: (m: Membership) => void;
@@ -86,6 +93,28 @@ function StripePageScreen(
 
   const payMethodInUse = selectedPayMethod || defaultPayMethod;
 
+  const onSubscribe = () => {
+    if (!payMethodInUse) {
+      toast.error('No payment method selected');
+      return;
+    }
+
+    if (!props.liveMode) {
+      if (!isTestAccount(props.passport)) {
+        toast.error('Only test accounts are permitted');
+        return;
+      }
+    }
+
+    subscribe(props.passport, props.item, payMethodInUse)
+      .then(m => {
+        props.onSuccess(m);
+      })
+      .catch((err: ResponseError) => {
+        toast.error(err.message);
+      });
+  };
+
   return (
     <>
       <StripePayScreen
@@ -94,20 +123,7 @@ function StripePageScreen(
         paymentMethod={payMethodInUse}
         subs={subsCreated}
         onPaymentMethod={() => setShow(true)}
-        onSubscribe={() => {
-          if (!payMethodInUse) {
-            toast.error('No payment method selected');
-            return;
-          }
-
-          subscribe(props.passport, props.item, payMethodInUse)
-            .then(m => {
-              props.onSuccess(m);
-            })
-            .catch((err: ResponseError) => {
-              toast.error(err.message);
-            });
-        }}
+        onSubscribe={onSubscribe}
       />
 
       <PaymentMethodDialog
