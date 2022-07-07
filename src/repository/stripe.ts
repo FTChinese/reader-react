@@ -1,7 +1,7 @@
 import { ReaderPassport } from '../data/account';
 import { PagedList } from '../data/paged-list';
 import { SubsParams } from '../data/shopping-cart';
-import { PubKey, SetupIntent, SetupIntentParams, Subs } from '../data/stripe';
+import { PubKey, SetupIntent, SetupIntentParams, StripeCouponApplied, Subs } from '../data/stripe';
 import { Customer, StripePayMethod, SubsResult } from '../data/stripe';
 import { endpoint } from './endpoint';
 import { Fetch, UrlBuilder } from './request';
@@ -32,6 +32,21 @@ export const stripeRepo = {
       .setBearerAuth(token)
       .post(endpoint.stripeCustomers)
       .endJson<Customer>();
+  },
+
+  /**
+   * @description Get a coupon applied on a subscription's latest invoice.
+   */
+  couponOfLatestInvoice: (token: string, subsId: string): Promise<StripeCouponApplied> => {
+    const url = new UrlBuilder(endpoint.stripeSubs)
+      .appendPath(subsId)
+      .appendPath('latest-invoice/any-coupon')
+      .toString();
+
+    return new Fetch()
+      .setBearerAuth(token)
+      .get(url)
+      .endJson<StripeCouponApplied>();
   },
 
   /**
@@ -207,7 +222,7 @@ export const stripeRepo = {
       methodId: string,
     }
   ): Promise<Subs> => {
-    const url = new UrlBuilder(endpoint.stripeCustomers)
+    const url = new UrlBuilder(endpoint.stripeSubs)
       .appendPath(args.subsId)
       .appendPath('default-payment-method')
       .toString();
@@ -219,7 +234,7 @@ export const stripeRepo = {
         defaultPaymentMethod: args.methodId
       })
       .endJson<Subs>();
-  }
+  },
 }
 
 
