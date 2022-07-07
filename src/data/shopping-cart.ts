@@ -1,7 +1,8 @@
-import { newMoneyParts, localizeCycle, PriceParts } from './localization';
+import { newMoneyParts, localizeCycle, PriceParts, formatMoney } from './localization';
 import { cycleOfYMD, formatPeriods, isZeroYMD } from './period';
 import { newStripePriceParts, StripePayMethod } from './stripe';
 import { CartItemFtc, CartItemStripe } from './paywall-product';
+import { newFtcPriceParts } from './price';
 
 export type OrderParams = {
   priceId: string;
@@ -50,7 +51,11 @@ export type CartItemUIParams = {
   header: string;
   title: string;
   payable: PriceParts;
-  crossed?: PriceParts; // The original price if a discount exists.
+  original?: {
+    description: string;
+    crossed: boolean;
+    parts: PriceParts;
+  }; // The original price if a discount exists.
   postTrial?: PriceParts; // The original price if a trial exists
   isAutoRenew: boolean
 };
@@ -69,19 +74,11 @@ export function priceCardParamsOfFtc(item: CartItemFtc): CartItemUIParams {
     return {
       header,
       title: item.discount.description || '限时折扣',
-      payable: {
-        ...newMoneyParts(
-          item.price.currency,
-          item.price.unitAmount - item.discount.priceOff,
-        ),
-        cycle: '/' + formatPeriods(period, false),
-      },
-      crossed: {
-        ...newMoneyParts(
-          item.price.currency,
-          item.price.unitAmount
-        ),
-        cycle: '/' + formatPeriods(item.price.periodCount, false),
+      payable: newFtcPriceParts(item.price, item.discount),
+      original: {
+        description: '原价',
+        crossed: true,
+        parts: newFtcPriceParts(item.price),
       },
       isAutoRenew: false,
     };
@@ -90,10 +87,7 @@ export function priceCardParamsOfFtc(item: CartItemFtc): CartItemUIParams {
   return {
     header,
     title: item.price.title || '',
-    payable: {
-      ...newMoneyParts(item.price.currency, item.price.unitAmount),
-      cycle: '/' + formatPeriods(item.price.periodCount, false),
-    },
+    payable: newFtcPriceParts(item.price),
     isAutoRenew: false,
   };
 }
@@ -115,29 +109,43 @@ export function priceCardParamsOfStripe(item: CartItemStripe): CartItemUIParams 
         item.trial,
         false
       ),
-      postTrial: recurPriceParts,
+      original: {
+        description: '试用结束后自动续订',
+        crossed: false,
+        parts: newStripePriceParts(
+          item.recurring,
+          true
+        ),
+      },
       isAutoRenew: true,
     };
   }
 
-  // if (item.coupon) {
-  //   return {
-  //     header,
-  //     title: '现在订阅领取优惠券',
-  //     payable: {
-
-  //     },
-  //     crossed: {
-
-  //     },
-  //     isAutoRenew: true,
-  //   }
-  // }
+  if (item.coupon) {
+    return {
+      header,
+      title: `现在订阅优惠${formatMoney(item.coupon.currency, item.coupon.amountOff)}`,
+      payable: newStripePriceParts(
+        item.recurring,
+        false,
+        item.coupon
+      ),
+      original: {
+        description: '自动续订下一付款周期恢复原价',
+        crossed: false,
+        parts: recurPriceParts,
+      },
+      isAutoRenew: true,
+    }
+  }
 
   return {
     header,
     title: '',
-    payable: recurPriceParts,
+    payable: newStripePriceParts(
+      item.recurring,
+      true
+    ),
     isAutoRenew: true,
   };
 }

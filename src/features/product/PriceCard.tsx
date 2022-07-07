@@ -18,42 +18,17 @@ function PriceHighlight(
   );
 }
 
-function PriceCrossed(
+function PriceOriginal(
   props: {
-    parts?: PriceParts;
+    parts: PriceParts;
+    description: string;
+    crossed: boolean;
   }
 ) {
-  if (!props.parts) {
-    return null;
-  }
-
   return (
     <>
-      <span>原价</span>
-      <del>
-        {props.parts.symbol}
-        {props.parts.integer}
-        {props.parts.decimal}
-        {props.parts.cycle}
-      </del>
-    </>
-  );
-}
-
-function PriceAutoRenewed(
-  props: {
-    parts?: PriceParts;
-  }
-) {
-
-  if (!props.parts) {
-    return null;
-  }
-
-  return (
-    <>
-      <span>试用结束后自动续订</span>
-      <span>
+      <span>{props.description}</span>
+      <span className={props.crossed ? 'text-decoration-line-through' : ''}>
         {props.parts.symbol}
         {props.parts.integer}
         {props.parts.decimal}
@@ -62,6 +37,9 @@ function PriceAutoRenewed(
     </>
   );
 }
+
+
+
 
 /**
  * @description PriceCardBody displays a price in a card.
@@ -102,15 +80,11 @@ export function PriceCard(
 
         <div className="text-black60 scale-down5">
           {
-            props.params.crossed &&
-            <PriceCrossed
-              parts={props.params.crossed}
-            />
-          }
-          {
-            props.params.postTrial &&
-            <PriceAutoRenewed
-              parts={props.params.crossed}
+            props.params.original &&
+            <PriceOriginal
+              description={props.params.original.description}
+              crossed={props.params.original.crossed}
+              parts={props.params.original.parts}
             />
           }
         </div>
