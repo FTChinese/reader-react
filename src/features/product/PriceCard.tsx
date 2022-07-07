@@ -102,12 +102,15 @@ export function PriceCard(
 
         <div className="text-black60 scale-down5">
           {
-            props.params.isAutoRenew ?
-            <PriceAutoRenewed
-              parts={props.params.original}
-            /> :
+            props.params.crossed &&
             <PriceCrossed
-              parts={props.params.original}
+              parts={props.params.crossed}
+            />
+          }
+          {
+            props.params.postTrial &&
+            <PriceAutoRenewed
+              parts={props.params.crossed}
             />
           }
         </div>
