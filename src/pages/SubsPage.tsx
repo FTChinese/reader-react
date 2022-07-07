@@ -14,7 +14,11 @@ import { CartItemFtc, CartItemStripe } from '../data/shopping-cart';
 import { sitemap } from '../data/sitemap';
 import { ProductCard } from '../features/product/ProductCard';
 
-export function SubsPage() {
+export function SubsPage(
+  props: {
+    live: boolean; // Load live/test paywall data.
+  }
+) {
 
   const { passport } = useAuth();
   const {
@@ -28,7 +32,7 @@ export function SubsPage() {
   const { putStripeItem, putFtcItem } = useShoppingCart();
 
   useEffect(() => {
-    initLoadPaywall(!isTestAccount(passport));
+    initLoadPaywall(props.live);
   }, []);
 
   return (
