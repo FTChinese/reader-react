@@ -1,83 +1,41 @@
-import { intentNewMember, buildFtcCheckoutIntent, buildStripeCheckoutIntent } from './chekout-intent';
-import { OfferKind, Tier } from './enum';
-import { applicableOfferKinds, Membership } from './membership';
+import { intentNewMember, buildFtcCheckoutIntent, buildStripeCheckoutIntent, CheckoutIntent } from './chekout-intent';
+import { Tier } from './enum';
+import { applicableOfferKinds, isMembershipZero, Membership } from './membership';
+import { Product, PaywallProduct, Paywall } from './paywall';
 import { isValidPeriod } from './period';
-import { Price, Discount, filterOffers, dailyPrice } from './price';
-import { CartItemFtc, CartItemStripe } from './shopping-cart';
-import { findStripeCoupon, StripePaywallItem } from './stripe';
+import { dailyPrice, applicableOffer, Price, Discount } from './price';
+import { applicableCoupon, StripeCoupon, StripePaywallItem, StripePrice } from './stripe';
 
-export type Product = {
-  id: string;
-  active: boolean;
-  description: string;
-  heading: string;
-  introductory?: Price;
-  liveMode: boolean;
-  smallPrint?: string;
-  tier: Tier;
-};
-
-/**
- * @description PaywallPrice contains a price and a list of
- * opitonal discounts.
- */
- export type PaywallPrice = Price & {
-  offers: Discount[];
-};
-
-export function applicableOffer(pp: PaywallPrice, filters: OfferKind[]): Discount | undefined {
-  if (pp.offers.length === 0) {
+// Build the ftc cart item for introducatory price
+// if applicable.
+function introCartItem(product: Product, m: Membership): CartItemFtc | undefined {
+  // If user is not a new member, no introductory price should be offered.
+  if (!isMembershipZero(m)) {
     return undefined;
   }
 
-  const filtered = filterOffers(pp.offers, filters);
-
-  if (filtered.length == 0) {
+  // If introductory price does not exist.
+  if (!product.introductory) {
     return undefined;
   }
 
-  return filtered[0];
+  // If introductory price is not in valid period.
+  if (!isValidPeriod(product.introductory)) {
+    return undefined;
+  }
+
+  return {
+    intent: intentNewMember,
+    price: product.introductory,
+    discount: undefined, // Intro price does not have discount.
+    isIntro: true,
+  }
 }
 
-/**
- * @description PaywallProduct contains the human-readable text of a product, and a list of prices attached to it.
- */
-export type PaywallProduct = Product & {
-  prices: PaywallPrice[];
-};
 
 type StripePriceIDs = {
   recurrings: string[];
   trial?: string;
-}
-
-function buildStripeCartItems(
-  priceIds: StripePriceIDs,
-  prices: Map<string, StripePaywallItem>,
-  m: Membership
-): CartItemStripe[] {
-   if (prices.size == 0) {
-     return [];
-   }
-
-   const trialItem = priceIds.trial
-    ? prices.get(priceIds.trial)
-    : undefined;
-
-  const items: CartItemStripe[] = [];
-  priceIds.recurrings.forEach(id => {
-    const pwItem = prices.get(id);
-    if (pwItem != null) {
-      items.push({
-        intent: buildStripeCheckoutIntent(m, pwItem.price),
-        recurring: pwItem.price,
-        trial: trialItem?.price,
-        coupon: findStripeCoupon(pwItem.coupons)
-      })
-    }
-  });
-
-  return items;
 }
 
 type PriceCollected = {
@@ -88,16 +46,21 @@ type PriceCollected = {
 function collectPriceItems(product: PaywallProduct, m: Membership): PriceCollected {
   const offerKinds = applicableOfferKinds(m);
 
+  // Transform ftc price.
   const recurringItems = product.prices.map<CartItemFtc>(price => {
     return {
       intent: buildFtcCheckoutIntent(m, price),
       price: price,
-      discount: applicableOffer(price, offerKinds),
+      discount: applicableOffer(price.offers, offerKinds),
       isIntro: false,
     }
   });
 
-  if (!product.introductory || !isValidPeriod(product.introductory)) {
+  const introItem = introCartItem(product, m);
+
+  // If this product does not have introductory price,
+  // or the price is not valid, return the prices only.
+  if (!introItem) {
     return {
       ftcItems: recurringItems,
       stripeIds: {
@@ -109,19 +72,46 @@ function collectPriceItems(product: PaywallProduct, m: Membership): PriceCollect
 
   return {
     ftcItems: [
-      {
-        intent: intentNewMember,
-        price: product.introductory,
-        discount: undefined,
-        isIntro: true,
-      },
+      introItem,
       ...recurringItems,
     ],
     stripeIds: {
       recurrings: product.prices.map(p => p.stripePriceId),
-      trial: product.introductory?.stripePriceId,
+      trial: introItem.price.stripePriceId, // As long as trial exists, it is valid.
     }
   };
+}
+
+function buildStripeCartItems(
+  priceIds: StripePriceIDs,
+  prices: Map<string, StripePaywallItem>,
+  m: Membership
+): CartItemStripe[] {
+   if (prices.size == 0) {
+     return [];
+   }
+
+  const trialItem = priceIds.trial
+    ? prices.get(priceIds.trial)
+    : undefined;
+
+  const isNewMember = isMembershipZero(m);
+  const items: CartItemStripe[] = [];
+
+  priceIds.recurrings.forEach(id => {
+    const pwItem = prices.get(id);
+
+    if (pwItem != null) {
+      items.push({
+        intent: buildStripeCheckoutIntent(m, pwItem.price),
+        recurring: pwItem.price,
+        trial: trialItem?.price,
+        coupon: isNewMember ? applicableCoupon(pwItem.coupons) : undefined,
+      })
+    }
+  });
+
+  return items;
 }
 
 /**
@@ -161,6 +151,28 @@ function buildProductContent(pp: PaywallProduct): ProductContent {
   }
 }
 
+/**
+ * @description FtcCartItem represents the item
+ * user want to buy.
+ */
+ export type CartItemFtc = {
+  intent: CheckoutIntent;
+  price: Price;
+  discount?: Discount;
+  isIntro: boolean;
+};
+
+/**
+ * @description CartItemStripe contains all the information
+ * on a stripe price user is trying to subscribe.
+ */
+ export type CartItemStripe = {
+  intent: CheckoutIntent; // How use is trying to subscribe.
+  recurring: StripePrice; // The canonical price to subscribe.
+  trial?: StripePrice; // Optional trial price before entering the canonical subscription cycle.
+  coupon?: StripeCoupon; // Coupon applicable to the canonical price. Mutually exclusive with trial.
+}
+
 // ProductItem describes the data used to render a product on UI.
 export type ProductItem = {
   content: ProductContent;
@@ -170,7 +182,7 @@ export type ProductItem = {
 
 // newProductItem build the product's ftc and stripe price
 // items based on current user.
-export function buildProductItem(
+function buildProductItem(
   product: PaywallProduct,
   args: {
     membership: Membership,
@@ -188,4 +200,21 @@ export function buildProductItem(
     ftcItems: ftcItems,
     stripeItems: stripeItems,
   };
+}
+
+export function buildProductItems(paywall: Paywall, m: Membership): ProductItem[] {
+  // Index StripePaywallitem by price id.
+  const stripeItemStore = paywall.stripe.reduce((store, curr) => {
+    return store.set(curr.price.id, curr);
+  }, new Map<string, StripePaywallItem>());
+
+  return paywall.products.map(product => {
+    return buildProductItem(
+      product,
+      {
+        membership: m,
+        stripeStore: stripeItemStore,
+      }
+    )
+  });
 }
