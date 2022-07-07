@@ -1,22 +1,7 @@
-import {
-  Price,
-  Discount,
-} from './price';
 import { newMoneyParts, localizeCycle, PriceParts } from './localization';
 import { cycleOfYMD, formatPeriods, isZeroYMD } from './period';
-import { CheckoutIntent } from './chekout-intent';
-import { StripePayMethod, StripeCoupon, StripePrice } from './stripe';
-
-/**
- * @description FtcCartItem represents the item
- * user want to buy.
- */
-export type CartItemFtc = {
-  intent: CheckoutIntent;
-  price: Price;
-  discount?: Discount;
-  isIntro: boolean;
-};
+import { newStripePriceParts, StripePayMethod } from './stripe';
+import { CartItemFtc, CartItemStripe } from './paywall-product';
 
 export type OrderParams = {
   priceId: string;
@@ -34,16 +19,10 @@ export function newOrderParams(item: CartItemFtc): OrderParams {
   };
 }
 
-export type CartItemStripe = {
-  intent: CheckoutIntent;
-  recurring: StripePrice;
-  trial?: StripePrice;
-  coupon?: StripeCoupon;
-}
-
 export type SubsParams = {
   priceId: string;
   introductoryPriceId?: string;
+  coupon?: string;
   defaultPaymentMethod?: string;
 };
 
@@ -54,6 +33,7 @@ export function newSubsParams(
   return {
     priceId: item.recurring.id,
     introductoryPriceId: item.trial?.id,
+    coupon: item.coupon?.id,
     defaultPaymentMethod: payMethod.id,
   };
 }
@@ -70,7 +50,8 @@ export type CartItemUIParams = {
   header: string;
   title: string;
   payable: PriceParts;
-  original?: PriceParts;
+  crossed?: PriceParts; // The original price if a discount exists.
+  postTrial?: PriceParts; // The original price if a trial exists
   isAutoRenew: boolean
 };
 
@@ -95,7 +76,7 @@ export function priceCardParamsOfFtc(item: CartItemFtc): CartItemUIParams {
         ),
         cycle: '/' + formatPeriods(period, false),
       },
-      original: {
+      crossed: {
         ...newMoneyParts(
           item.price.currency,
           item.price.unitAmount
@@ -121,38 +102,42 @@ export function priceCardParamsOfStripe(item: CartItemStripe): CartItemUIParams 
 
   const header = `连续包${localizeCycle(cycleOfYMD(item.recurring.periodCount))}`;
 
-  const recurPriceParts: PriceParts = {
-    ...newMoneyParts(
-      item.recurring.currency,
-      item.recurring.unitAmount / 100,
-    ),
-    cycle: '/' + formatPeriods(item.recurring.periodCount, true),
-  };
+  const recurPriceParts = newStripePriceParts(
+    item.recurring,
+    true
+  );
 
   if (item.trial) {
     return {
       header,
       title: '新会员首次试用',
-      payable: {
-        ...newMoneyParts(
-          item.trial.currency,
-          item.trial.unitAmount / 100,
-        ),
-        cycle: '/' + formatPeriods(
-          item.trial.periodCount,
-          false
-        ),
-      },
-      original: recurPriceParts,
+      payable: newStripePriceParts(
+        item.trial,
+        false
+      ),
+      postTrial: recurPriceParts,
       isAutoRenew: true,
     };
   }
+
+  // if (item.coupon) {
+  //   return {
+  //     header,
+  //     title: '现在订阅领取优惠券',
+  //     payable: {
+
+  //     },
+  //     crossed: {
+
+  //     },
+  //     isAutoRenew: true,
+  //   }
+  // }
 
   return {
     header,
     title: '',
     payable: recurPriceParts,
-    original: undefined,
     isAutoRenew: true,
   };
 }
