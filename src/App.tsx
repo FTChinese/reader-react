@@ -25,18 +25,11 @@ import { HomePage } from './pages/HomePage';
 import { RequireStripeCustomer } from './components/routes/RequireStripeCustomer';
 import { liveMode } from './components/routes/stripePromise';
 
-function Skeleton(
-  props: {
-    live: boolean
-  }
-) {
+function Skeleton() {
   return (
     <>
       <Toolbar />
-      {
-        !props.live && <div className="text-center bg-danger text-white">Test Mode</div>
-      }
-      <div className="page-content pt-3">
+      <div className="page-content mt-3">
         <Outlet />
       </div>
 
@@ -59,7 +52,7 @@ function App() {
     <>
       <ScrollToTop />
       <Routes>
-        <Route path="/" element={<Skeleton live={liveMode} />} >
+        <Route path="/" element={<Skeleton />} >
           <Route element={<CenterLayout />}>
             <Route path={sitePath.login} element={<LoginPage />} />
             <Route path={sitePath.signUp} element={<SignUpPage />} />
@@ -71,7 +64,7 @@ function App() {
 
           <Route
             element={
-              <RequireAuth>
+              <RequireAuth live={liveMode}>
                 <ContentLayout />
               </RequireAuth>
             }
@@ -98,7 +91,7 @@ function App() {
             />
             <Route
               path={sitePath.subs}
-              element={<SubsPage />}
+              element={<SubsPage live={liveMode} />}
             />
             <Route
               path={sitePath.checkout}
