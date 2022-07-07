@@ -4,7 +4,7 @@ import './index.css'
 import App from './App'
 import { BrowserRouter } from 'react-router-dom'
 import { RecoilRoot } from 'recoil'
-import { StripeContext } from './features/stripesetup/StripeContext'
+import { StripeContext } from './components/routes/StripeContext';
 
 
 ReactDOM.render(

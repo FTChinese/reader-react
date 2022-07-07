@@ -23,12 +23,19 @@ import { RequireShoppingCart } from './components/routes/RequireShoopingCart';
 import { StripeWalletPage } from './pages/StripeWalletPage';
 import { HomePage } from './pages/HomePage';
 import { RequireStripeCustomer } from './components/routes/RequireStripeCustomer';
+import { liveMode } from './components/routes/stripePromise';
 
-function Skeleton() {
+function Skeleton(
+  props: {
+    live: boolean
+  }
+) {
   return (
     <>
       <Toolbar />
-
+      {
+        !props.live && <div className="text-center bg-danger text-white">Test Mode</div>
+      }
       <div className="page-content pt-3">
         <Outlet />
       </div>
@@ -52,7 +59,7 @@ function App() {
     <>
       <ScrollToTop />
       <Routes>
-        <Route path="/" element={<Skeleton />} >
+        <Route path="/" element={<Skeleton live={liveMode} />} >
           <Route element={<CenterLayout />}>
             <Route path={sitePath.login} element={<LoginPage />} />
             <Route path={sitePath.signUp} element={<SignUpPage />} />
