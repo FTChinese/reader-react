@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { ReaderPassport } from '../../data/account';
 import { IntentKind } from '../../data/chekout-intent';
 import { Membership } from '../../data/membership';
-import { CartItemStripe, newSubsParams, SubsParams } from '../../data/shopping-cart';
-import { StripePayMethod, Subs } from '../../data/stripe';
+import { CartItemStripe } from '../../data/paywall-product';
+import { newSubsParams, SubsParams } from '../../data/shopping-cart';
+import { StripeCouponApplied, StripePayMethod, Subs } from '../../data/stripe';
 import { ResponseError } from '../../repository/response-error';
 import { stripeRepo } from '../../repository/stripe';
 
@@ -12,6 +13,20 @@ export function useStripeSubs() {
   const [ submitting, setSubmitting ] = useState(false);
   // Used to display subscription details on ui.
   const [ subsCreated, setSubsCreated ] = useState<Subs | undefined>();
+  const [ checkingCoupon, setCheckingCoupon ] = useState(false);
+
+  const couponOfLatestInvoice = (
+    token: string,
+    subsId: string
+  ): Promise<StripeCouponApplied> => {
+    setCheckingCoupon(true);
+
+    return stripeRepo
+      .couponOfLatestInvoice(token, subsId)
+      .finally(() => {
+        setCheckingCoupon(false);
+      })
+  };
 
   const subscribe = (
     passport: ReaderPassport,
@@ -85,6 +100,7 @@ export function useStripeSubs() {
   }
 
   return {
+    checkingCoupon,
     submitting,
     subsCreated,
     subscribe,
