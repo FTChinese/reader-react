@@ -17,8 +17,9 @@ export const stripeRepo = {
    * different environment since it is required to be
    * a fixed static value upon initialization.
    */
-  loadPubKey(): Promise<PubKey> {
+  loadPubKey(live: boolean): Promise<PubKey> {
     const url = new UrlBuilder(endpoint.stripePubKey)
+      .setLive(live)
       .toString();
 
     return new Fetch()
