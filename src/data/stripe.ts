@@ -1,8 +1,9 @@
 import { PaymentMethod } from '@stripe/stripe-js';
 import { Edition } from './edition';
 import { PriceKind, SubStatus, Tier } from './enum';
+import { newMoneyParts, PriceParts } from './localization';
 import { Membership } from './membership';
-import { YearMonthDay, OptionalPeriod } from './period';
+import { YearMonthDay, OptionalPeriod, isValidPeriod, formatPeriods } from './period';
 
 export type PubKey = {
   live: boolean;
@@ -99,6 +100,11 @@ export function convertPaymentMthod(pm: PaymentMethod): StripePayMethod {
   }
 }
 
+/**
+ * @description Stripe price represents the item user could
+ * subscribe to.
+ * A stripe price might have multiple coupons attached.
+ */
 export type StripePrice = {
   id: string;
   active: boolean;
@@ -114,30 +120,67 @@ export type StripePrice = {
   created: number;
 } & OptionalPeriod;
 
+export function newStripePriceParts(sp: StripePrice, recurring: boolean): PriceParts {
+  return {
+    ...newMoneyParts(
+      sp.currency,
+      sp.unitAmount / 100,
+    ),
+    cycle: '/' + formatPeriods(sp.periodCount, recurring),
+  };
+}
+
 export type StripeCoupon = {
   id: string;
   amountOff: number,
   currency: string;
   redeemBy: number;
   priceId?: string;
-  startUtc?: string;
-  endUtc?: string;
-};
+} & OptionalPeriod;
 
+function filterCoupons(coupons: StripeCoupon[]): StripeCoupon[] {
+  return coupons
+    .filter(isValidPeriod)
+    .sort((a, b) => b.amountOff - a.amountOff);
+}
+
+/**
+ * @description findStripeConpon finds the most appropriate
+ * coupon that could be applied to a price.
+ * In case of multiple coupons applicable, the one with
+ * largest amount off is used.
+ * The returned coupon might not be used since its valid period
+ * is not checked.
+ */
+ export function applicableCoupon(coupons: StripeCoupon[]): StripeCoupon | undefined {
+
+  if (coupons.length === 0) {
+    return undefined;
+  }
+
+  const filtered = filterCoupons(coupons);
+
+  if (filtered.length === 0) {
+    return undefined
+  }
+
+  return filtered[0];
+}
+
+/**
+ * @description StripePaywallItem contains a stripe and optional
+ * coupond applicable to this price.
+ */
 export type StripePaywallItem = {
   price: StripePrice;
   coupons: StripeCoupon[];
 };
 
-export function findStripeCoupon(coupons: StripeCoupon[]): StripeCoupon | undefined {
-  switch (coupons.length) {
-    case 0:
-      return undefined;
-
-    case 1:
-      return coupons[0];
-
-    default:
-      return coupons.sort((a, b) => b.amountOff - a.amountOff)[0];
-  }
+export type StripeCouponApplied = {
+  invoiceId: string;
+  ftcId: string;
+  subsId: string;
+  couponId: string;
+  createdUtc?: string;
+  redeemedUtc?: string;
 }
