@@ -120,11 +120,19 @@ export type StripePrice = {
   created: number;
 } & OptionalPeriod;
 
-export function newStripePriceParts(sp: StripePrice, recurring: boolean): PriceParts {
+export function newStripePriceParts(
+  sp: StripePrice,
+  recurring: boolean,
+  coupon?: StripeCoupon
+): PriceParts {
+  const amount = coupon
+    ? (sp.unitAmount - coupon.amountOff)
+    : sp.unitAmount;
+
   return {
     ...newMoneyParts(
       sp.currency,
-      sp.unitAmount / 100,
+      amount / 100,
     ),
     cycle: '/' + formatPeriods(sp.periodCount, recurring),
   };
