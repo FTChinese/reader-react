@@ -1,6 +1,6 @@
 import { CheckoutHeader, CheckoutMessage, StripePayLink } from '../../components/text/Checkout'
 import { CenterColumn } from '../../components/layout/Column';
-import { priceCardParamsOfStripe, CartItemStripe } from '../../data/shopping-cart';
+import { priceCardParamsOfStripe } from '../../data/shopping-cart';
 import { StripePayMethod, Subs } from '../../data/stripe';
 import { PriceCard } from '../product/PriceCard';
 import { StripeSubsDetails } from './StripeSubsDetails';
@@ -8,6 +8,7 @@ import { BlockLoadButton } from '../../components/buttons/Buttons';
 import { IntentKind, stripeBtnText } from '../../data/chekout-intent';
 import { BankCard } from '../stripewallet/BankCard';
 import { PaymentMethodSelector } from '../stripesetup/PaymentMethodSelector';
+import { CartItemStripe } from '../../data/paywall-product';
 
 /**
  * @description Handles Stripe pay actions.

@@ -1,12 +1,10 @@
 import { TextList } from '../../components/list/TextList';
 import {
-  CartItemFtc,
   priceCardParamsOfStripe,
-  CartItemStripe,
   priceCardParamsOfFtc,
 } from '../../data/shopping-cart';
 import { PriceCard } from './PriceCard';
-import { ProductItem } from '../../data/paywall-product';
+import { CartItemFtc, CartItemStripe, ProductItem } from '../../data/paywall-product';
 import { StripePayLink } from '../../components/text/Checkout';
 
 export function ProductCard(

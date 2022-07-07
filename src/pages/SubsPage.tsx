@@ -6,11 +6,9 @@ import { usePaywall } from '../components/hooks/usePaywall';
 import { useShoppingCart } from '../components/hooks/useShoppingCart';
 import { ErrorBoundary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
-import { isTestAccount } from '../data/account';
 import { Membership, zeroMembership } from '../data/membership';
-import { Banner, buildProductItems, Paywall } from '../data/paywall';
-import { ProductItem } from '../data/paywall-product';
-import { CartItemFtc, CartItemStripe } from '../data/shopping-cart';
+import { Banner, Paywall } from '../data/paywall';
+import { buildProductItems, CartItemFtc, CartItemStripe, ProductItem } from '../data/paywall-product';
 import { sitemap } from '../data/sitemap';
 import { ProductCard } from '../features/product/ProductCard';
 

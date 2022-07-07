@@ -5,7 +5,8 @@ import { CheckoutHeader, CheckoutMessage } from '../../components/text/Checkout'
 import { IntentKind } from '../../data/chekout-intent';
 import { PaymentKind } from '../../data/enum';
 import { ConfirmationResult } from '../../data/order';
-import { CartItemFtc, priceCardParamsOfFtc } from '../../data/shopping-cart';
+import { CartItemFtc } from '../../data/paywall-product';
+import { priceCardParamsOfFtc } from '../../data/shopping-cart';
 import { PriceCard } from '../product/PriceCard';
 import { FtcPaymentMethods } from './FtcPaymentMethods';
 import { FtcPayDetails } from './FtcPayResult';

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { atom, useRecoilState } from 'recoil';
-import { CartItemFtc, CartItemStripe, ShoppingCart } from '../../data/shopping-cart';
+import { CartItemFtc, CartItemStripe } from '../../data/paywall-product';
+import { ShoppingCart } from '../../data/shopping-cart';
 import { cartSession } from '../../store/cartSession';
 
 const shoppingCartState = atom<ShoppingCart>({
