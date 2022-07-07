@@ -1,6 +1,6 @@
 import { Tier, Cycle, PriceKind, DiscountStatus, OfferKind } from './enum';
-import { formatMoney } from './localization';
-import { YearMonthDay, OptionalPeriod, isValidPeriod, cycleOfYMD, totalDaysOfYMD } from './period';
+import { formatMoney, newMoneyParts, PriceParts } from './localization';
+import { YearMonthDay, OptionalPeriod, isValidPeriod, cycleOfYMD, totalDaysOfYMD, formatPeriods, isZeroYMD } from './period';
 
 /**
  * @description Price determines how much a product cost.
@@ -24,6 +24,30 @@ import { YearMonthDay, OptionalPeriod, isValidPeriod, cycleOfYMD, totalDaysOfYMD
 
 export function isIntro(p: Price): boolean {
   return p.kind === 'one_time';
+}
+
+export function newFtcPriceParts(price: Price, discount?: Discount): PriceParts {
+  if (discount) {
+    const period = isZeroYMD(discount.overridePeriod)
+      ? price.periodCount
+      : discount.overridePeriod;
+
+    return {
+      ...newMoneyParts(
+        price.currency,
+        price.unitAmount - discount.priceOff,
+      ),
+      cycle: '/' + formatPeriods(period, false),
+    };
+  }
+
+  return {
+    ...newMoneyParts(
+      price.currency,
+      price.unitAmount
+    ),
+    cycle: '/' + formatPeriods(price.periodCount, false),
+  };
 }
 
 export type DailyPrice = {
