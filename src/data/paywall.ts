@@ -1,7 +1,7 @@
 import { isValidPeriod, OptionalPeriod } from './period';
-import { buildProductItem, PaywallProduct, ProductItem } from './paywall-product';
 import { StripePaywallItem } from './stripe';
-import { Membership } from './membership';
+import { Tier } from './enum';
+import { Discount, Price } from './price';
 
 export type Banner = {
   id: string;
@@ -21,6 +21,33 @@ export function isPromoValid(promo: Promo): Boolean {
 
   return isValidPeriod(promo);
 }
+
+export type Product = {
+  id: string;
+  active: boolean;
+  description: string;
+  heading: string;
+  introductory?: Price;
+  liveMode: boolean;
+  smallPrint?: string;
+  tier: Tier;
+};
+
+/**
+ * @description PaywallPrice contains a price and a list of
+ * opitonal discounts.
+ */
+ export type PaywallPrice = Price & {
+  offers: Discount[];
+};
+
+/**
+ * @description PaywallProduct contains the human-readable text of a product, and a list of prices attached to it.
+ */
+ export type PaywallProduct = Product & {
+  prices: PaywallPrice[];
+};
+
 export interface Paywall {
   id: number;
   banner: Banner;
@@ -30,22 +57,6 @@ export interface Paywall {
   stripe: StripePaywallItem[];
 }
 
-export function buildProductItems(paywall: Paywall, m: Membership): ProductItem[] {
-  // Index StripePaywallitem by price id.
-  const stripeItemStore = paywall.stripe.reduce((store, curr) => {
-    return store.set(curr.price.id, curr);
-  }, new Map<string, StripePaywallItem>());
-
-  return paywall.products.map(product => {
-    return buildProductItem(
-      product,
-      {
-        membership: m,
-        stripeStore: stripeItemStore,
-      }
-    )
-  });
-}
 
 
 
