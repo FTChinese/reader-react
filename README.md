@@ -48,3 +48,7 @@ Stripe provides two versions of frontend SDK:
 6. 用上述`payment_method`，请求我方服务器获取[PaymentMethods](https://stripe.com/docs/api/payment_methods)的数据，可以把本次使用的支付方式显示给用户。
 
 7. 提交服务器创建订阅时一并提交这个Payment Method的id，这个支付方式就成为本次订阅的扣款来源。
+
+### Coupon
+
+See [Discounts for subscriptions](https://stripe.com/docs/billing/subscriptions/coupons). Pay particular attention to **Coupon duration** section.
