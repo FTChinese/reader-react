@@ -1,5 +1,8 @@
-import { Tier } from './enum';
-import { isBeyondMaxRenewalPeriod, Membership, normalizePayMethod } from './membership';
+import parseISO from 'date-fns/parseISO';
+import { localizeDate } from '../utils/format-time';
+import { isExceedingYear } from '../utils/now';
+import { Cycle, PaymentKind, Tier } from './enum';
+import { Membership, normalizePayMethod } from './membership';
 import { cycleOfYMD } from './period';
 import { Price } from './price';
 import { StripePrice } from './stripe';
@@ -31,6 +34,9 @@ export enum IntentKind {
   // For auto-renewal mode, a user could switch
   // from monthly billing interval to year, or vice versus.
   SwitchInterval,
+  // When a coupon exists, auto-renewal user could apply it
+  // existing subscription.
+  ApplyCoupon,
 }
 
 export type CheckoutIntent = {
@@ -38,7 +44,7 @@ export type CheckoutIntent = {
   message: string;
 };
 
-export const intentVip: CheckoutIntent = {
+const intentVip: CheckoutIntent = {
   kind: IntentKind.Forbidden,
   message: 'VIP无需订阅',
 };
@@ -48,78 +54,73 @@ export const intentNewMember: CheckoutIntent = {
   message: '累加一个订阅周期',
 };
 
-export function intentOneTimeRenewal(expireDate?: string): CheckoutIntent {
-  if (expireDate && isBeyondMaxRenewalPeriod(expireDate)) {
-    return {
-      kind: IntentKind.Forbidden,
-      message: `剩余时间(${expireDate})超出允许的最长续订期限，无法继续使用支付宝/微信再次购买`,
-    };
-  }
-
-  return {
-    kind: IntentKind.Renew,
-    message: '累加一个订阅周期',
-  };
-}
-
-export function intentOneTimeDiffTier(target: Tier): CheckoutIntent {
-  switch (target) {
-    case 'premium':
-      return {
-        kind: IntentKind.Upgrade,
-        message: '马上升级高端会员，当前标准版剩余时间将在高端版结束后继续使用'
-      }
-
-    case 'standard':
-      return {
-        kind: IntentKind.AddOn,
-        message: '购买的标准版订阅期限将在当前高端订阅结束后启用'
-      }
-  }
-}
-
-export const intentUnknown: CheckoutIntent = {
+const intentUnknown: CheckoutIntent = {
   kind: IntentKind.Forbidden,
   message: '仅支持新建订阅、续订、标准会员升级和购买额外订阅期限，不支持其他操作。\n当前会员购买方式未知，因此无法确定您可以执行哪些操作，请联系客服完善您的数据'
 };
 
-export const intentAutoRenewAddOn: CheckoutIntent = {
+const intentAutoRenewAddOn: CheckoutIntent = {
   kind: IntentKind.AddOn,
   message: '当前订阅为自动续订，购买额外时长将在自动续订关闭并结束后启用',
 };
 
-export function buildFtcCheckoutIntent(m: Membership, p: Price): CheckoutIntent {
-  if (m.vip) {
+function newFtcCheckoutIntent(source: IntentSourceCondition, target: IntentTargetCondition): CheckoutIntent {
+  if (source.isVip) {
     return intentVip;
   }
 
   // IntentKind.Create
-  if (!m.tier) {
+  if (!source.tier) {
     return intentNewMember;
   }
 
-  switch (normalizePayMethod(m)) {
+  switch (source.payMethod) {
     case 'alipay':
     case 'wechat':
       // IntentKind.Renew
       // IntentKind.Forbidden
-      if (m.tier == p.tier) {
-        return intentOneTimeRenewal(m.expireDate);
+      if (source.tier == target.tier) {
+
+        if (source.expireDate && isExceedingYear(source.expireDate, 3)) {
+          return {
+            kind: IntentKind.Forbidden,
+            message: `到期时间(${localizeDate(source.expireDate)})超出允许的最长续订期限，无法继续使用支付宝/微信再次购买`,
+          };
+        }
+
+        return {
+          kind: IntentKind.Renew,
+          message: '累加一个订阅周期',
+        };
       }
 
       // IntentKind.Upgrade
       // IntentKind.AddOn
-      return intentOneTimeDiffTier(p.tier);
+      switch (target.tier) {
+        // Standard -> Premium
+        case 'premium':
+          return {
+            kind: IntentKind.Upgrade,
+            message: '马上升级高端会员，当前标准版剩余时间将在高端版结束后继续使用'
+          }
+
+        // Premium -> Standard
+        case 'standard':
+          return {
+            kind: IntentKind.AddOn,
+            message: '购买的标准版订阅期限将在当前高端订阅结束后启用'
+          }
+      }
 
     case 'stripe':
       // Stripe standard -> Onetime standard
       // Stripe premium -> Onetime premium
       // IntentKind.AddOn
-      if (m.tier === p.tier) {
+      if (source.tier === target.tier) {
         return intentAutoRenewAddOn;
       }
 
-      switch (p.tier) {
+      switch (target.tier) {
         // Stripe standard -> Onetime premium
         // IntentKind.Forbidden
         case 'premium':
@@ -137,7 +138,7 @@ export function buildFtcCheckoutIntent(m: Membership, p: Price): CheckoutIntent 
     case 'apple':
       // Apple standard -> Onetime premium
       // IntentKind.Forbidden
-      if (m.tier === 'standard' && p.tier === 'premium') {
+      if (source.tier === 'standard' && target.tier === 'premium') {
         return {
           kind: IntentKind.Forbidden,
           message: '当前标准会员会员来自苹果内购，升级高端会员需要在您的苹果设备上，使用原有苹果账号登录后，在FT中文网APP内操作'
@@ -152,7 +153,7 @@ export function buildFtcCheckoutIntent(m: Membership, p: Price): CheckoutIntent 
 
     case 'b2b':
       // IntentKind.Forbidden
-      if (m.tier === 'standard' && p.tier === 'premium') {
+      if (source.tier === 'standard' && target.tier === 'premium') {
         return {
           kind: IntentKind.Forbidden,
           message: '当前订阅来自企业版授权，升级高端订阅请联系您所属机构的管理人员',
@@ -172,19 +173,19 @@ export function buildFtcCheckoutIntent(m: Membership, p: Price): CheckoutIntent 
   return intentUnknown;
 }
 
-export function buildStripeCheckoutIntent(m: Membership, p: StripePrice): CheckoutIntent {
-  if (m.vip) {
+function newStripeCheckoutIntent(source: IntentSourceCondition, target: IntentTargetCondition): CheckoutIntent {
+  if (source.isVip) {
     return intentVip;
   }
 
-  if (!m.tier) {
+  if (!source.tier) {
     return {
       kind: IntentKind.Create,
       message: '',
     };
   }
 
-  switch (normalizePayMethod(m)) {
+  switch (source.payMethod) {
     // Onetime purchase -> Stripe.
     case 'alipay':
     case 'wechat':
@@ -195,8 +196,16 @@ export function buildStripeCheckoutIntent(m: Membership, p: StripePrice): Checko
 
     // Stripe -> Stripe
     case 'stripe':
-      if (m.tier === p.tier) {
-        if (m.cycle === cycleOfYMD(p.periodCount)) {
+      if (source.tier === target.tier) {
+        if (source.cycle === target.cycle) {
+
+          if (target.hasCoupon) {
+            return {
+              kind: IntentKind.ApplyCoupon,
+              message: '优惠券仅用于本次付款周期的价格，下次付款将恢复原价。一个付款周期内仅可使用一次优惠券'
+            }
+          }
+
           return {
             kind: IntentKind.Forbidden,
             message: '自动续订不能重复订阅',
@@ -211,7 +220,8 @@ export function buildStripeCheckoutIntent(m: Membership, p: StripePrice): Checko
         };
       }
 
-      switch (p.tier) {
+      // Purchase a different tier.
+      switch (target.tier) {
         // standard -> premium
         case 'premium':
           return {
@@ -243,6 +253,71 @@ export function buildStripeCheckoutIntent(m: Membership, p: StripePrice): Checko
   return intentUnknown;
 }
 
+type IntentSourceCondition = {
+  isVip: boolean;
+  tier?: Tier;
+  cycle?: Cycle;
+  payMethod?: PaymentKind;
+  isAutoRenew: boolean;
+  expireDate?: Date;
+};
+
+export function newIntentSource(m: Membership): IntentSourceCondition {
+  return {
+    isVip: m.vip,
+    tier: m.tier,
+    cycle: m.cycle,
+    payMethod: normalizePayMethod(m),
+    isAutoRenew: m.autoRenew,
+    expireDate: m.expireDate
+      ? parseISO(m.expireDate)
+      : undefined,
+  };
+}
+
+type IntentTargetCondition = {
+  tier: Tier;
+  cycle: Cycle;
+  payMethod: PaymentKind;
+  // For stripe coupon.
+  // A coupon could only be used when
+  // - No trial price;
+  // - Coupon exists.
+  hasCoupon: boolean;
+};
+
+export function newOneOffTarget(price: Price): IntentTargetCondition {
+  return {
+    tier: price.tier,
+    cycle: cycleOfYMD(price.periodCount),
+    payMethod: 'alipay',
+    hasCoupon: false,
+  };
+}
+
+export function newStripeTarget(price: StripePrice, hasCoupon: boolean): IntentTargetCondition {
+  return {
+    tier: price.tier,
+    cycle: cycleOfYMD(price.periodCount),
+    payMethod: 'stripe',
+    hasCoupon: hasCoupon,
+  };
+}
+
+export function buildCheckoutIntent(source: IntentSourceCondition, target: IntentTargetCondition): CheckoutIntent {
+  switch (target.payMethod) {
+    case 'alipay':
+    case 'wechat':
+      return newFtcCheckoutIntent(source, target);
+
+    case 'stripe':
+      return newStripeCheckoutIntent(source, target);
+
+    default:
+      return intentUnknown;
+  }
+}
+
 export function stripeBtnText(k: IntentKind): string {
   switch (k) {
     case IntentKind.SwitchInterval:
@@ -253,6 +328,9 @@ export function stripeBtnText(k: IntentKind): string {
 
     case IntentKind.Downgrade:
       return '转为标准会员';
+
+    case IntentKind.ApplyCoupon:
+      return '领取并使用优惠券';
 
     default:
       return '订阅';
