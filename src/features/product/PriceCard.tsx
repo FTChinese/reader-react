@@ -1,4 +1,5 @@
 import Card from 'react-bootstrap/Card';
+import { BlockTextScaled, TextScaled } from '../../components/text/BodyText';
 import { PriceParts } from '../../data/localization';
 import { CartItemUIParams } from '../../data/shopping-cart';
 
@@ -38,9 +39,6 @@ function PriceOriginal(
   );
 }
 
-
-
-
 /**
  * @description PriceCardBody displays a price in a card.
  * It is used in multiple places:
@@ -68,9 +66,10 @@ export function PriceCard(
       </Card.Header>
 
       <Card.Body className="text-center">
-        <div className="scale-down8">
-          {props.params.title}
-        </div>
+        <TextScaled
+          size={0.8}
+          text={props.params.title}
+        />
 
         <div>
           <PriceHighlight
@@ -78,7 +77,10 @@ export function PriceCard(
           />
         </div>
 
-        <div className="text-black60 scale-down5">
+        <BlockTextScaled
+          size={0.8}
+          className="text-black60"
+        >
           {
             props.params.original &&
             <PriceOriginal
@@ -87,16 +89,19 @@ export function PriceCard(
               parts={props.params.original.parts}
             />
           }
-        </div>
+        </BlockTextScaled>
+
       </Card.Body>
 
-      <p className="text-center text-black50 scale-down5">
-        {
-          props.params.isAutoRenew ?
-          '* 仅限Stripe支付' :
-          '* 仅限支付宝或微信支付'
-        }
-      </p>
+      <div className="text-center pb-3">
+        <TextScaled
+          size={0.5}
+          className="text-black50"
+          text={props.params.isAutoRenew ?
+            '* 仅限Stripe支付' :
+            '* 仅限支付宝或微信支付'}
+        />
+      </div>
     </Card>
   );
 }
