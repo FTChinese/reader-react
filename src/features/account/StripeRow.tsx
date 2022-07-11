@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChevronRight } from '../../components/graphics/icons';
 import { PrimaryLine, SecondaryLine, TwoLineRow } from '../../components/layout/TwoLineRow';
-import { TextDot8 } from '../../components/text/BodyText';
+import { TextScaled } from '../../components/text/BodyText';
 import { sitemap } from '../../data/sitemap';
 
 
@@ -12,7 +12,7 @@ export function StripeRow() {
         text="管理Stripe支付"
         trailIcon={
           <Link to={sitemap.stripeSetting}>
-            <TextDot8 text="设置" />
+            <TextScaled size={0.8} text="设置" />
             <ChevronRight />
           </Link>
         }
