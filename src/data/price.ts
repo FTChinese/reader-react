@@ -22,8 +22,20 @@ import { YearMonthDay, OptionalPeriod, isValidPeriod, cycleOfYMD, totalDaysOfYMD
   unitAmount: number;
 } & OptionalPeriod;
 
-export function isIntro(p: Price): boolean {
-  return p.kind === 'one_time';
+export function isValidIntro(p?: Price): boolean {
+  if (!p) {
+    return false;
+  }
+
+  if (p.kind !== 'one_time') {
+    return false;
+  }
+
+  if (!isValidPeriod(p)) {
+    return false;
+  }
+
+  return true;
 }
 
 export function newFtcPriceParts(price: Price, discount?: Discount): PriceParts {
