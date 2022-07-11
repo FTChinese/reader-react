@@ -21,7 +21,7 @@ export function CheckoutMessage(
   }
 ) {
   return (
-    <p className="scale-down8 text-center">
+    <p className="scale-down8 text-center text-danger">
       {props.text}
     </p>
   );
