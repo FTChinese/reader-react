@@ -1,7 +1,11 @@
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 
-export function localizeISO(dateString: string): string {
-  return format(parseISO(dateString), 'yyyy年M月d日H时m分s秒')
+export function localizeDateTime(date: Date): string {
+  return format(date, 'yyyy年M月d日H时m分s秒')
+}
+
+export function localizeDate(date: Date): string {
+  return format(date, 'yyyy年M月d日');
 }
 
 export function extractDate(isoStr: string): string {

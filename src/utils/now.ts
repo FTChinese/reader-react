@@ -1,4 +1,4 @@
-import { differenceInDays, isBefore, startOfDay } from 'date-fns';
+import { addYears, differenceInDays, differenceInYears, isBefore, startOfDay } from 'date-fns';
 
 /**
  * @description Returns the current Unix time in seconds.
@@ -15,4 +15,11 @@ export function isExpired(date: Date): boolean {
 export function diffToday(date: Date): number {
   const today = startOfDay(new Date());
   return differenceInDays(date, today);
+}
+
+/**
+ * @see https://date-fns.org/v2.28.0/docs/differenceInYears
+ */
+export function isExceedingYear(date: Date, count: number): boolean {
+  return differenceInYears(date, new Date()) > count;
 }
