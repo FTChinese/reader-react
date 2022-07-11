@@ -1,6 +1,6 @@
-import { newMoneyParts, localizeCycle, PriceParts, formatMoney } from './localization';
-import { cycleOfYMD, formatPeriods, isZeroYMD } from './period';
-import { newStripePriceParts, StripePayMethod } from './stripe';
+import { localizeCycle, PriceParts } from './localization';
+import { cycleOfYMD } from './period';
+import { formatCouponAmount, newStripePriceParts, StripePayMethod } from './stripe';
 import { CartItemFtc, CartItemStripe } from './paywall-product';
 import { newFtcPriceParts } from './price';
 
@@ -55,8 +55,7 @@ export type CartItemUIParams = {
     description: string;
     crossed: boolean;
     parts: PriceParts;
-  }; // The original price if a discount exists.
-  postTrial?: PriceParts; // The original price if a trial exists
+  }; // The original price if a coupon exists.
   isAutoRenew: boolean
 };
 
@@ -67,9 +66,6 @@ export function priceCardParamsOfFtc(item: CartItemFtc): CartItemUIParams {
     : `包${localizeCycle(cycleOfYMD(item.price.periodCount))}`;
 
   if (item.discount) {
-    const period = isZeroYMD(item.discount.overridePeriod)
-      ? item.price.periodCount
-      : item.discount.overridePeriod;
 
     return {
       header,
@@ -101,6 +97,7 @@ export function priceCardParamsOfStripe(item: CartItemStripe): CartItemUIParams 
     true
   );
 
+  // Price with trial.
   if (item.trial) {
     return {
       header,
@@ -121,10 +118,11 @@ export function priceCardParamsOfStripe(item: CartItemStripe): CartItemUIParams 
     };
   }
 
+  // Price with coupon. Mutally execlusive with trial price.
   if (item.coupon) {
     return {
       header,
-      title: `现在订阅优惠${formatMoney(item.coupon.currency, item.coupon.amountOff)}`,
+      title: `现在订阅优惠 -${formatCouponAmount(item.coupon)}`,
       payable: newStripePriceParts(
         item.recurring,
         false,
