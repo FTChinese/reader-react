@@ -30,6 +30,10 @@ export function normalizeEmail(email: string): string {
 }
 
 export function isTestAccount(a?: BaseAccount): boolean {
+  if (import.meta.env.DEV) {
+    return true;
+  }
+
   return a?.email?.endsWith('.test@ftchinese.com') || false;
 }
 
