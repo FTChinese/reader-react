@@ -1,37 +1,21 @@
-import { intentNewMember, buildFtcCheckoutIntent, buildStripeCheckoutIntent, CheckoutIntent } from './chekout-intent';
+import { intentNewMember, CheckoutIntent, buildCheckoutIntent, newIntentSource, newStripeTarget, newOneOffTarget } from './chekout-intent';
 import { Tier } from './enum';
 import { applicableOfferKinds, isMembershipZero, Membership } from './membership';
-import { Product, PaywallProduct, Paywall } from './paywall';
+import { PaywallProduct, Paywall } from './paywall';
 import { isValidPeriod } from './period';
 import { dailyPrice, applicableOffer, Price, Discount } from './price';
 import { applicableCoupon, StripeCoupon, StripePaywallItem, StripePrice } from './stripe';
 
-// Build the ftc cart item for introducatory price
-// if applicable.
-function introCartItem(product: Product, m: Membership): CartItemFtc | undefined {
-  // If user is not a new member, no introductory price should be offered.
-  if (!isMembershipZero(m)) {
-    return undefined;
-  }
-
-  // If introductory price does not exist.
-  if (!product.introductory) {
-    return undefined;
-  }
-
-  // If introductory price is not in valid period.
-  if (!isValidPeriod(product.introductory)) {
-    return undefined;
-  }
-
-  return {
-    intent: intentNewMember,
-    price: product.introductory,
-    discount: undefined, // Intro price does not have discount.
-    isIntro: true,
-  }
-}
-
+/**
+ * @description FtcCartItem represents the item
+ * user want to buy.
+ */
+ export type CartItemFtc = {
+  intent: CheckoutIntent;
+  price: Price;
+  discount?: Discount;
+  isIntro: boolean;
+};
 
 type StripePriceIDs = {
   recurrings: string[];
@@ -43,20 +27,56 @@ type PriceCollected = {
   stripeIds: StripePriceIDs;
 }
 
+// Build the ftc cart item for introducatory price
+// if applicable.
+function oneOffIntroItem(m: Membership, price?: Price,): CartItemFtc | undefined {
+
+  // If introductory price does not exist.
+  if (!price) {
+    return undefined;
+  }
+
+  if (price.kind !== 'one_time') {
+    return undefined;
+  }
+
+  // If introductory price is not in valid period.
+  if (!isValidPeriod(price)) {
+    return undefined;
+  }
+
+  return {
+    intent: intentNewMember,
+    price: price,
+    discount: undefined, // Intro price does not have discount.
+    isIntro: true,
+  };
+}
+
+/**
+ * @description Build ftc cart item from a product, together with the stripe price id associated with each ftc price.
+ */
 function collectPriceItems(product: PaywallProduct, m: Membership): PriceCollected {
   const offerKinds = applicableOfferKinds(m);
 
+  const intentSource = newIntentSource(m);
+
   // Transform ftc price.
   const recurringItems = product.prices.map<CartItemFtc>(price => {
+    const target = newOneOffTarget(price);
+
     return {
-      intent: buildFtcCheckoutIntent(m, price),
+      intent: buildCheckoutIntent(intentSource, target),
       price: price,
       discount: applicableOffer(price.offers, offerKinds),
       isIntro: false,
     }
   });
 
-  const introItem = introCartItem(product, m);
+  // If user is not a new member, no introductory price should be offered.
+  const introItem = isMembershipZero(m)
+    ? oneOffIntroItem(m, product.introductory)
+    : undefined;
 
   // If this product does not have introductory price,
   // or the price is not valid, return the prices only.
@@ -82,6 +102,17 @@ function collectPriceItems(product: PaywallProduct, m: Membership): PriceCollect
   };
 }
 
+/**
+ * @description CartItemStripe contains all the information
+ * on a stripe price user is trying to subscribe.
+ */
+ export type CartItemStripe = {
+  intent: CheckoutIntent; // How use is trying to subscribe.
+  recurring: StripePrice; // The canonical price to subscribe.
+  trial?: StripePrice; // Optional trial price before entering the canonical subscription cycle.
+  coupon?: StripeCoupon; // Coupon applicable to the canonical price. Mutually exclusive with trial.
+}
+
 function buildStripeCartItems(
   priceIds: StripePriceIDs,
   prices: Map<string, StripePaywallItem>,
@@ -95,19 +126,28 @@ function buildStripeCartItems(
     ? prices.get(priceIds.trial)
     : undefined;
 
-  const isNewMember = isMembershipZero(m);
+  const intentSource = newIntentSource(m);
+
   const items: CartItemStripe[] = [];
 
   priceIds.recurrings.forEach(id => {
     const pwItem = prices.get(id);
 
     if (pwItem != null) {
+
+      // Coupon is only applicable when there's no trial price.
+      const coupon = !trialItem
+        ? applicableCoupon(pwItem.coupons)
+        : undefined;
+
+      const target = newStripeTarget(pwItem.price, !!coupon)
+
       items.push({
-        intent: buildStripeCheckoutIntent(m, pwItem.price),
+        intent: buildCheckoutIntent(intentSource, target),
         recurring: pwItem.price,
         trial: trialItem?.price,
-        coupon: isNewMember ? applicableCoupon(pwItem.coupons) : undefined,
-      })
+        coupon: coupon,
+      });
     }
   });
 
@@ -149,28 +189,6 @@ function buildProductContent(pp: PaywallProduct): ProductContent {
     description: productDesc(pp),
     smallPrint: pp.smallPrint,
   }
-}
-
-/**
- * @description FtcCartItem represents the item
- * user want to buy.
- */
- export type CartItemFtc = {
-  intent: CheckoutIntent;
-  price: Price;
-  discount?: Discount;
-  isIntro: boolean;
-};
-
-/**
- * @description CartItemStripe contains all the information
- * on a stripe price user is trying to subscribe.
- */
- export type CartItemStripe = {
-  intent: CheckoutIntent; // How use is trying to subscribe.
-  recurring: StripePrice; // The canonical price to subscribe.
-  trial?: StripePrice; // Optional trial price before entering the canonical subscription cycle.
-  coupon?: StripeCoupon; // Coupon applicable to the canonical price. Mutually exclusive with trial.
 }
 
 // ProductItem describes the data used to render a product on UI.
