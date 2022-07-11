@@ -1,9 +1,41 @@
-export function TextDot8(
+export function TextScaled(
   props: {
-    text: string
+    size: number;
+    text: string;
+    className?: string;
   }
 ) {
+  const fontStyle = {
+    fontSize: `${props.size}em`,
+  };
+
   return (
-    <span  className="scale-down8">{props.text}</span>
-  )
+    <span
+      style={fontStyle}
+      className={props.className}
+    >
+      {props.text}
+    </span>
+  );
+}
+
+export function BlockTextScaled(
+  props: {
+    size: number;
+    children?: JSX.Element;
+    className?: string;
+  }
+) {
+  const fontStyle = {
+    fontSize: `${props.size}em`,
+  };
+
+  return (
+    <div
+      style={fontStyle}
+      className={props.className}
+    >
+      {props.children}
+    </div>
+  );
 }
