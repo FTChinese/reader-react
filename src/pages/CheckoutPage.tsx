@@ -20,6 +20,7 @@ import { alipayCallback } from '../data/sitemap';
 import { aliwxPaySession } from '../store/aliwxPaySession';
 import { PresentWxQR } from '../features/ftcpay/PresentWxQR';
 import { CartItemFtc, CartItemStripe } from '../data/paywall-product';
+import { IntentKind } from '../data/chekout-intent';
 
 
 /**
@@ -76,6 +77,9 @@ function StripePageScreen(
   const [show, setShow] = useState(false);
 
   const {
+    checkingCoupon,
+    couponOfLatestInvoice,
+    couponApplied,
     submitting,
     subsCreated,
     subscribe,
@@ -88,7 +92,19 @@ function StripePageScreen(
   } = useStripePaySetting();
 
   useEffect(() => {
+    console.log(props.item);
     loadDefaultPaymentMethod(props.passport);
+
+    if (props.passport.membership.stripeSubsId && props.item.intent.kind === IntentKind.ApplyCoupon) {
+      couponOfLatestInvoice(
+          props.passport.token,
+          props.passport.membership.stripeSubsId
+        )
+        .catch((err: ResponseError) => {
+          toast.error(err.message);
+        });
+    }
+
   }, []);
 
   const payMethodInUse = selectedPayMethod || defaultPayMethod;
@@ -121,6 +137,8 @@ function StripePageScreen(
         cartItem={props.item}
         submitting={submitting}
         paymentMethod={payMethodInUse}
+        checkingCoupon={checkingCoupon}
+        couponApplied={couponApplied}
         subs={subsCreated}
         onPaymentMethod={() => setShow(true)}
         onSubscribe={onSubscribe}
