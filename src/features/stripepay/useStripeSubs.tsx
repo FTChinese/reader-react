@@ -14,18 +14,25 @@ export function useStripeSubs() {
   // Used to display subscription details on ui.
   const [ subsCreated, setSubsCreated ] = useState<Subs | undefined>();
   const [ checkingCoupon, setCheckingCoupon ] = useState(false);
+  const [ couponApplied, setCouponApplied ] = useState<StripeCouponApplied>();
 
   const couponOfLatestInvoice = (
     token: string,
     subsId: string
-  ): Promise<StripeCouponApplied> => {
+  ) => {
     setCheckingCoupon(true);
 
     return stripeRepo
       .couponOfLatestInvoice(token, subsId)
+      .then(applied => {
+        console.log(applied);
+        if (applied.couponId) {
+          setCouponApplied(applied);
+        }
+      })
       .finally(() => {
         setCheckingCoupon(false);
-      })
+      });
   };
 
   const subscribe = (
@@ -42,6 +49,7 @@ export function useStripeSubs() {
 
       case IntentKind.Upgrade:
       case IntentKind.Downgrade:
+      case IntentKind.ApplyCoupon:
         return updateSub(
           passport,
           newSubsParams(item, payMethod)
@@ -56,6 +64,8 @@ export function useStripeSubs() {
     pp: ReaderPassport,
     params: SubsParams,
   ): Promise<Membership> => {
+    console.log('Creating new subscription: %o', params);
+    setSubmitting(true);
     return stripeRepo.createSubs(
         pp.token,
         params,
@@ -76,7 +86,9 @@ export function useStripeSubs() {
     pp: ReaderPassport,
     params: SubsParams,
   ): Promise<Membership> => {
+    console.log('Modifying subscription %o', params);
 
+    setSubmitting(true);
     const subsId = pp.membership.stripeSubsId;
     if (!subsId) {
       return Promise.reject(new Error('Not a stripe subscription'));
@@ -101,6 +113,8 @@ export function useStripeSubs() {
 
   return {
     checkingCoupon,
+    couponOfLatestInvoice,
+    couponApplied,
     submitting,
     subsCreated,
     subscribe,
