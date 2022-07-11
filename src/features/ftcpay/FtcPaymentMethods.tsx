@@ -36,7 +36,7 @@ function OneOffPayMethodItem(
 ) {
   return (
     <div className="d-flex align-items-center pt-2 pb-2 border-bottom">
-      <div className="flex-grow-1"
+      <div className="flex-grow-1 cursor-pointer"
         onClick={props.onClick}
       >
         <img src={paymentMethodIcons[props.method]} />
