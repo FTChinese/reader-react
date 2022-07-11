@@ -1,7 +1,7 @@
 import { PaymentMethod } from '@stripe/stripe-js';
 import { Edition } from './edition';
 import { PriceKind, SubStatus, Tier } from './enum';
-import { newMoneyParts, PriceParts } from './localization';
+import { formatMoney, newMoneyParts, PriceParts } from './localization';
 import { Membership } from './membership';
 import { YearMonthDay, OptionalPeriod, isValidPeriod, formatPeriods } from './period';
 
@@ -138,6 +138,14 @@ export function newStripePriceParts(
   };
 }
 
+/**
+ * @description After you’ve created a coupon, create a discount by applying the coupon to a subscription. You can do this when creating the subscription or by updating a customer’s existing subscription
+ * @see https://stripe.com/docs/billing/subscriptions/coupons
+ * @see https://stripe.com/docs/api/subscriptions/object discount
+ * @see https://stripe.com/docs/api/coupons
+ * @see https://stripe.com/docs/api/discounts
+ *
+ */
 export type StripeCoupon = {
   id: string;
   amountOff: number,
@@ -145,6 +153,10 @@ export type StripeCoupon = {
   redeemBy: number;
   priceId?: string;
 } & OptionalPeriod;
+
+export function formatCouponAmount(c: StripeCoupon): string {
+  return formatMoney(c.currency, c.amountOff / 100);
+}
 
 function filterCoupons(coupons: StripeCoupon[]): StripeCoupon[] {
   return coupons
