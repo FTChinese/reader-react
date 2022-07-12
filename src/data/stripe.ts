@@ -47,6 +47,24 @@ export type Subs = Edition & {
   status: SubStatus;
 };
 
+export type StripeInvoice = {
+  id: string;
+  autoAdvance: boolean;
+  chargeId: string;
+  currency: string;
+  customerId: string;
+  hostedInvoiceUrl?: string;
+  liveMode: boolean;
+  paid: boolean;
+  periodEndUtc?: string;
+  periodStartUtc?: string;
+  receiptNumber: string;
+  status: 'draft' | 'open' | 'paid' | 'uncollectible' | 'void';
+  subscriptionId: string;
+  total: number;
+  created: number;
+};
+
 export type SubsResult = {
   membership: Membership;
   subs: Subs;
