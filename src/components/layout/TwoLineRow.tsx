@@ -1,3 +1,4 @@
+import { fontSize } from '../text/BodyText';
 import { Flex } from './Flex';
 
 export function TwoLineRow(
@@ -42,13 +43,11 @@ export function SecondaryLine(
     className?: string;
   }
 ) {
-  let className = 'scale-down8 text-black60';
-  if (props.className) {
-    className +=  ` ${props.className}`;
-  }
-
   return (
-    <div className={className}>
+    <div
+      style={fontSize(0.8)}
+      className="text-black60"
+    >
       {props.text}
     </div>
   );
