@@ -21,12 +21,25 @@ export type Customer = {
   liveMode: boolean;
 };
 
+export type StripeDiscount = {
+  id: string;
+  coupon: StripeCoupon;
+  customerId: string;
+  end?: number;
+  invoiceId?: string;
+  invoiceItemId?: string;
+  promotionCodeId?: string;
+  start: number;
+  subsId?: string;
+};
+
 export type Subs = Edition & {
   id: string;
-  currentPeriodStart: string;
   currentPeriodEnd: string;
+  currentPeriodStart: string;
   customerId: string;
   defaultPaymentMethodId?: string;
+  discount: StripeDiscount;
   ftcUserId?: string;
   latestInvoiceId: string;
   liveMode: boolean;
