@@ -1,3 +1,5 @@
+import { CSSProperties } from 'react';
+
 export function TextScaled(
   props: {
     size: number;
@@ -5,13 +7,9 @@ export function TextScaled(
     className?: string;
   }
 ) {
-  const fontStyle = {
-    fontSize: `${props.size}em`,
-  };
-
   return (
     <span
-      style={fontStyle}
+      style={fontSize(props.size)}
       className={props.className}
     >
       {props.text}
@@ -19,23 +17,8 @@ export function TextScaled(
   );
 }
 
-export function BlockTextScaled(
-  props: {
-    size: number;
-    children?: JSX.Element;
-    className?: string;
+export function fontSize(size: number): CSSProperties {
+  return {
+    fontSize: `${size}em`,
   }
-) {
-  const fontStyle = {
-    fontSize: `${props.size}em`,
-  };
-
-  return (
-    <div
-      style={fontStyle}
-      className={props.className}
-    >
-      {props.children}
-    </div>
-  );
 }
