@@ -330,7 +330,7 @@ export function stripeBtnText(k: IntentKind): string {
       return '转为标准会员';
 
     case IntentKind.ApplyCoupon:
-      return '领取并使用优惠券';
+      return '领取优惠券';
 
     default:
       return '订阅';
