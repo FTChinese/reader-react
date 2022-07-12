@@ -1,7 +1,7 @@
 import { ReaderPassport } from '../data/account';
 import { PagedList } from '../data/paged-list';
 import { SubsParams } from '../data/shopping-cart';
-import { PubKey, SetupIntent, SetupIntentParams, StripeCouponApplied, Subs } from '../data/stripe';
+import { PubKey, SetupIntent, SetupIntentParams, StripeCouponApplied, StripeInvoice, Subs } from '../data/stripe';
 import { Customer, StripePayMethod, SubsResult } from '../data/stripe';
 import { endpoint } from './endpoint';
 import { Fetch, UrlBuilder } from './request';
@@ -234,6 +234,21 @@ export const stripeRepo = {
         defaultPaymentMethod: args.methodId
       })
       .endJson<Subs>();
+  },
+
+  loadLatestInvoice(
+    token: string,
+    subsId: string,
+  ): Promise<StripeInvoice> {
+    const url = new UrlBuilder(endpoint.stripeSubs)
+      .appendPath(subsId)
+      .appendPath('latest-invoice')
+      .toString();
+
+    return new Fetch()
+      .setBearerAuth(token)
+      .get(url)
+      .endJson<StripeInvoice>();
   },
 }
 

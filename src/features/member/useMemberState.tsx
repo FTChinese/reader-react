@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ReaderPassport } from '../../data/account';
 import { Membership } from '../../data/membership';
+import { StripeInvoice } from '../../data/stripe';
 import { refreshIAP } from '../../repository/apple';
 import { reloadMembership } from '../../repository/membership';
 import { ResponseError } from '../../repository/response-error';
@@ -9,6 +10,7 @@ import { stripeRepo } from '../../repository/stripe';
 export function useMemberState() {
   const [ refreshing, setRefreshing ] = useState(false);
   const [ stripeProgress, setStripeProgress ] = useState(false);
+  const [ stripeInvoice, setStripeInvoice ] = useState<StripeInvoice>();
 
   const refresh = (passport: ReaderPassport): Promise<Membership> => {
     setRefreshing(true);
@@ -106,7 +108,24 @@ export function useMemberState() {
       });
   };
 
+  const loadLatestInvoice = (passport: ReaderPassport) => {
+    const subsId = passport.membership.stripeSubsId;
+    if (!subsId) {
+      return;
+    }
+
+    stripeRepo.loadLatestInvoice(passport.token, subsId)
+      .then(inv => {
+        setStripeInvoice(inv);
+      })
+      .catch((err: ResponseError) => {
+        console.log(err);
+      });
+  }
+
   return {
+    stripeInvoice,
+    loadLatestInvoice,
     refreshing,
     refresh,
     stripeProgress,

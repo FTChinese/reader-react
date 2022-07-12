@@ -3,6 +3,7 @@ import { Flex } from '../../components/layout/Flex';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
 import { CustomerService } from '../../components/text/CustomerSerivce';
 import { Membership } from '../../data/membership';
+import { StripeInvoice } from '../../data/stripe';
 import { buildMemberStatus, buildAddOnRows, StripeAction } from './member-status';
 import { StripeSubsSettings } from './StripeSubsSettings';
 import { SubsOverview, AddOnOverview } from './SubsOverview';
@@ -14,6 +15,7 @@ export function MemberScreen(
     onRefresh: () => void;
     onStripeAction: (action: StripeAction) => void;
     reactivating: boolean;
+    stripeInvoice?: StripeInvoice;
   }
 ) {
   const status = buildMemberStatus(props.member);
@@ -44,6 +46,7 @@ export function MemberScreen(
         membership={props.member}
         onAction={props.onStripeAction}
         reactivating={props.reactivating}
+        stripeInvoice={props.stripeInvoice}
       />
 
       <CustomerService />
