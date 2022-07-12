@@ -202,7 +202,7 @@ function newStripeCheckoutIntent(source: IntentSourceCondition, target: IntentTa
           if (target.hasCoupon) {
             return {
               kind: IntentKind.ApplyCoupon,
-              message: '优惠券仅用于本次付款周期的价格，下次付款将恢复原价。一个付款周期内仅可使用一次优惠券'
+              message: '优惠券将从下一次付款的发票总额中扣除，一个付款周期内仅可使用一次优惠券'
             }
           }
 
