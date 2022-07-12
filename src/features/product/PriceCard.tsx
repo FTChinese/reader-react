@@ -1,5 +1,5 @@
 import Card from 'react-bootstrap/Card';
-import { BlockTextScaled, TextScaled } from '../../components/text/BodyText';
+import { fontSize, TextScaled } from '../../components/text/BodyText';
 import { PriceParts } from '../../data/localization';
 import { CartItemUIParams } from '../../data/shopping-cart';
 
@@ -77,8 +77,8 @@ export function PriceCard(
           />
         </div>
 
-        <BlockTextScaled
-          size={0.8}
+        <div
+          style={fontSize(0.8)}
           className="text-black60"
         >
           {
@@ -89,7 +89,7 @@ export function PriceCard(
               parts={props.params.original.parts}
             />
           }
-        </BlockTextScaled>
+        </div>
 
       </Card.Body>
 
