@@ -13,7 +13,7 @@ import { CircleLoader } from '../../components/progress/LoadIndicator';
 import { localizeDate } from '../../utils/format-time';
 import { parseISO } from 'date-fns';
 import { Card } from 'react-bootstrap';
-import { BlockTextScaled } from '../../components/text/BodyText';
+import { TextScaled } from '../../components/text/BodyText';
 
 /**
  * @description Handles Stripe pay actions.
@@ -114,19 +114,25 @@ function CouponApplicable(
 
         {
           (props.coupon.startUtc && props.coupon.endUtc) &&
-          <BlockTextScaled
-            size={0.8}
-            className="ttext-black60"
-          >
-            <span>
-            领取期限 {localizeDate(parseISO(props.coupon.startUtc))} ~ {localizeDate(parseISO(props.coupon.endUtc))}
-            </span>
-          </BlockTextScaled>
+          <div>
+            <TextScaled
+              size={0.8}
+              className="text-black60"
+              text={`领取期限 ${localizeDate(parseISO(props.coupon.startUtc))} ~ ${localizeDate(parseISO(props.coupon.endUtc))}`}
+            />
+          </div>
         }
 
         {
           (!props.checking && props.applied) &&
-          <div>{couponAlreadyUsed}</div>
+          <div
+            className="mt-3 text-danger"
+          >
+            <TextScaled
+              size={0.8}
+              text={couponAlreadyUsed(props.applied.createdUtc)}
+            />
+          </div>
         }
       </Card.Body>
     </Card>
