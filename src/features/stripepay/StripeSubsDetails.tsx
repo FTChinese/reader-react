@@ -5,6 +5,7 @@ import { HeadTailTable } from '../../components/list/HeadTailTable';
 import { localizeSubsStatus, localizeTier } from '../../data/localization';
 import { StringPair } from '../../data/pair';
 import { Subs } from '../../data/stripe';
+import { TextScaled } from '../../components/text/BodyText';
 
 /**
  * @description Show details of subscription after success.
@@ -39,11 +40,21 @@ export function StripeSubsDetails(
   return (
     <div className="mt-3">
       <h5 className="text-center">订阅成功</h5>
+      {
+        props.subs.discount.id &&
+        <p>优惠券将在下次付款时生效</p>
+      }
       <HeadTailTable
         caption={localizeTier(props.subs.tier)}
         rows={rows}
       />
-      <p className="scale-down8 text-muted">*周期结束时将自动续订</p>
+      <div>
+        <TextScaled
+          size={0.8}
+          text="* 周期结束时将自动续订"
+          className="text-muted"
+        />
+      </div>
       <PaySuccessLink />
     </div>
   );
