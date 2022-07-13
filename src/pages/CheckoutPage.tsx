@@ -22,7 +22,6 @@ import { PresentWxQR } from '../features/ftcpay/PresentWxQR';
 import { CartItemFtc, CartItemStripe } from '../data/paywall-product';
 import { IntentKind } from '../data/chekout-intent';
 
-
 /**
  * @description Perform checkout part of the payment flow.
  * There are multiple entries to this page:
@@ -151,7 +150,6 @@ function StripePageScreen(
         usage={SetupUsage.PayNow}
       />
     </>
-
   );
 }
 
