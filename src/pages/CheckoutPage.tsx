@@ -21,7 +21,8 @@ import { aliwxPaySession } from '../store/aliwxPaySession';
 import { PresentWxQR } from '../features/ftcpay/PresentWxQR';
 import { CartItemFtc, CartItemStripe } from '../data/paywall-product';
 import { IntentKind } from '../data/chekout-intent';
-
+import usePageTracking from '../GoogleAnalytics/usePageTracking'
+import ReactGA from 'react-ga4';
 /**
  * @description Perform checkout part of the payment flow.
  * There are multiple entries to this page:
@@ -49,6 +50,7 @@ export function CheckoutPage(
       />
     );
   } else if (cart.stripe) {
+    usePageTracking()
     return (
       <RequireStripeCustomer>
         <StripePageScreen
@@ -92,6 +94,22 @@ function StripePageScreen(
 
   useEffect(() => {
     console.log(props.item);
+    ReactGA.gtag('event', 'view_item', {
+        'send_to': [
+            'G-W2PGS8NT21',
+            'G-2MCQJHGE8J'
+        ],
+        currency: 'GBP',
+        items: [{
+            item_id: props.item.recurring.id,
+            item_name: props.item.recurring.nickname,
+            item_brand: 'FTC',
+            item_category: props.item.recurring.tier,
+            currency: 'GBP',
+            quantity: 1
+        }]
+    });
+
     loadDefaultPaymentMethod(props.passport);
 
     if (props.passport.membership.stripeSubsId && props.item.intent.kind === IntentKind.ApplyCoupon) {
@@ -124,6 +142,25 @@ function StripePageScreen(
     subscribe(props.passport, props.item, payMethodInUse)
       .then(m => {
         props.onSuccess(m);
+        ReactGA.gtag('event', 'purchase', {
+            'send_to': [
+                'G-W2PGS8NT21',
+                'G-2MCQJHGE8J'
+            ],
+            currency: 'GBP',
+            transaction_id: m.stripeSubsId,
+            shipping: 0,
+            tax: 0,
+            items: [{
+                item_id: props.item.recurring.id,
+                item_name: props.item.recurring.nickname,
+                item_brand: 'FTC',
+                item_category: props.item.recurring.tier,
+                price: props.item.recurring.unitAmount,
+                currency: 'GBP',
+                quantity: 1
+            }]
+        })
       })
       .catch((err: ResponseError) => {
         toast.error(err.message);

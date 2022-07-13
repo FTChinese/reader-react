@@ -3,7 +3,7 @@ import { atom, selector, useRecoilState, useRecoilValue } from 'recoil'
 import { Banner, isPromoValid, Paywall } from '../../data/paywall'
 import { loadPaywall } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
-
+import ReactGA from 'react-ga4';
 const paywallState = atom<Paywall | undefined>({
   key: 'PaywallState',
   default: undefined,
@@ -41,6 +41,21 @@ export function usePaywall() {
         console.log(pw);
         setPaywall(pw);
         setProgress(false);
+        const prices = pw.stripe;
+        for(var i = 0; i < prices.length; i++) {
+            ReactGA.gtag('event', 'view_item_list', {
+                'send_to': [
+                    'G-W2PGS8NT21',
+                    'G-2MCQJHGE8J'
+                ],
+                items: [{
+                    item_id: prices[i].price.id,
+                    item_name: prices[i].price.nickname,
+                    item_brand: 'FTC',
+                    item_category: prices[i].price.tier
+                }]
+            });
+        }
       })
       .catch((err: ResponseError) => {
         console.log(err);
