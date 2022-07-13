@@ -83,6 +83,7 @@ export function StripePayScreen(
         {
           props.subs ?
           <StripeSubsDetails
+            isApplyCoupon={isApplyCoupon}
             subs={props.subs}
           /> :
           <SubscribeButton
