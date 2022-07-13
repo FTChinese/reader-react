@@ -39,7 +39,7 @@ export type Subs = Edition & {
   currentPeriodStart: string;
   customerId: string;
   defaultPaymentMethodId?: string;
-  discount: StripeDiscount;
+  discount?: StripeDiscount;
   ftcUserId?: string;
   latestInvoiceId: string;
   liveMode: boolean;
