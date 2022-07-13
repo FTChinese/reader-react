@@ -1,6 +1,7 @@
 import Button from 'react-bootstrap/Button';
 import { ButtonVariant } from 'react-bootstrap/esm/types';
 import Spinner from 'react-bootstrap/Spinner';
+import { BoxArrowUpRight } from '../graphics/icons';
 
 export function LeadIconText(
   props: {
@@ -27,6 +28,25 @@ export function TrailIconText(
       <span className='pe-1'>{props.text}</span>
       {props.icon}
     </span>
+  );
+}
+
+export function ExternalLink(
+  props: {
+    text: string;
+    href: string;
+  }
+) {
+  return (
+    <a target="__blank"
+      className="btn btn-link btn-sm"
+      href={props.href}
+    >
+      <TrailIconText
+        text={props.text}
+        icon={<BoxArrowUpRight />}
+      />
+    </a>
   );
 }
 
