@@ -53,8 +53,10 @@ export type StripeInvoice = {
   chargeId: string;
   currency: string;
   customerId: string;
-  hostedInvoiceUrl?: string;
+  hostedInvoiceUrl: string;
+  invoicePdf: string;
   liveMode: boolean;
+  number: number;
   paid: boolean;
   periodEndUtc?: string;
   periodStartUtc?: string;
