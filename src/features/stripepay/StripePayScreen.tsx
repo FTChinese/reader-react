@@ -14,6 +14,7 @@ import { localizeDate } from '../../utils/format-time';
 import { parseISO } from 'date-fns';
 import { Card } from 'react-bootstrap';
 import { TextScaled } from '../../components/text/BodyText';
+import { stripeSubsDetails } from '../../data/pair';
 
 /**
  * @description Handles Stripe pay actions.
@@ -83,8 +84,13 @@ export function StripePayScreen(
         {
           props.subs ?
           <StripeSubsDetails
-            isApplyCoupon={isApplyCoupon}
-            subs={props.subs}
+              tier={props.subs.tier}
+              subsRows={stripeSubsDetails(props.subs)}
+              coupon={
+                (isApplyCoupon && props.subs.discount)
+                  ? props.subs.discount.coupon
+                  : undefined
+              }
           /> :
           <SubscribeButton
             onClick={props.onSubscribe}

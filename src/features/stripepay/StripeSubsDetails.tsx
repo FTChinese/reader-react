@@ -2,18 +2,20 @@ import { useEffect } from 'react';
 import { PaySuccessLink } from '../../components/text/Checkout';
 import { useShoppingCart } from '../../components/hooks/useShoppingCart';
 import { HeadTailTable } from '../../components/list/HeadTailTable';
-import { localizeSubsStatus, localizeTier } from '../../data/localization';
-import { StringPair, stripeSubsDetails } from '../../data/pair';
-import { Subs } from '../../data/stripe';
+import { localizeTier } from '../../data/localization';
+import { StringPair } from '../../data/pair';
+import { formatCouponAmount, StripeCoupon } from '../../data/stripe';
 import { TextScaled } from '../../components/text/BodyText';
+import { Tier } from '../../data/enum';
 
 /**
  * @description Show details of subscription after success.
  */
 export function StripeSubsDetails(
   props: {
-    isApplyCoupon: boolean;
-    subs: Subs;
+    tier: Tier;
+    subsRows: StringPair[];
+    coupon?: StripeCoupon;
   }
 ) {
 
@@ -36,12 +38,12 @@ export function StripeSubsDetails(
     <div className="mt-3">
       <h5 className="text-center">订阅成功</h5>
       {
-        (props.isApplyCoupon && props.subs.discount.id) &&
-        <p>优惠价格将在下次发票中扣除</p>
+        props.coupon &&
+        <p className="text-center">优惠{formatCouponAmount(props.coupon)}将在下次发票中扣除</p>
       }
       <HeadTailTable
-        caption={localizeTier(props.subs.tier)}
-        rows={stripeSubsDetails(props.subs)}
+        caption={localizeTier(props.tier)}
+        rows={props.subsRows}
       />
       <div>
         <TextScaled
