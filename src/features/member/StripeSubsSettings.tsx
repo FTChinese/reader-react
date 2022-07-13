@@ -1,13 +1,14 @@
-import { ArrowClockwise, BoxArrowUpRight, ChevronRight, XLarge } from '../../components/graphics/icons';
+import { ArrowClockwise, ChevronRight, XLarge } from '../../components/graphics/icons';
 import { BorderHeader } from '../../components/text/BorderHeader';
 import { PrimaryLine, SecondaryLine, TwoLineRow } from '../../components/layout/TwoLineRow';
-import { TrailIconButton, TrailIconText } from '../../components/buttons/Buttons';
+import { ExternalLink, TrailIconButton, TrailIconText } from '../../components/buttons/Buttons';
 import { Link } from 'react-router-dom';
 import { sitemap } from '../../data/sitemap';
 import { getStripeAction, StripeAction } from './member-status';
 import { Membership } from '../../data/membership';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
 import { StripeInvoice } from '../../data/stripe';
+import { fontSize } from '../../components/text/BodyText';
 
 /**
  * @description Show stripe payment setting.
@@ -27,7 +28,6 @@ export function StripeSubsSettings(
   }
 
   const action = getStripeAction(props.membership);
-  const invoiceUrl = props.stripeInvoice?.hostedInvoiceUrl;
 
   return (
     <div className="mt-4">
@@ -45,9 +45,9 @@ export function StripeSubsSettings(
       />
 
       {
-        invoiceUrl &&
+        props.stripeInvoice &&
         <RowInvoice
-          href={invoiceUrl}
+          invoice={props.stripeInvoice}
         />
       }
     </div>
@@ -131,29 +131,41 @@ function RowCancelOrReactivate(
 
 function RowInvoice(
   props: {
-    href: string;
+    invoice: StripeInvoice
   }
 ) {
+
+  const pdfLink = props.invoice.invoicePdf;
+
   return (
     <TwoLineRow
       first={
         <PrimaryLine
           text="最新发票"
           trailIcon={
-            <a target="__blank"
-              className="btn btn-link btn-sm"
-              href={props.href}
-            >
-              <TrailIconText
-                text="查看"
-                icon={<BoxArrowUpRight/>}
-              />
-            </a>
+            <ExternalLink
+              text="查看"
+              href={props.invoice.hostedInvoiceUrl || ''}
+            />
           }
         />
       }
-      second={<SecondaryLine text="发票由Stripe开具" />}
+      second={
+        <div
+          style={fontSize(0.8)}
+          className="text-black60"
+        >
+          <span className="me-2">
+            发票由Stripe开具，发票号 {props.invoice.number}
+          </span>
+          {
+            pdfLink &&
+            <a href={pdfLink}>下载PDF</a>
+          }
+        </div>
+      }
     />
   );
 }
+
 
