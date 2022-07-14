@@ -33,7 +33,7 @@ export type StripeDiscount = {
   subsId?: string;
 };
 
-export type Subs = Edition & {
+export type StripeSubs = Edition & {
   id: string;
   currentPeriodEnd: string;
   currentPeriodStart: string;
@@ -69,7 +69,7 @@ export type StripeInvoice = {
 
 export type SubsResult = {
   membership: Membership;
-  subs: Subs;
+  subs: StripeSubs;
 };
 
 export type SetupIntentParams = {
