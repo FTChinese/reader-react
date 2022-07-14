@@ -16,20 +16,22 @@ export function RequireAuth(
     children: JSX.Element;
   }
 ) {
-  let { passport, loadingAuth } = useAuth();
-  let location = useLocation();
+  const { passport, loadingAuth, loadAccount } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
+
+  // Gothas of useEffect dependency:
+  // https://www.benmvp.com/blog/object-array-dependencies-react-useEffect-hook/
+  useEffect(() => {
+    loadAccount();
+  }, []);
 
   // When refreshing page manually, passport will
   // be loaded from localstorage. This is ususally
   // slower than building the global state.
   // We might wait for the loading.
   useEffect(() => {
-    if (passport) {
-      return;
-    }
-
-    if (loadingAuth) {
+    if (passport || loadingAuth) {
       return;
     }
 
@@ -63,18 +65,12 @@ function TestModeMessage(
     if (!props.testAccount) {
       return null;
     }
-    // When stripe mode is live, you can use test account for ali/wx pay.
-    return <WarningBanner text='Test Account' />
   }
-
-  const text = props.testAccount
-    ? 'Test Account.'
-    : 'Only test accounts are allowed for payment.';
 
   // When stripe mode is test, you must use test account for any payment.
   return (
     <WarningBanner
-      text={`Test Mode. ${text}`}
+      text={`Test Mode. ${props.testAccount ? 'Test' : 'Live'} Account.`}
     />
   );
 }
