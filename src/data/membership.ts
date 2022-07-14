@@ -22,6 +22,43 @@ export type Membership =  {
   vip: boolean;
 };
 
+export class MemberParsed {
+
+  readonly ftcId?: string;
+  readonly unionId?: string;
+  readonly tier?: Tier;
+  readonly cycle?: Cycle;
+  readonly expireDate?: Date;
+  readonly payMethod?: PaymentKind;
+  readonly stripeSubsId?: string;
+  readonly autoRenew: boolean = false;
+  readonly status?: SubStatus;
+  readonly appleSubsId?: string;
+  readonly b2bLicenceId?: string;
+  readonly standardAddOn: number = 0;
+  readonly premiumAddOn: number = 0;
+  readonly vip: boolean = false;
+
+  constructor(m: Membership) {
+    this.ftcId = m.ftcId;
+    this.unionId = m.unionId;
+    this.tier = m.tier;
+    this.cycle = m.cycle;
+    if (m.expireDate) {
+      this.expireDate = parseISO(m.expireDate);
+    }
+    this.payMethod = m.payMethod;
+    this.stripeSubsId = m.stripeSubsId;
+    this.autoRenew = m.autoRenew;
+    this.status = m.status;
+    this.appleSubsId = m.appleSubsId;
+    this.b2bLicenceId = m.b2bLicenceId;
+    this.standardAddOn = m.standardAddOn;
+    this.premiumAddOn = m.premiumAddOn;
+    this.vip = m.vip;
+  }
+}
+
 export function zeroMembership(): Membership {
   return {
     autoRenew: false,
@@ -134,10 +171,6 @@ export function isBeyondMaxRenewalPeriod(expireDate?: string): boolean {
  */
 export function hasAddOn(m: Membership): boolean {
   return m.standardAddOn > 0 || m.premiumAddOn > 0;
-}
-
-function shouldUseAddOn(m: Membership): boolean {
-  return isMemberExpired(m) && hasAddOn(m);
 }
 
 export function isConvertableToAddOn(m: Membership): boolean {
