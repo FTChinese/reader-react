@@ -13,8 +13,11 @@ This app provides features for FTC user to manage account and subscription.
 
 ## Testing Payment
 
-* For one-off payment, login with a test account. A large highted banner will remind you the current mode.
-* For stripe payment, you must run the backend locally. The test/live mode is determined by Stripe's publishable key, which could only be provided when the backend is run locally. In such case, it doesn't matter whether you are using test account or not.
+1. Enable test mode: in any of this app's url, append query parameter `?test=true`. This will initialize Stripe SDK with test publishable key.
+
+2. Login with any of the test account found in Superyard. You will find a horizontal highlighted banner remiding you current mode and account type.
+
+When you are in dev environment, any account is treated as a testing one.
 
 ## Stripe Integration
 
