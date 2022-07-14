@@ -44,7 +44,7 @@ function ProcessCode(
   }
 ) {
 
-  const { login, passport } = useAuth();
+  const { setLoggedIn, passport } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -54,7 +54,7 @@ function ProcessCode(
   const [ wxPassport, setWxPassport ] = useState<ReaderPassport>();
 
   const handleAccount: OnReaderAccount = (pp) => {
-    login(pp, () => {
+    setLoggedIn(pp, () => {
       console.log('Login success');
       navigate(getAuthRedirect(location), { replace: true });
     });

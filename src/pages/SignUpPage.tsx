@@ -13,7 +13,7 @@ import { getAuthRedirect } from '../components/routes/RequireAuth';
 
 export function SignUpPage() {
 
-  const { login } = useAuth();
+  const { setLoggedIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -30,7 +30,7 @@ export function SignUpPage() {
     })
       .then(passport => {
         helper.setSubmitting(false);
-        login(passport, () => {
+        setLoggedIn(passport, () => {
           console.log('Login success');
           navigate(getAuthRedirect(location), { replace: true });
         });

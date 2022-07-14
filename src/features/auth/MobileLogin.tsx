@@ -19,7 +19,7 @@ import { CircleLoader } from '../../components/progress/LoadIndicator';
 import { TrailIconButton } from '../../components/buttons/Buttons';
 
 export function MobileLogin() {
-  const { login } = useAuth();
+  const { setLoggedIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -59,7 +59,7 @@ export function MobileLogin() {
     verifyMobileLoginSMS(values)
       .then(passport => {
         helper.setSubmitting(false);
-        login(passport, () => {
+        setLoggedIn(passport, () => {
           console.log('Login success');
           navigate(getAuthRedirect(location), { replace: true });
         });
@@ -118,7 +118,7 @@ function AlertMobileNotFound(
     onClose: () => void;
   }
 ) {
-  const { login } = useAuth();
+  const { setLoggedIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -130,7 +130,7 @@ function AlertMobileNotFound(
     mobileSignUp({ mobile: props.mobile })
       .then(passport => {
         setSubmitting(false);
-        login(passport, () => {
+        setLoggedIn(passport, () => {
           console.log('Login success');
           navigate(getAuthRedirect(location), { replace: true });
         });
@@ -193,7 +193,7 @@ function AlertMobileNotFound(
     onSubmitting: (yes: boolean) => void
   }
 ) {
-  const { login } = useAuth();
+  const { setLoggedIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -214,7 +214,7 @@ function AlertMobileNotFound(
       .then(passport => {
         helper.setSubmitting(false);
         props.onSubmitting(false);
-        login(passport, () => {
+        setLoggedIn(passport, () => {
           console.log('Login success');
           navigate(getAuthRedirect(location), { replace: true });
         });

@@ -10,7 +10,7 @@ import { ResponseError } from '../../repository/response-error';
 import { LinkPwResetOrSignUp } from './LinkPwResetOrSignUp';
 
 export function EmailLogin() {
-  const { login } = useAuth();
+  const { setLoggedIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -26,7 +26,7 @@ export function EmailLogin() {
     emailLogin(values)
       .then(passport => {
         helper.setSubmitting(false);
-        login(passport, () => {
+        setLoggedIn(passport, () => {
           console.log('Login success');
           navigate(getAuthRedirect(location), { replace: true });
         });
