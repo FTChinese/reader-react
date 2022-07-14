@@ -1,10 +1,36 @@
-import ReactGA from 'react-ga4';
 import { StripePrice, StripeSubs } from '../data/stripe';
 
+declare global {
+  interface Window {
+    dataLayer: any[];
+  }
+}
+
+/**
+ * @see https://developers.google.com/analytics/devguides/collection/gtagjs
+ */
+function initGtag(): Gtag.Gtag {
+  window.dataLayer = window.dataLayer || [];
+
+  const gtag: Gtag.Gtag = function() {
+  window.dataLayer.push(arguments);
+  }
+
+  gtag('js', new Date());
+  gtag('config', 'G-2MCQJHGE8J')
+  gtag('config', 'G-W2PGS8NT21');
+
+  return gtag;
+}
+
+const gtag = initGtag();
+
 export const tracker = {
+
   stripePricesViewed: (prices: StripePrice[]) => {
     prices.forEach(price => {
-      ReactGA.gtag('event', 'view_item_list', {
+      // See https://developers.google.com/tag-platform/gtagjs/routing
+      gtag('event', 'view_item_list', {
           'send_to': [
               'G-W2PGS8NT21',
               'G-2MCQJHGE8J'
@@ -20,7 +46,7 @@ export const tracker = {
   },
 
   stripeInCart: (price: StripePrice) => {
-    ReactGA.gtag('event', 'view_item', {
+    gtag('event', 'view_item', {
         'send_to': [
             'G-W2PGS8NT21',
             'G-2MCQJHGE8J'
@@ -38,7 +64,7 @@ export const tracker = {
   },
 
   stripeSubscribed: (subs: StripeSubs, price: StripePrice) => {
-    ReactGA.gtag('event', 'purchase', {
+    gtag('event', 'purchase', {
       'send_to': [
         'G-W2PGS8NT21',
         'G-2MCQJHGE8J'
@@ -59,3 +85,5 @@ export const tracker = {
     });
   },
 };
+
+
