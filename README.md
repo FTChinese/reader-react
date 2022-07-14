@@ -2,14 +2,21 @@
 
 This app provides features for FTC user to manage account and subscription.
 
-## URLs
+## Run
 
-* `/reader/login` Show login page
-* `/reader/signup` Show signup page
-* `/reader/forgot-password` Show page to request a password reset letter
-* `/reader/password-reset/:token` Verify the link contained in the email we sent to user in the above step. If verified, then a passwowrd reset form will be shown.
-* `/reader/verification/:token` Verify user's email.
-* `/reader/membership` Show user's current membership.
+To run this app locally, you must:
+
+1. Setup MySQL with appropriate db schema;
+2. Install Go;
+3. Compile and run subscription-api;
+4. Compile and run ftacademy
+5. Run this app `yarn dev`.
+
+Or you can proxy requests to production version of ftacademy by chaning `proxy` in `vite.config.ts`.
+
+Pay attention:
+
+* Never touch the `index.html` file unde project root. This file is generated. Instead you should edit `scripts/template/index.html` file and then run `yarn html-dev`.
 
 ## Testing Payment
 
