@@ -17,7 +17,10 @@ function initGtag(): Gtag.Gtag {
   }
 
   gtag('js', new Date());
-  gtag('config', 'G-2MCQJHGE8J')
+  if (import.meta.env.DEV) {
+    gtag('config', 'G-2MCQJHGE8J');
+  }
+
   gtag('config', 'G-W2PGS8NT21');
 
   return gtag;
