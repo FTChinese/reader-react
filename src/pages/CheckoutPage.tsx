@@ -21,7 +21,6 @@ import { aliwxPaySession } from '../store/aliwxPaySession';
 import { PresentWxQR } from '../features/ftcpay/PresentWxQR';
 import { CartItemFtc, CartItemStripe } from '../data/paywall-product';
 import { IntentKind } from '../data/chekout-intent';
-import usePageTracking from '../GoogleAnalytics/usePageTracking'
 import { tracker } from '../repository/tracker';
 /**
  * @description Perform checkout part of the payment flow.
@@ -50,7 +49,6 @@ export function CheckoutPage(
       />
     );
   } else if (cart.stripe) {
-    usePageTracking()
     return (
       <RequireStripeCustomer>
         <StripePageScreen
