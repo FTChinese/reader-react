@@ -42,13 +42,14 @@ export function useStripeSubs() {
   ): Promise<Membership> => {
     switch (item.intent.kind) {
       case IntentKind.Create:
+      case IntentKind.OneTimeToAutoRenew:
         return createSub(
           passport,
           newSubsParams(item, payMethod)
         );
 
       case IntentKind.Upgrade:
-      case IntentKind.Downgrade:
+      case IntentKind.SwitchInterval:
       case IntentKind.ApplyCoupon:
         return updateSub(
           passport,
