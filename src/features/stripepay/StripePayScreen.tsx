@@ -1,7 +1,7 @@
 import { CheckoutHeader, CheckoutMessage, StripePayLink } from '../../components/text/Checkout'
 import { CenterColumn } from '../../components/layout/Column';
 import { priceCardParamsOfStripe } from '../../data/shopping-cart';
-import { StripeCoupon, StripePayMethod, Subs, StripeCouponApplied, formatCouponAmount } from '../../data/stripe';
+import { StripeCoupon, StripePayMethod, StripeSubs, StripeCouponApplied, formatCouponAmount } from '../../data/stripe';
 import { PriceCard } from '../product/PriceCard';
 import { StripeSubsDetails } from './StripeSubsDetails';
 import { BlockLoadButton } from '../../components/buttons/Buttons';
@@ -15,6 +15,7 @@ import { parseISO } from 'date-fns';
 import { Card } from 'react-bootstrap';
 import { TextScaled } from '../../components/text/BodyText';
 import { stripeSubsDetails } from '../../data/pair';
+import { useMemo } from 'react';
 
 /**
  * @description Handles Stripe pay actions.
@@ -28,20 +29,22 @@ export function StripePayScreen(
     paymentMethod?: StripePayMethod;
     checkingCoupon: boolean;
     couponApplied?: StripeCouponApplied;
-    subs?: Subs; // After subscribed.
+    subs?: StripeSubs; // After subscribed.
     onPaymentMethod: () => void;
     onSubscribe: () => void;
   }
 ) {
 
   const forbidden = props.cartItem.intent.kind === IntentKind.Forbidden;
+  const isApplyCoupon = props.cartItem.intent.kind === IntentKind.ApplyCoupon;
+
   const card = props.paymentMethod?.card;
 
-  const isApplyCoupon =  props.cartItem.intent.kind === IntentKind.ApplyCoupon;
   const alreadyEnjoyed = isApplyCoupon && !!props.couponApplied;
 
-  const disabled = props.submitting || !props.paymentMethod || forbidden || props.checkingCoupon || alreadyEnjoyed;
-
+  const disabled = useMemo(() => {
+    return props.submitting || !props.paymentMethod || forbidden || props.checkingCoupon || alreadyEnjoyed
+  }, [props.submitting, props.paymentMethod, forbidden, props.checkingCoupon, alreadyEnjoyed]);
 
   return (
     <CenterColumn>
