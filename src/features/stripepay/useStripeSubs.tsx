@@ -4,7 +4,7 @@ import { IntentKind } from '../../data/chekout-intent';
 import { Membership } from '../../data/membership';
 import { CartItemStripe } from '../../data/paywall-product';
 import { newSubsParams, SubsParams } from '../../data/shopping-cart';
-import { StripeCouponApplied, StripePayMethod, Subs } from '../../data/stripe';
+import { StripeCouponApplied, StripePayMethod, StripeSubs } from '../../data/stripe';
 import { ResponseError } from '../../repository/response-error';
 import { stripeRepo } from '../../repository/stripe';
 
@@ -12,7 +12,7 @@ export function useStripeSubs() {
 
   const [ submitting, setSubmitting ] = useState(false);
   // Used to display subscription details on ui.
-  const [ subsCreated, setSubsCreated ] = useState<Subs | undefined>();
+  const [ subsCreated, setSubsCreated ] = useState<StripeSubs | undefined>();
   const [ checkingCoupon, setCheckingCoupon ] = useState(false);
   const [ couponApplied, setCouponApplied ] = useState<StripeCouponApplied>();
 

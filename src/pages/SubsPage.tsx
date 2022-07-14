@@ -11,6 +11,7 @@ import { Banner, Paywall } from '../data/paywall';
 import { buildProductItems, CartItemFtc, CartItemStripe, ProductItem } from '../data/paywall-product';
 import { sitemap } from '../data/sitemap';
 import { ProductCard } from '../features/product/ProductCard';
+import { tracker } from '../repository/tracker';
 
 export function SubsPage(
   props: {
@@ -32,6 +33,14 @@ export function SubsPage(
   useEffect(() => {
     initLoadPaywall(props.live);
   }, []);
+
+  useEffect(() => {
+    if (!paywall) {
+      return;
+    }
+
+    tracker.stripePricesViewed(paywall.stripe.map(item => item.price));
+  }, [paywall?.id]);
 
   return (
     <ErrorBoundary errMsg={err}>

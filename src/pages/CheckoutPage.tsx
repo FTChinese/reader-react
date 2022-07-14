@@ -22,7 +22,7 @@ import { PresentWxQR } from '../features/ftcpay/PresentWxQR';
 import { CartItemFtc, CartItemStripe } from '../data/paywall-product';
 import { IntentKind } from '../data/chekout-intent';
 import usePageTracking from '../GoogleAnalytics/usePageTracking'
-import ReactGA from 'react-ga4';
+import { tracker } from '../repository/tracker';
 /**
  * @description Perform checkout part of the payment flow.
  * There are multiple entries to this page:
@@ -93,23 +93,6 @@ function StripePageScreen(
   } = useStripePaySetting();
 
   useEffect(() => {
-    console.log(props.item);
-    ReactGA.gtag('event', 'view_item', {
-        'send_to': [
-            'G-W2PGS8NT21',
-            'G-2MCQJHGE8J'
-        ],
-        currency: 'GBP',
-        items: [{
-            item_id: props.item.recurring.id,
-            item_name: props.item.recurring.nickname,
-            item_brand: 'FTC',
-            item_category: props.item.recurring.tier,
-            currency: 'GBP',
-            quantity: 1
-        }]
-    });
-
     loadDefaultPaymentMethod(props.passport);
 
     if (props.passport.membership.stripeSubsId && props.item.intent.kind === IntentKind.ApplyCoupon) {
@@ -122,7 +105,17 @@ function StripePageScreen(
         });
     }
 
+    tracker.stripeInCart(props.item.recurring);
   }, []);
+
+  // Tracking after subscription created/updated.
+  useEffect(() => {
+    if (!subsCreated) {
+      return;
+    }
+
+    tracker.stripeSubscribed(subsCreated, props.item.recurring);
+  }, [subsCreated?.id]);
 
   const payMethodInUse = selectedPayMethod || defaultPayMethod;
 
@@ -132,35 +125,16 @@ function StripePageScreen(
       return;
     }
 
-    if (!props.liveMode) {
-      if (!isTestAccount(props.passport)) {
-        toast.error('Only test accounts are permitted');
+    // If you are in live mode using a testing account,
+    // or in test mode using a live account.
+    if (props.liveMode === isTestAccount(props.passport)) {
+        toast.error('Live/Test mode must match Live/Test account!');
         return;
-      }
     }
 
     subscribe(props.passport, props.item, payMethodInUse)
       .then(m => {
         props.onSuccess(m);
-        ReactGA.gtag('event', 'purchase', {
-            'send_to': [
-                'G-W2PGS8NT21',
-                'G-2MCQJHGE8J'
-            ],
-            currency: 'GBP',
-            transaction_id: m.stripeSubsId,
-            shipping: 0,
-            tax: 0,
-            items: [{
-                item_id: props.item.recurring.id,
-                item_name: props.item.recurring.nickname,
-                item_brand: 'FTC',
-                item_category: props.item.recurring.tier,
-                price: props.item.recurring.unitAmount,
-                currency: 'GBP',
-                quantity: 1
-            }]
-        })
       })
       .catch((err: ResponseError) => {
         toast.error(err.message);
