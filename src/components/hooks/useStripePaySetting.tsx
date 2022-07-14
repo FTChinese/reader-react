@@ -59,8 +59,8 @@ export function useStripePaySetting() {
         }
       })
       .catch((err: ResponseError) => {
+        console.log(err);
         setLoading(false);
-        setLoadErr(err.message);
       });
   };
 
