@@ -8,7 +8,9 @@ import { loadStripe } from '@stripe/stripe-js';
 import { stripeRepo } from '../../repository/stripe';
 import { queryLive } from '../../utils/url';
 
-export const liveMode = queryLive(new URLSearchParams(window.location.search));
+export const liveMode = import.meta.env.DEV
+  ? false
+  : queryLive(new URLSearchParams(window.location.search));
 
 // servers using different keys.
 export const stripePromise = stripeRepo.loadPubKey(liveMode)
