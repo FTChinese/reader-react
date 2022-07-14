@@ -103,6 +103,7 @@ function StripePageScreen(
         });
     }
 
+    console.log(props.item);
     tracker.stripeInCart(props.item.recurring);
   }, []);
 
