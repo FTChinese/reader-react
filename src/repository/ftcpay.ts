@@ -1,4 +1,5 @@
 import { AliPayIntent, ConfirmationResult, WxPayIntent } from '../data/order';
+import { DiscountRedeemed } from '../data/price';
 import { AliOrderParams, OrderParams } from '../data/shopping-cart';
 import { endpoint } from './endpoint';
 import { Fetch, UrlBuilder } from './request';
@@ -32,4 +33,16 @@ export const ftcPayRepo = {
       .post(url)
       .endJson<ConfirmationResult>();
   },
+
+  checkDiscountUsed(token: string, id: string): Promise<DiscountRedeemed> {
+    const url = new UrlBuilder(endpoint.ftcPayBase)
+      .appendPath('discounts')
+      .appendPath(id)
+      .toString();
+
+    return new Fetch()
+      .setBearerAuth(token)
+      .get(url)
+      .endJson<DiscountRedeemed>();
+  }
 };

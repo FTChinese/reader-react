@@ -101,6 +101,12 @@ export type Discount = {
   status: DiscountStatus;
 } & OptionalPeriod;
 
+export type DiscountRedeemed = {
+  compoundId: string;
+  discountId: string;
+  orderId: string;
+  redeemedUtc?: string;
+}
 
 function filterOffers(offers: Discount[], filters: OfferKind[]): Discount[] {
   return offers
