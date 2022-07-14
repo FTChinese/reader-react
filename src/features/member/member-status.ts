@@ -1,9 +1,9 @@
-import { parseISO } from 'date-fns';
 import { SubStatus, isInvalidSubStatus, PaymentKind, Tier, isTrialing } from '../../data/enum';
 import { localizePaymentMethod, localizeSubsStatus, localizeTier } from '../../data/localization';
-import { Membership, isMembershipZero, concatAutoRenewMoment, parseAutoRenewMoment, hasAddOn, isStripeRenewOn, isStripeCancelled } from '../../data/membership';
+import { concatAutoRenewMoment, MemberParsed } from '../../data/membership';
 import { diffToday } from '../../utils/now';
 import { StringPair } from '../../data/pair';
+import { localizeDate } from '../../utils/format-time';
 
 /**
  * @description Describes the UI used to present Membership.
@@ -44,7 +44,7 @@ function rowSubsSource(pm?: PaymentKind): StringPair {
   return ['订阅方式', localizePaymentMethod(pm)];
 }
 
-function rowSubsStatus(m: Membership): StringPair {
+function rowSubsStatus(m: MemberParsed): StringPair {
   const head = '订阅状态';
 
   if (!m.status) {
@@ -52,16 +52,18 @@ function rowSubsStatus(m: Membership): StringPair {
   }
 
   if (isTrialing(m.status)) {
-    return [head, `${localizeSubsStatus(m.status)}(${m.expireDate}结束)`];
+    const endDate = m.expireDate ? `(${localizeDate(m.expireDate)}结束)` : '';
+    return [head, `${localizeSubsStatus(m.status)}${endDate}`];
   }
 
   return [head, localizeSubsStatus(m.status)]
 }
 
-export function rowExpiration(date?: string, isVip: boolean = false): StringPair {
+export function rowExpiration(date?: Date, isVip: boolean = false): StringPair {
+
   return [
     '到期时间',
-    isVip ? '无限期' : (date || '-')
+    isVip ? '无限期' : (date ? localizeDate(date) : '-')
   ];
 }
 
@@ -74,14 +76,14 @@ export function rowTier(tier?: Tier): StringPair {
  *        标准会员
  * 到期时间       2021-11-11
  */
-function onetimeSubsStatus(m: Membership): MemberStatus {
+function onetimeSubsStatus(m: MemberParsed): MemberStatus {
   return {
     productName: m.tier ? localizeTier(m.tier) : '',
     details: [
       rowExpiration(m.expireDate),
     ],
     reminder: m.expireDate
-      ? formatRemainingDays(parseISO(m.expireDate))
+      ? formatRemainingDays(m.expireDate)
       : undefined,
   };
 }
@@ -92,7 +94,7 @@ function onetimeSubsStatus(m: Membership): MemberStatus {
  * 订阅方式       企业订阅
  * 到期时间       2021-11-11
  */
-function b2bMemberStatus(m: Membership): MemberStatus {
+function b2bMemberStatus(m: MemberParsed): MemberStatus {
   return {
     productName: m.tier ? localizeTier(m.tier) : '',
     details: [
@@ -107,11 +109,11 @@ function b2bMemberStatus(m: Membership): MemberStatus {
 /**
  * @description Build a card for stripe or apple subscription
  */
-function autoRenewalSubsStatus(m: Membership): MemberStatus {
+function autoRenewalSubsStatus(m: MemberParsed): MemberStatus {
   const productName = m.tier ? localizeTier(m.tier) : '';
 
   if (m.autoRenew) {
-    const renewMoment = parseAutoRenewMoment(m);
+    const renewMoment = m.autoRenewMoment();
 
     /**
      * or if either expireDate or cycle is missing:
@@ -156,7 +158,7 @@ function autoRenewalSubsStatus(m: Membership): MemberStatus {
    * 到期时间     2021-11-11
    */
   const expiresAt = m.expireDate
-    ? parseISO(m.expireDate)
+    ? m.expireDate
     : undefined;
 
   return {
@@ -172,8 +174,8 @@ function autoRenewalSubsStatus(m: Membership): MemberStatus {
 }
 
 
-export function buildMemberStatus(m: Membership): MemberStatus {
-  if (isMembershipZero(m)) {
+export function buildMemberStatus(m: MemberParsed): MemberStatus {
+  if (m.isZero()) {
     return {
       productName: '未订阅',
       details: [],
@@ -215,8 +217,8 @@ export function buildMemberStatus(m: Membership): MemberStatus {
   }
 }
 
-export function buildAddOnRows(m: Membership): StringPair[] {
-  if (!hasAddOn(m)) {
+export function buildAddOnRows(m: MemberParsed): StringPair[] {
+  if (!m.hasAddOn()) {
     return [];
   }
 
@@ -237,12 +239,12 @@ export enum StripeAction {
   Activate,
 }
 
-export function getStripeAction(m: Membership): StripeAction {
-  if (isStripeRenewOn(m)) {
+export function getStripeAction(m: MemberParsed): StripeAction {
+  if (m.isStripeRenewOn()) {
     return StripeAction.Cancel;
   }
 
-  if (isStripeCancelled(m)) {
+  if (m.isStripeCancelled()) {
     return StripeAction.Activate;
   }
 

@@ -1,10 +1,10 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import Card from 'react-bootstrap/Card';
 import Modal from 'react-bootstrap/Modal';
 import { ReaderPassport, ReaderAccount } from '../../data/account';
 import { PaymentKind, WxUnlinkAnchor } from '../../data/enum';
-import { isMembershipZero, Membership } from '../../data/membership';
+import { MemberParsed, Membership } from '../../data/membership';
 import { ResponseError } from '../../repository/response-error';
 import { wxUnlinkEmail } from '../../repository/wx-auth';
 import { StringPair, pairEmail, pairWxName } from '../../data/pair';
@@ -29,7 +29,11 @@ export function UnlinkDialog(
   const [anchor, setAnchor] = useState<WxUnlinkAnchor | null>(null);
   const [valid, setValid] = useState(false);
 
-  const notMember = isMembershipZero(props.passport.membership);
+  const member = useMemo(() => {
+    return new MemberParsed(props.passport.membership);
+  }, [props.passport.membership.tier]);
+
+  const notMember = member.isZero();
 
   useEffect(() => {
     setValid(notMember);

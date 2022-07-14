@@ -9,7 +9,7 @@ import { CenterColumn } from '../components/layout/Column';
 import { ErrorBoundary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
 import { Unauthorized } from '../components/routes/Unauthorized';
-import { hasStripeSubs } from '../data/membership';
+import { MemberParsed } from '../data/membership';
 import { StripePayMethod } from '../data/stripe';
 import { PaymentMethodDialog } from '../features/stripesetup/PaymentMethodDialog';
 import { StripeWalletScreen } from '../features/stripewallet/StripeWalletScreen';
@@ -79,7 +79,7 @@ export function StripeWalletPage() {
               onSetDefault={(method) => {
                 // When user has valid subscription, ask user
                 // to confirm upon modifying payment method.
-                if (hasStripeSubs(passport.membership)) {
+                if (new MemberParsed(passport.membership).isStripe()) {
                   setSubsPayMethod(method)
                 } else {
                   setCusDefaultPayment(passport, method)

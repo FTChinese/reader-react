@@ -1,5 +1,5 @@
-import { addYears, isAfter, parseISO } from 'date-fns';
-import { isExpired } from '../utils/now';
+import { getDate, getMonth, getYear, parseISO } from 'date-fns';
+import { isExceedingYear, isExpired } from '../utils/now';
 import { Cycle, OfferKind, OrderKind, PaymentKind, SubStatus, Tier } from './enum';
 import { Edition } from './edition';
 import { localizeCycle } from './localization';
@@ -39,37 +39,126 @@ export class MemberParsed {
   readonly premiumAddOn: number = 0;
   readonly vip: boolean = false;
 
-  constructor(m: Membership) {
-    this.ftcId = m.ftcId;
-    this.unionId = m.unionId;
-    this.tier = m.tier;
-    this.cycle = m.cycle;
-    if (m.expireDate) {
-      this.expireDate = parseISO(m.expireDate);
+  constructor(m?: Membership) {
+    if (m) {
+      this.ftcId = m.ftcId;
+      this.unionId = m.unionId;
+      this.tier = m.tier;
+      this.cycle = m.cycle;
+      if (m.expireDate) {
+        this.expireDate = parseISO(m.expireDate);
+      }
+      this.payMethod = m.payMethod;
+      this.stripeSubsId = m.stripeSubsId;
+      this.autoRenew = m.autoRenew;
+      this.status = m.status;
+      this.appleSubsId = m.appleSubsId;
+      this.b2bLicenceId = m.b2bLicenceId;
+      this.standardAddOn = m.standardAddOn;
+      this.premiumAddOn = m.premiumAddOn;
+      this.vip = m.vip;
     }
-    this.payMethod = m.payMethod;
-    this.stripeSubsId = m.stripeSubsId;
-    this.autoRenew = m.autoRenew;
-    this.status = m.status;
-    this.appleSubsId = m.appleSubsId;
-    this.b2bLicenceId = m.b2bLicenceId;
-    this.standardAddOn = m.standardAddOn;
-    this.premiumAddOn = m.premiumAddOn;
-    this.vip = m.vip;
   }
-}
 
-export function zeroMembership(): Membership {
-  return {
-    autoRenew: false,
-    standardAddOn: 0,
-    premiumAddOn: 0,
-    vip: false,
+  isStripe(): boolean {
+    return this.payMethod === 'stripe' && !!this.stripeSubsId
   }
-}
 
-export function hasStripeSubs(m: Membership): boolean {
-  return m.payMethod === 'stripe' && !!m.stripeSubsId
+  autoRenewMoment(): AutoRenewMoment | null {
+    if (!this.expireDate) {
+      return null;
+    }
+
+    if (!this.cycle) {
+      return null;
+    }
+
+    return {
+      year: `${getYear(this.expireDate)}`,
+      month: `${getMonth(this.expireDate)}`,
+      date: `${getDate(this.expireDate)}`,
+      cycle: this.cycle,
+    };
+  }
+
+  normalizePayMethod(): PaymentKind | undefined {
+    if (this.payMethod) {
+      return this.payMethod;
+    }
+
+    if (this.tier) {
+      return 'alipay';
+    }
+
+    return undefined;
+  }
+
+  isZero(): boolean {
+    return this.tier == null && !this.vip;
+  }
+
+  isExpired(): boolean {
+    if (!this.expireDate) {
+      return true;
+    }
+
+    return isExpired(this.expireDate) && !this.autoRenew;
+  }
+
+  isOneOff(): boolean {
+    return this.payMethod === 'alipay' || this.payMethod === 'wechat';
+  }
+
+  isSubs(): boolean {
+    return this.payMethod === 'stripe' || this.payMethod === 'apple';
+  }
+
+  isStripeRenewOn(): boolean {
+    return this.payMethod === 'stripe' && this.autoRenew
+  }
+
+  isStripeCancelled(): boolean {
+    return this.payMethod === 'stripe' && !this.autoRenew && !this.isExpired();
+  }
+
+  isBeyondMaxRenewal(): boolean {
+    if (!this.expireDate) {
+      return false;
+    }
+
+    return isExceedingYear(this.expireDate, 3);
+  }
+
+  /**
+   * @description Manipulate addon
+   */
+  hasAddOn(): boolean {
+    return this.standardAddOn > 0 || this.premiumAddOn > 0;
+  }
+
+  isConvertableToAddOn(): boolean {
+    return this.isOneOff() && !this.isExpired;
+  }
+
+  applicableOfferKinds(): OfferKind[] {
+    if (this.isZero()) {
+      return [
+        'promotion'
+      ];
+    }
+
+    if (this.isExpired()) {
+      return [
+        'promotion',
+        'win_back'
+      ];
+    }
+
+    return [
+      'promotion',
+      'retention'
+    ];
+  }
 }
 
 export type AutoRenewMoment = {
@@ -111,90 +200,6 @@ export function concatAutoRenewMoment(m: AutoRenewMoment): string {
     case 'month':
       return dateCycle;
   }
-}
-
-export function normalizePayMethod(m: Membership): PaymentKind | undefined {
-  if (m.payMethod) {
-    return m.payMethod;
-  }
-
-  if (m.tier) {
-    return 'alipay';
-  }
-
-  return undefined;
-}
-
-export function isMembershipZero(m: Membership): boolean {
-  return m.tier == null && !m.vip;
-}
-
-export function isOneTimePurchase(m: Membership): boolean {
-  return m.payMethod === 'alipay' || m.payMethod === 'wechat';
-}
-
-export function isRenewalSubs(m: Membership): boolean {
-  return m.payMethod === 'stripe' || m.payMethod === 'apple';
-}
-
-export function isStripeRenewOn(m: Membership): boolean {
-  return m.payMethod === 'stripe' && m.autoRenew
-}
-
-export function isStripeCancelled(m: Membership): boolean {
-  return m.payMethod === 'stripe' && !m.autoRenew && !isMemberExpired(m);
-}
-
-export function isMemberExpired(m: Membership): boolean {
-  if (!m.expireDate) {
-    return true;
-  }
-
-  const expireOn = parseISO(m.expireDate);
-
-  return isExpired(expireOn) && !m.autoRenew;
-}
-
-export function isBeyondMaxRenewalPeriod(expireDate?: string): boolean {
-  if (!expireDate) {
-    return true;
-  }
-
-  const expireOn = parseISO(expireDate);
-  const threeYearslater = addYears(new Date(), 3);
-
-  return isAfter(expireOn, threeYearslater);
-}
-
-/**
- * @description Manipulate addon
- */
-export function hasAddOn(m: Membership): boolean {
-  return m.standardAddOn > 0 || m.premiumAddOn > 0;
-}
-
-export function isConvertableToAddOn(m: Membership): boolean {
-  return isOneTimePurchase(m) && !isMemberExpired(m);
-}
-
-export function applicableOfferKinds(m: Membership): OfferKind[] {
-  if (isMembershipZero(m)) {
-    return [
-      'promotion'
-    ];
-  }
-
-  if (isMemberExpired(m)) {
-    return [
-      'promotion',
-      'win_back'
-    ];
-  }
-
-  return [
-    'promotion',
-    'retention'
-  ];
 }
 
 /**

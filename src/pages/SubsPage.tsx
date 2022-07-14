@@ -6,7 +6,7 @@ import { usePaywall } from '../components/hooks/usePaywall';
 import { useShoppingCart } from '../components/hooks/useShoppingCart';
 import { ErrorBoundary } from '../components/progress/ErrorBoundary';
 import { Loading } from '../components/progress/Loading';
-import { Membership, zeroMembership } from '../data/membership';
+import { MemberParsed } from '../data/membership';
 import { Banner, Paywall } from '../data/paywall';
 import { buildProductItems, CartItemFtc, CartItemStripe, ProductItem } from '../data/paywall-product';
 import { sitemap } from '../data/sitemap';
@@ -48,7 +48,7 @@ export function SubsPage(
         <PaywallScreen
           paywall={paywall}
           banner={banner}
-          membership={passport?.membership || zeroMembership()}
+          membership={new MemberParsed(passport?.membership)}
           onFtcPay={(ftcItem) => {
             putFtcItem(ftcItem);
             navigate(sitemap.checkout, { replace: false});
@@ -67,7 +67,7 @@ function PaywallScreen(
   props: {
     paywall?: Paywall;
     banner?: Banner;
-    membership: Membership;
+    membership: MemberParsed;
     onFtcPay: (item: CartItemFtc) => void;
     onStripePay: (item: CartItemStripe) => void;
   }

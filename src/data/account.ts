@@ -1,5 +1,5 @@
 import { LoginMethod } from './enum';
-import { isMemberExpired, Membership } from './membership';
+import { MemberParsed, Membership } from './membership';
 
 export type Wechat = {
   nickname: string | null;
@@ -103,8 +103,8 @@ export function isLinkable({ftc, wx}: LinkingAccounts): string {
   }
 
   if (
-    !isMemberExpired(ftc.membership) &&
-    !isMemberExpired(wx.membership)
+    !new MemberParsed(ftc.membership).isExpired() &&
+    !new MemberParsed(wx.membership).isExpired()
   ) {
     return `您的微信账号和FT中文网的账号均购买了会员服务，两个会员均未到期。合并账号会删除其中一个账号的会员信息。为保障您的权益，暂不支持绑定两个会员未过期的账号。您可以寻求客服帮助。`;
   }

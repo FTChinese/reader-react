@@ -1,8 +1,7 @@
-import parseISO from 'date-fns/parseISO';
 import { localizeDate } from '../utils/format-time';
 import { isExceedingYear, isExpired } from '../utils/now';
 import { Cycle, PaymentKind, Tier } from './enum';
-import { Membership, normalizePayMethod } from './membership';
+import { MemberParsed } from './membership';
 import { cycleOfYMD } from './period';
 import { Price } from './price';
 import { StripePrice } from './stripe';
@@ -269,16 +268,14 @@ type IntentSourceCondition = {
   expireDate?: Date;
 };
 
-export function newIntentSource(m: Membership): IntentSourceCondition {
+export function newIntentSource(m: MemberParsed): IntentSourceCondition {
   return {
     isVip: m.vip,
     tier: m.tier,
     cycle: m.cycle,
-    payMethod: normalizePayMethod(m),
+    payMethod: m.normalizePayMethod(),
     isAutoRenew: m.autoRenew,
-    expireDate: m.expireDate
-      ? parseISO(m.expireDate)
-      : undefined,
+    expireDate: m.expireDate,
   };
 }
 

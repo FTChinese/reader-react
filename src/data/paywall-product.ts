@@ -1,6 +1,6 @@
 import { intentNewMember, CheckoutIntent, buildCheckoutIntent, newIntentSource, newStripeTarget, newOneOffTarget } from './chekout-intent';
 import { Tier } from './enum';
-import { applicableOfferKinds, isMembershipZero, Membership } from './membership';
+import { MemberParsed } from './membership';
 import { PaywallProduct, Paywall } from './paywall';
 import { isValidPeriod } from './period';
 import { dailyPrice, applicableOffer, Price, Discount } from './price';
@@ -29,7 +29,7 @@ type PriceCollected = {
 
 // Build the ftc cart item for introducatory price
 // if applicable.
-function oneOffIntroItem(m: Membership, price?: Price,): CartItemFtc | undefined {
+function oneOffIntroItem(price?: Price,): CartItemFtc | undefined {
 
   // If introductory price does not exist.
   if (!price) {
@@ -56,8 +56,8 @@ function oneOffIntroItem(m: Membership, price?: Price,): CartItemFtc | undefined
 /**
  * @description Build ftc cart item from a product, together with the stripe price id associated with each ftc price.
  */
-function collectPriceItems(product: PaywallProduct, m: Membership): PriceCollected {
-  const offerKinds = applicableOfferKinds(m);
+function collectPriceItems(product: PaywallProduct, m: MemberParsed): PriceCollected {
+  const offerKinds = m.applicableOfferKinds();
 
   const intentSource = newIntentSource(m);
 
@@ -74,8 +74,8 @@ function collectPriceItems(product: PaywallProduct, m: Membership): PriceCollect
   });
 
   // If user is not a new member, no introductory price should be offered.
-  const introItem = isMembershipZero(m)
-    ? oneOffIntroItem(m, product.introductory)
+  const introItem = m.isZero()
+    ? oneOffIntroItem(product.introductory)
     : undefined;
 
   // If this product does not have introductory price,
@@ -116,7 +116,7 @@ function collectPriceItems(product: PaywallProduct, m: Membership): PriceCollect
 function buildStripeCartItems(
   priceIds: StripePriceIDs,
   prices: Map<string, StripePaywallItem>,
-  m: Membership
+  m: MemberParsed,
 ): CartItemStripe[] {
    if (prices.size == 0) {
      return [];
@@ -203,7 +203,7 @@ export type ProductItem = {
 function buildProductItem(
   product: PaywallProduct,
   args: {
-    membership: Membership,
+    membership: MemberParsed,
     stripeStore: Map<string,StripePaywallItem>
   }
 ): ProductItem {
@@ -220,7 +220,7 @@ function buildProductItem(
   };
 }
 
-export function buildProductItems(paywall: Paywall, m: Membership): ProductItem[] {
+export function buildProductItems(paywall: Paywall, m: MemberParsed): ProductItem[] {
   // Index StripePaywallitem by price id.
   const stripeItemStore = paywall.stripe.reduce((store, curr) => {
     return store.set(curr.price.id, curr);
