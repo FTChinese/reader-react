@@ -1,6 +1,6 @@
 import parseISO from 'date-fns/parseISO';
 import { localizeDate } from '../utils/format-time';
-import { isExceedingYear } from '../utils/now';
+import { isExceedingYear, isExpired } from '../utils/now';
 import { Cycle, PaymentKind, Tier } from './enum';
 import { Membership, normalizePayMethod } from './membership';
 import { cycleOfYMD } from './period';
@@ -189,6 +189,13 @@ function newStripeCheckoutIntent(source: IntentSourceCondition, target: IntentTa
     // Onetime purchase -> Stripe.
     case 'alipay':
     case 'wechat':
+      if (source.expireDate && isExpired(source.expireDate)) {
+        return {
+          kind: IntentKind.Create,
+          message: ''
+        };
+      }
+
       return {
         kind: IntentKind.OneTimeToAutoRenew,
         message: '使用Stripe转为自动续订，当前剩余时间将在新订阅失效后再次启用。'
