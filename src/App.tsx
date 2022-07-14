@@ -24,6 +24,7 @@ import { StripeWalletPage } from './pages/StripeWalletPage';
 import { HomePage } from './pages/HomePage';
 import { RequireStripeCustomer } from './components/routes/RequireStripeCustomer';
 import { liveMode } from './components/routes/stripePromise';
+import { RequireNoAuth } from './components/routes/RequiredNoAuth';
 
 function Skeleton() {
   return (
@@ -53,7 +54,13 @@ function App() {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Skeleton />} >
-          <Route element={<CenterLayout />}>
+          <Route
+            element={
+              <RequireNoAuth>
+                <CenterLayout />
+              </RequireNoAuth>
+            }
+          >
             <Route path={sitePath.login} element={<LoginPage />} />
             <Route path={sitePath.signUp} element={<SignUpPage />} />
             <Route path={sitePath.forgotPassword} element={<ForgotPasswordPage />} />
@@ -97,7 +104,7 @@ function App() {
               path={sitePath.checkout}
               element={
                 <RequireShoppingCart>
-                  <CheckoutPage />
+                  <CheckoutPage liveMode={liveMode} />
                 </RequireShoppingCart>
               }
             />
