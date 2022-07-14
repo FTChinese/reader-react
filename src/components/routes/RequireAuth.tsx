@@ -16,16 +16,12 @@ export function RequireAuth(
     children: JSX.Element;
   }
 ) {
-  const { passport, loadingAuth, loadAccount } = useAuth();
+  const { passport, loadingAuth } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
   // Gothas of useEffect dependency:
   // https://www.benmvp.com/blog/object-array-dependencies-react-useEffect-hook/
-  useEffect(() => {
-    loadAccount();
-  }, []);
-
   // When refreshing page manually, passport will
   // be loaded from localstorage. This is ususally
   // slower than building the global state.
