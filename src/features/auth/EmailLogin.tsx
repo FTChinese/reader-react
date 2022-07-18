@@ -25,19 +25,20 @@ export function EmailLogin() {
 
     emailLogin(values)
       .then(passport => {
-        helper.setSubmitting(false);
         setLoggedIn(passport, () => {
           console.log('Login success');
           navigate(getAuthRedirect(location), { replace: true });
         });
       })
       .catch((err: ResponseError) => {
-        helper.setSubmitting(false);
         if (err.invalid) {
           helper.setErrors(err.toFormFields);
           return;
         }
         setErrMsg(err.message);
+      })
+      .finally(() => {
+        helper.setSubmitting(false)
       });
   }
 
