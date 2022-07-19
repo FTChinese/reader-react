@@ -122,15 +122,15 @@ export function priceCardParamsOfStripe(item: CartItemStripe): CartItemUIParams 
   if (item.coupon) {
     return {
       header,
-      title: `现在订阅优惠 -${formatCouponAmount(item.coupon)}`,
+      title: `领取优惠 -${formatCouponAmount(item.coupon)}`,
       payable: newStripePriceParts(
         item.recurring,
         false,
         item.coupon
       ),
       original: {
-        description: '自动续订下一付款周期恢复原价',
-        crossed: false,
+        description: '原价',
+        crossed: true,
         parts: recurPriceParts,
       },
       isAutoRenew: true,
