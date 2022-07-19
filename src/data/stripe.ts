@@ -154,8 +154,8 @@ export type StripePrice = {
 } & OptionalPeriod;
 
 export function newStripePriceParts(
-  sp: StripePrice,
-  recurring: boolean,
+  sp: StripePrice, // Either trial or recurring price.
+  recurring: boolean, // Price with trial or coupon are not recurring.
   coupon?: StripeCoupon
 ): PriceParts {
   const amount = coupon
