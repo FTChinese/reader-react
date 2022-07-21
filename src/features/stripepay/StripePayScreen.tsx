@@ -44,7 +44,13 @@ export function StripePayScreen(
 
   const disabled = useMemo(() => {
     return props.submitting || !props.paymentMethod || forbidden || props.checkingCoupon || alreadyEnjoyed
-  }, [props.submitting, props.paymentMethod, forbidden, props.checkingCoupon, alreadyEnjoyed]);
+  }, [
+    props.submitting,
+    props.paymentMethod,
+    forbidden,
+    props.checkingCoupon,
+    alreadyEnjoyed
+  ]);
 
   return (
     <CenterColumn>
@@ -62,7 +68,7 @@ export function StripePayScreen(
         />
 
         {
-          (props.cartItem.coupon && isApplyCoupon) &&
+          props.cartItem.coupon &&
           <CouponApplicable
             coupon={props.cartItem.coupon}
             checking={props.checkingCoupon}
