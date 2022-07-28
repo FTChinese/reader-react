@@ -94,7 +94,7 @@ export class MemberParsed {
   }
 
   isZero(): boolean {
-    return this.tier == null && !this.vip;
+    return !this.tier && !this.vip;
   }
 
   isExpired(): boolean {
