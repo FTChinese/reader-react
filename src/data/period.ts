@@ -1,25 +1,25 @@
 import { isAfter, isBefore, parseISO } from 'date-fns';
 import { Cycle } from './enum';
 
-enum PeriodUnit {
+enum TemporalUnit {
   Year,
   Month,
   Day,
 }
 
-const periodUnitsCN: Record<PeriodUnit, string> = {
+const temporalUnitsCN: Record<TemporalUnit, string> = {
   0: '年',
   1: '月',
   2: '天',
 }
 
-type PeriodParam = {
+type TemporalDuration = {
   count: number;
-  unit: PeriodUnit
+  unit: TemporalUnit
 }
 
-function formatPeriod(param: PeriodParam, recurring: boolean): string {
-  const infix = (param.unit === PeriodUnit.Month)
+function formatDuration(param: TemporalDuration, recurring: boolean): string {
+  const infix = (param.unit === TemporalUnit.Month)
     ? '个'
     : '';
 
@@ -28,10 +28,10 @@ function formatPeriod(param: PeriodParam, recurring: boolean): string {
     }
 
     if (param.count === 1 && recurring) {
-      return periodUnitsCN[param.unit];
+      return temporalUnitsCN[param.unit];
     }
 
-    return `${param.count}${infix}${periodUnitsCN[param.unit]}`;
+    return `${param.count}${infix}${temporalUnitsCN[param.unit]}`;
 }
 
 export type YearMonthDay = {
@@ -39,41 +39,6 @@ export type YearMonthDay = {
   months: number;
   days: number;
 };
-
-export function formatPeriods(ymd: YearMonthDay, recurring: boolean): string {
-  const periods: PeriodParam[] = [
-    {
-      count: ymd.years,
-      unit: PeriodUnit.Year,
-    },
-    {
-      count: ymd.months,
-      unit: PeriodUnit.Month,
-    },
-    {
-      count: ymd.days,
-      unit: PeriodUnit.Day
-    },
-  ].filter(item => item.count > 0);
-
-  switch (periods.length) {
-    case 0:
-      return '';
-
-    case 1:
-      return formatPeriod(periods[0], recurring);
-
-    default:
-      // If there are more than one units, you should
-      // product a string linke 1年1个月; otherwise a
-      // recurring price might get a string like 年月
-      return periods.reduce((prev, curr) => {
-        prev += formatPeriod(curr, false);
-
-        return prev;
-      }, '')
-  }
-}
 
 export function isZeroYMD(ymd: YearMonthDay): boolean {
   return ymd.years === 0 && ymd.months === 0 && ymd.days === 0;
@@ -101,6 +66,41 @@ export function cycleOfYMD(ymd: YearMonthDay): Cycle {
   }
 
   return 'month';
+}
+
+export function formatYMD(ymd: YearMonthDay, recurring: boolean): string {
+  const periods: TemporalDuration[] = [
+    {
+      count: ymd.years,
+      unit: TemporalUnit.Year,
+    },
+    {
+      count: ymd.months,
+      unit: TemporalUnit.Month,
+    },
+    {
+      count: ymd.days,
+      unit: TemporalUnit.Day
+    },
+  ].filter(item => item.count > 0);
+
+  switch (periods.length) {
+    case 0:
+      return '';
+
+    case 1:
+      return formatDuration(periods[0], recurring);
+
+    default:
+      // If there are more than one units, you should
+      // product a string linke 1年1个月; otherwise a
+      // recurring price might get a string like 年月
+      return periods.reduce((prev, curr) => {
+        prev += formatDuration(curr, false);
+
+        return prev;
+      }, '')
+  }
 }
 
 export function totalDaysOfYMD(ymd: YearMonthDay): number {

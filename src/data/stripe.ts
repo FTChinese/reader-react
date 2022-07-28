@@ -3,7 +3,7 @@ import { Edition } from './edition';
 import { PriceKind, SubStatus, Tier } from './enum';
 import { formatMoney, newMoneyParts, PriceParts } from './localization';
 import { Membership } from './membership';
-import { YearMonthDay, OptionalPeriod, isValidPeriod, formatPeriods } from './period';
+import { YearMonthDay, OptionalPeriod, isValidPeriod, formatYMD } from './period';
 
 export type PubKey = {
   live: boolean;
@@ -167,7 +167,7 @@ export function newStripePriceParts(
       sp.currency,
       amount / 100,
     ),
-    cycle: '/' + formatPeriods(sp.periodCount, recurring),
+    cycle: '/' + formatYMD(sp.periodCount, recurring),
   };
 }
 

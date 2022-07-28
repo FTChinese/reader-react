@@ -1,6 +1,6 @@
 import { Tier, Cycle, PriceKind, DiscountStatus, OfferKind } from './enum';
 import { formatMoney, newMoneyParts, PriceParts } from './localization';
-import { YearMonthDay, OptionalPeriod, isValidPeriod, cycleOfYMD, totalDaysOfYMD, formatPeriods, isZeroYMD } from './period';
+import { YearMonthDay, OptionalPeriod, isValidPeriod, cycleOfYMD, totalDaysOfYMD, formatYMD, isZeroYMD } from './period';
 
 /**
  * @description Price determines how much a product cost.
@@ -49,7 +49,7 @@ export function newFtcPriceParts(price: Price, discount?: Discount): PriceParts 
         price.currency,
         price.unitAmount - discount.priceOff,
       ),
-      cycle: '/' + formatPeriods(period, false),
+      cycle: '/' + formatYMD(period, false),
     };
   }
 
@@ -58,7 +58,7 @@ export function newFtcPriceParts(price: Price, discount?: Discount): PriceParts 
       price.currency,
       price.unitAmount
     ),
-    cycle: '/' + formatPeriods(price.periodCount, false),
+    cycle: '/' + formatYMD(price.periodCount, false),
   };
 }
 
