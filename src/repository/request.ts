@@ -73,7 +73,7 @@ export class Fetch {
     }
 
     this.body = JSON.stringify(value);
-    return this;
+    return this.contentJson();
   }
 
   end(): Promise<Response> {
