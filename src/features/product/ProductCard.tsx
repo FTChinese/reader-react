@@ -1,4 +1,3 @@
-import { TextList } from '../../components/list/TextList';
 import {
   priceCardParamsOfStripe,
   priceCardParamsOfFtc,
@@ -6,6 +5,8 @@ import {
 import { PriceCard } from './PriceCard';
 import { CartItemFtc, CartItemStripe, ProductItem } from '../../data/paywall-product';
 import { StripePayLink } from '../../components/text/Checkout';
+import { IconTextList } from '../../components/list/IconList';
+import { CheckLarge } from '../../components/graphics/icons';
 
 export function ProductCard(
   props: {
@@ -69,7 +70,8 @@ export function ProductCard(
 
       <StripePayLink />
 
-      <TextList
+      <IconTextList
+        icon={<CheckLarge className='text-teal'/>}
         lines={props.item.content.description}
         className="mt-3" />
 
