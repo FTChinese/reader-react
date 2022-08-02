@@ -1,6 +1,6 @@
 import { ArrowClockwise, ChevronRight, XLarge } from '../../components/graphics/icons';
 import { BorderHeader } from '../../components/text/BorderHeader';
-import { PrimaryLine, SecondaryLine, TwoLineRow } from '../../components/layout/TwoLineRow';
+import { PrimaryLine, SecondaryLine, TwoLineRow } from '../../components/list/TwoLineRow';
 import { ExternalLink, TrailIconButton, TrailIconText } from '../../components/buttons/Buttons';
 import { Link } from 'react-router-dom';
 import { sitemap } from '../../data/sitemap';

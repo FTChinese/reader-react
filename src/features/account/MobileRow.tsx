@@ -7,7 +7,7 @@ import { changeMobile, requestVerifyMobile } from '../../repository/email-accoun
 import { ResponseError } from '../../repository/response-error';
 import { MobileLoginForm, SMSHelper } from '../../components/forms/MobileLoginForm';
 import { AccountRow, useEditState } from "./AccountRow";
-import { SecondaryLine } from '../../components/layout/TwoLineRow';
+import { SecondaryLine } from '../../components/list/TwoLineRow';
 import { OnAccountUpdated } from '../../data/account';
 
 export function MobileRow(

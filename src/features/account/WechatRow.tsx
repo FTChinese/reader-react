@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { isAccountLinked, ReaderPassport } from "../../data/account";
 import { UnlinkDialog } from './UnlinkDialog';
 import { WxAvatar } from '../wx/WxAvatar';
-import { PrimaryLine, SecondaryLine, TwoLineRow } from '../../components/layout/TwoLineRow';
+import { PrimaryLine, SecondaryLine, TwoLineRow } from '../../components/list/TwoLineRow';
 import { Modal } from 'react-bootstrap';
 import { ResponseError } from '../../repository/response-error';
 import { getWxOAuthCodeReq } from '../../repository/wx-auth';

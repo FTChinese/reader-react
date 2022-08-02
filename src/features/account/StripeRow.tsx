@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ChevronRight } from '../../components/graphics/icons';
-import { PrimaryLine, SecondaryLine, TwoLineRow } from '../../components/layout/TwoLineRow';
+import { PrimaryLine, SecondaryLine, TwoLineRow } from '../../components/list/TwoLineRow';
 import { TextScaled } from '../../components/text/BodyText';
 import { sitemap } from '../../data/sitemap';
 

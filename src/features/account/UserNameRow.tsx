@@ -7,7 +7,7 @@ import { updateUserName } from '../../repository/email-account';
 import { ResponseError } from '../../repository/response-error';
 import { UserNameForm } from '../../components/forms/UserNameForm';
 import { AccountRow, useEditState } from "./AccountRow";
-import { SecondaryLine } from '../../components/layout/TwoLineRow';
+import { SecondaryLine } from '../../components/list/TwoLineRow';
 import { OnAccountUpdated } from '../../data/account';
 
 export function UserNameRow(

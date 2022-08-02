@@ -8,7 +8,7 @@ import { updateEmail } from '../../repository/email-account';
 import { ResponseError } from '../../repository/response-error';
 import { EmailForm } from '../../components/forms/EmailForm';
 import { AccountRow, useEditState } from "./AccountRow";
-import { SecondaryLine } from '../../components/layout/TwoLineRow';
+import { SecondaryLine } from '../../components/list/TwoLineRow';
 
 export function EmailRow(
   props: {

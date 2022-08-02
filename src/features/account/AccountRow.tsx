@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { IconButton } from '../../components/buttons/Buttons';
 import { XLarge, Pencil } from '../../components/graphics/icons';
-import { PrimaryLine, TwoLineRow } from '../../components/layout/TwoLineRow';
+import { PrimaryLine, TwoLineRow } from '../../components/list/TwoLineRow';
 
 export function AccountRow(
   props: {

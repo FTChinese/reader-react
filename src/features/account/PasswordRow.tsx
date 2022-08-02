@@ -7,7 +7,7 @@ import { updatePassword } from '../../repository/email-account';
 import { ResponseError } from '../../repository/response-error';
 import { UpdatePasswordForm } from '../../components/forms/UpdatePasswordForm';
 import { AccountRow, useEditState } from './AccountRow';
-import { SecondaryLine } from '../../components/layout/TwoLineRow';
+import { SecondaryLine } from '../../components/list/TwoLineRow';
 
 export function PasswordRow(
   props: {
