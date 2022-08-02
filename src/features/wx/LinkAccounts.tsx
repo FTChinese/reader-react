@@ -9,6 +9,7 @@ import { rowExpiration, rowTier } from '../member/member-status';
 import { ErrorAlert } from '../../components/progress/ErrorAlert';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
 import { LeadIconButton } from '../../components/buttons/Buttons';
+import { MemberParsed } from '../../data/membership';
 
 /**
  * @description Display the two accounts to be linked and a button
@@ -87,25 +88,27 @@ export function LinkAccounts(
 }
 
 function linkableAccountRows(a: ReaderAccount): StringPair[] {
+  const m = new MemberParsed(a.membership)
+
   switch (a.loginMethod) {
     case 'email':
       return [
         pairEmail(a.email),
-        rowTier(a.membership.tier),
-        rowExpiration(a.membership.expireDate),
+        rowTier(m.tier),
+        rowExpiration(m.expireDate),
       ];
 
     case 'mobile':
       return [
         pairMobile(a.mobile),
-        rowTier(a.membership.tier),
-        rowExpiration(a.membership.expireDate),
+        rowTier(m.tier),
+        rowExpiration(m.expireDate),
       ];
 
     case 'wechat':
       return [
         pairWxName(a.wechat.nickname),rowTier(a.membership.tier),
-        rowExpiration(a.membership.expireDate),
+        rowExpiration(m.expireDate),
       ];
 
     default:
