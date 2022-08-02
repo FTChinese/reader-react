@@ -1,13 +1,16 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { RecoilRoot } from 'recoil'
+import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App'
 import { BrowserRouter } from 'react-router-dom'
-import { RecoilRoot } from 'recoil'
+
 import { StripeContext } from './components/routes/StripeContext';
 
+const container = document.getElementById('root');
+const root = createRoot(container!);
 
-ReactDOM.render(
+root.render(
   <React.StrictMode>
     <StripeContext>
       <BrowserRouter basename="/reader">
@@ -16,6 +19,5 @@ ReactDOM.render(
           </RecoilRoot>
         </BrowserRouter>
     </StripeContext>
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 )
