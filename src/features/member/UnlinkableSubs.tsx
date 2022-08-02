@@ -1,14 +1,16 @@
 import { buildMemberStatus } from './member-status';
-import { Membership } from '../../data/membership';
+import { MemberParsed } from '../../data/membership';
 import { TwoColList } from '../../components/list/TwoColList';
 
 /**
  * @description Show the current subscripiton upon severing link between email and wechat.
  */
 export function UnlinkableSubs(
-  props: Membership,
+  props: {
+    member: MemberParsed
+  },
 ) {
-  const status = buildMemberStatus(props);
+  const status = buildMemberStatus(props.member);
 
   return (
     <div className="card mb-3">

@@ -86,7 +86,7 @@ export function UnlinkDialog(
           </Card>
           { !notMember &&
             <UnlinkAnchor
-              member={props.passport.membership}
+              member={member}
               onSelected={handleSelected}
             />
           }
@@ -122,7 +122,7 @@ export function UnlinkDialog(
  */
 function UnlinkAnchor(
   props: {
-    member: Membership,
+    member: MemberParsed,
     onSelected: (anchor: WxUnlinkAnchor) => void,
   }
 ) {
@@ -146,7 +146,7 @@ function UnlinkAnchor(
   return (
     <div>
       <UnlinkableSubs
-        {...props.member}
+        member={props.member}
       />
 
       <p>检测到您是FT的会员，解除账号绑定需要选择会员信息保留在哪个账号下</p>
