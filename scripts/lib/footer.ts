@@ -1,21 +1,14 @@
-interface Link {
+export interface ILink {
   href: string;
   name: string;
 }
 
-interface FooterColumn {
+export interface IFooterColumn {
   title: string;
-  items: Link[];
+  items: ILink[];
 }
 
-export interface Footer {
-  matrix: FooterColumn[];
-  year: string;
-  clientVersion: string;
-  serverVersion: string;
-}
-
-const footerMatrix: FooterColumn[] = [
+export const footerMatrix: IFooterColumn[] = [
   {
     title: '支持',
     items: [
@@ -140,15 +133,3 @@ const footerMatrix: FooterColumn[] = [
     ],
   },
 ];
-
-/**
- * @description Nunjucks context to render footer section.
- */
-export function buildFooter(): Footer {
-  return {
-    matrix: footerMatrix,
-    year: '{{footer.Year}}',
-    clientVersion: '{{footer.ClientVersion}}',
-    serverVersion: '{{footer.ServerVersion}}',
-  }
-}
