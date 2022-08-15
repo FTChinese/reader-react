@@ -10,10 +10,10 @@ const iconSizes = ['180x180', '152x152', '120x120', '76x76']
 
 async function renderIndex(): Promise<string> {
   const pkg = await readPkgFile();
-
+  const bsv = pkg.devDependencies.bootstrap.replace('^', '');
   const htmlStr = renderToStaticMarkup(
     <Index
-      bootstrapVersion={pkg.devDependencies.bootstrap}
+      bootstrapVersion={bsv}
       iconBaseUrl={baseUrl}
       iconSizes={iconSizes}
       footer={footerMatrix}
@@ -28,9 +28,9 @@ async function renderIndex(): Promise<string> {
 renderIndex()
   .then(content => {
     return writeFile(
-      'test.html',
+      'index.html',
       content,
-      { encoding: 'utf8'}
+      { encoding: 'utf8' }
     );
   })
   .then(() => {
