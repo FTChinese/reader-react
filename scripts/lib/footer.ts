@@ -128,7 +128,7 @@ export const footerMatrix: IFooterColumn[] = [
     items: [
       {
         name: '安卓',
-        href: 'https://next.ftchinese.com/android/latest',
+        href: 'https://users.ftchinese.com/android/latest',
       },
     ],
   },
