@@ -16,8 +16,8 @@ import { FormikSubmitButton } from '../components/controls/FormikSubmitButton';
 function ResetPassword(
   props: PasswordResetVerified
 ) {
-  const [ done, setDone ] = useState(false);
-  const [ errMsg, setErrMsg ] = useState('');
+  const [done, setDone] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
 
   if (done) {
     return (
@@ -76,24 +76,22 @@ function ResetPassword(
         validationSchema={Yup.object(verifyPasswordSchema)}
         onSubmit={handleSubmit}
       >
-        { formik => (
-          <Form>
-            <TextInput
-              label="密码"
-              name="password"
-              type="password"
-            />
-            <TextInput
-              label="确认密码"
-              name="confirmPassword"
-              type="password"
-            />
-            <FormikSubmitButton
-              text="重置"
-              wrapped='block'
-            />
-          </Form>
-        )}
+        <Form>
+          <TextInput
+            label="密码"
+            name="password"
+            type="password"
+          />
+          <TextInput
+            label="确认密码"
+            name="confirmPassword"
+            type="password"
+          />
+          <FormikSubmitButton
+            text="重置"
+            wrapped='block'
+          />
+        </Form>
       </Formik>
     </>
   );
@@ -103,9 +101,9 @@ function VerifyToken(props: {
   token: string,
   onVerified: (v: PasswordResetVerified) => void
 }) {
-  const [ progress, setProgress ] = useState(true);
-  const [ notFound, setNotFound ] = useState(false);
-  const [ errMsg, setErrMsg ] = useState('');
+  const [progress, setProgress] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
 
   useEffect(() => {
     verifyPwToken(props.token)
@@ -134,15 +132,15 @@ function VerifyToken(props: {
       >
         {
           notFound ?
-          <div className="text-center">
-            <h5>无法重置密码</h5>
-            <p>
-            您似乎使用了无效的重置密码链接，请重新<Link to={sitemap.forgotPassword}>获取重置密码邮件</Link>或直接<Link to={sitemap.login}>登录</Link>
-            </p>
-          </div> :
-          <div>
-            Unknown error occurred.
-          </div>
+            <div className="text-center">
+              <h5>无法重置密码</h5>
+              <p>
+                您似乎使用了无效的重置密码链接，请重新<Link to={sitemap.forgotPassword}>获取重置密码邮件</Link>或直接<Link to={sitemap.login}>登录</Link>
+              </p>
+            </div> :
+            <div>
+              Unknown error occurred.
+            </div>
         }
       </Loading>
     </ErrorBoundary>
@@ -157,7 +155,7 @@ export function PasswordResetPage() {
     return <div>Incorrect query parameter!</div>;
   }
 
-  const [ verified, setVerified ] = useState<PasswordResetVerified | undefined>(undefined);
+  const [verified, setVerified] = useState<PasswordResetVerified | undefined>(undefined);
 
   if (verified) {
     return <ResetPassword {...verified} />;
@@ -165,5 +163,5 @@ export function PasswordResetPage() {
 
   return <VerifyToken
     token={token}
-    onVerified={setVerified}/>;
+    onVerified={setVerified} />;
 }
