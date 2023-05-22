@@ -22,6 +22,7 @@ import { PresentWxQR } from '../features/ftcpay/PresentWxQR';
 import { CartItemFtc, CartItemStripe } from '../data/paywall-product';
 import { IntentKind } from '../data/chekout-intent';
 import { tracker } from '../repository/tracker';
+import { Loading } from '../components/progress/Loading';
 /**
  * @description Perform checkout part of the payment flow.
  * There are multiple entries to this page:
@@ -34,7 +35,7 @@ export function CheckoutPage(
   }
 ) {
   const { passport, setMembership } = useAuth();
-  const { cart } = useShoppingCart();
+  const { cart, loadingCart } = useShoppingCart();
 
   if (!passport) {
     return null;
@@ -42,22 +43,26 @@ export function CheckoutPage(
 
   if (cart.ftc) {
     return (
-      <FtcPayPageScreen
-        item={cart.ftc}
-        passport={passport}
-        onSuccess={setMembership}
-      />
-    );
-  } else if (cart.stripe) {
-    return (
-      <RequireStripeCustomer>
-        <StripePageScreen
-          liveMode={props.liveMode}
-          item={cart.stripe}
+      <Loading loading={loadingCart}>
+        <FtcPayPageScreen
+          item={cart.ftc}
           passport={passport}
           onSuccess={setMembership}
         />
-      </RequireStripeCustomer>
+      </Loading>
+    );
+  } else if (cart.stripe) {
+    return (
+      <Loading loading={loadingCart}>
+        <RequireStripeCustomer>
+          <StripePageScreen
+            liveMode={props.liveMode}
+            item={cart.stripe}
+            passport={passport}
+            onSuccess={setMembership}
+          />
+        </RequireStripeCustomer>
+      </Loading>
     );
   } else {
     return <div>Empty shopping cart</div>;
