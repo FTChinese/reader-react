@@ -2,7 +2,7 @@ import { LeadIconButton } from '../../components/buttons/Buttons';
 import { Flex } from '../../components/layout/Flex';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
 import { CustomerService } from '../../components/text/CustomerSerivce';
-import { MemberParsed, Membership } from '../../data/membership';
+import { MemberParsed } from '../../data/membership';
 import { StripeInvoice } from '../../data/stripe';
 import { buildMemberStatus, buildAddOnRows, StripeAction } from './member-status';
 import { StripeSubsSettings } from './StripeSubsSettings';

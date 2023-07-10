@@ -4,7 +4,7 @@ import Card from 'react-bootstrap/Card';
 import Modal from 'react-bootstrap/Modal';
 import { ReaderPassport, ReaderAccount } from '../../data/account';
 import { PaymentKind, WxUnlinkAnchor } from '../../data/enum';
-import { MemberParsed, Membership } from '../../data/membership';
+import { MemberParsed } from '../../data/membership';
 import { ResponseError } from '../../repository/response-error';
 import { wxUnlinkEmail } from '../../repository/wx-auth';
 import { StringPair, pairEmail, pairWxName } from '../../data/pair';

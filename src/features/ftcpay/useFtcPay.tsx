@@ -7,10 +7,6 @@ import { aliwxPaySession } from '../../store/aliwxPaySession';
 export function useFtcPay() {
   const [ progress, setProgress ] = useState(false);
 
-  const discountUsed = (token: string, id: string) => {
-
-  };
-
   const createWxOrder = (token: string, params: OrderParams): Promise<WxPayIntent> => {
     setProgress(true);
 

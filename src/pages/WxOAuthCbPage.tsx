@@ -85,9 +85,11 @@ function ProcessCode(
         switch (props.sess?.kind) {
           case 'login':
             handleAccount(wxPassport);
+            break;
 
           case 'link':
             setWxPassport(wxPassport);
+            break;
 
           default:
             setErrMsg('Oops! Something went wrong');

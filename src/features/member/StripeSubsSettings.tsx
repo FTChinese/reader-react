@@ -5,7 +5,7 @@ import { ExternalLink, TrailIconButton, TrailIconText } from '../../components/b
 import { Link } from 'react-router-dom';
 import { sitemap } from '../../data/sitemap';
 import { getStripeAction, StripeAction } from './member-status';
-import { MemberParsed, Membership } from '../../data/membership';
+import { MemberParsed } from '../../data/membership';
 import { CircleLoader } from '../../components/progress/LoadIndicator';
 import { StripeInvoice } from '../../data/stripe';
 import { fontSize } from '../../components/text/BodyText';

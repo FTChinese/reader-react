@@ -100,5 +100,6 @@ export function updateProfile(v: ProfileFormVal, token: string): Promise<Profile
   return new Fetch()
     .setBearerAuth(token)
     .patch(endpoint.profile)
+    .sendJson(v)
     .endJson<Profile>();
 }
