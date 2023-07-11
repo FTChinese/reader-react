@@ -1,20 +1,20 @@
-import { readFile } from "fs/promises";
+import { readFile } from 'fs/promises';
 import { resolve } from 'path';
 
 interface PkgFile {
   name: string;
   version: string;
-  dependencies: {
-
-  };
   devDependencies: {
     bootstrap: string;
   };
 }
 
-export async function readPkgFile(): Promise<PkgFile> {
+/**
+ * Read package.json file relative to parentDir.
+ */
+export async function readPkgFile(parentDir: string): Promise<PkgFile> {
   const pkgStr = await readFile(
-    resolve(process.cwd(), 'package.json'),
+    resolve(parentDir, 'package.json'),
     { encoding: 'utf8'}
   );
 

@@ -1,19 +1,22 @@
 import React from 'react';
-import { IFooterColumn } from '../lib/footer';
 import { Footer } from './Footer';
+import { IFooterColumn } from '../lib/data';
 
 export function Index(
   props: {
+    baseHref: string;
     bootstrapVersion: string;
     iconBaseUrl: string;
     iconSizes: string[];
-    footer: IFooterColumn[];
+    footer?: IFooterColumn[];
+    stripe?: boolean;
+    gtag?: boolean;
   }
 ) {
   return (
     <html lang="en">
       <head>
-        <base href="/reader" />
+        <base href={`/${props.baseHref}`} />
         <meta charSet="UTF-8" />
         <meta
           name="viewport"
@@ -45,8 +48,14 @@ export function Index(
             __html: `#root { min-height: 100vh;}`
           }}
         />
-        <script type="module" src="https://js.stripe.com/v3/"></script>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-W2PGS8NT21"></script>
+        {
+          props.stripe &&
+          <script type="module" src="https://js.stripe.com/v3/"></script>
+        }
+        {
+          props.gtag &&
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-W2PGS8NT21"></script>
+        }
       </head>
       <body>
         <div id="root"></div>

@@ -133,3 +133,8 @@ export const footerMatrix: IFooterColumn[] = [
     ],
   },
 ];
+
+export const meta = {
+  baseUrl: 'https://www.ftacademy.cn/images/favicons',
+  iconSizes: ['180x180', '152x152', '120x120', '76x76'],
+};

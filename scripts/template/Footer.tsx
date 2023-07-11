@@ -1,5 +1,5 @@
 import React from 'react';
-import { footerMatrix, IFooterColumn, ILink } from '../lib/footer';
+import { IFooterColumn, ILink } from '../lib/data';
 
 function FooterLinkItem(
   props: {
@@ -71,23 +71,27 @@ function AppVersion() {
 
 export function Footer(
   props: {
-    matrix: IFooterColumn[];
+    matrix?: IFooterColumn[];
   }
 ) {
   return (
     <footer className="o-footer o-footer--theme-dark">
       <div className="container">
-        <div className="row" id="footer">
-          {
-            props.matrix.map((column, i) => (
-              <FooterColumn
-                key={i}
-                title={column.title}
-                items={column.items}
-              />
-            ))
-          }
-        </div>
+        {
+          props.matrix &&
+
+          <div className="row" id="footer">
+            {
+              props.matrix.map((column, i) => (
+                <FooterColumn
+                  key={i}
+                  title={column.title}
+                  items={column.items}
+                />
+              ))
+            }
+          </div>
+        }
         <CopyRight />
         <AppVersion />
       </div>
