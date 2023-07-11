@@ -4,17 +4,14 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "html-dev": "ts-node --project=scripts/tsconfig.json ./scripts/html.dev.tsx",
     "build": "tsc && vite build",
     "serve": "vite preview",
     "test": "jest",
     "watch-test": "jest --watchAll",
     "postversion": "git push && git push --tags",
-    "html": "ts-node --project=scripts/tsconfig.json ./scripts/html.prod.ts",
-    "copy-static": "ts-node --project=scripts/tsconfig.json ./scripts/copyStaticAssets.ts",
-    "deploy-dev": "yarn build && yarn html && yarn copy-static",
-    "deploy": "yarn build && yarn html && yarn copy-static --prod",
-    "mincss": "postcss src/index.css > dist/ftc-bootstrap.css && cp dist/ftc-bootstrap.css ~/svn-online/ftac/frontend/styles"
+    "html-dev": "ts-node --project=script/tsconfig.json ./script/html.dev.tsx",
+    "deploy": "ts-node --project=script/tsconfig.json ./script/deploy.prod.ts",
+    "publish": "npm run build && npm run deploy"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^1.16.5",
