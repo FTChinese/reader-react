@@ -37,7 +37,7 @@ The `npm run publish` performs these steps:
     1. Add a prefix to each JS and CSS URLs in `dist/index.html` file and save it as `dist/home.html`.
     2. geenerate a version file based on package.json field, then save it as `dist/client_version_reader`
     3. Copy `dist/assets/*js,css` files to SVN
-    4. Copy `dist/client_version_reader` to the root of `superyard`
+    4. Copy `dist/client_version_reader` to the root of `ftacademy`
     5. Copy `dist/home.html` to `ftacademy/web/template/reader` directory.
 4. In backend project `ftacademy`, commint the updated files and then add a new version tag.
 
