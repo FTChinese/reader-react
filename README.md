@@ -31,14 +31,15 @@ By default, `vite build` will generate a production bundle for js and css. It wi
 
 The `npm run publish` performs these steps:
 
-1. Run `vite build` to generate production bundler.
-2. Run `npm run deploy` to
+1. Run `npm version <major|minor|patch>` to increase version.
+2. Run `vite build` to generate production bundler.
+3. Run `npm run deploy` to
     1. Add a prefix to each JS and CSS URLs in `dist/index.html` file and save it as `dist/home.html`.
     2. geenerate a version file based on package.json field, then save it as `dist/client_version_reader`
     3. Copy `dist/assets/*js,css` files to SVN
     4. Copy `dist/client_version_reader` to the root of `superyard`
     5. Copy `dist/home.html` to `ftacademy/web/template/reader` directory.
-
+4. In backend project `ftacademy`, commint the updated files and then add a new version tag.
 
 Then you should commit SVN and rebuild Go binary in Jenkins.
 
