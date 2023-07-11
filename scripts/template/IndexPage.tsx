@@ -5,6 +5,7 @@ import { IFooterColumn } from '../lib/data';
 export function Index(
   props: {
     baseHref: string;
+    title: string;
     bootstrapVersion: string;
     iconBaseUrl: string;
     iconSizes: string[];
@@ -42,7 +43,7 @@ export function Index(
           href={`https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/${props.bootstrapVersion}/css/bootstrap.min.css`}
           rel="stylesheet"
         />
-        <title>用户中心 - FT中文网</title>
+        <title>{ props.title }</title>
         <style
           dangerouslySetInnerHTML={{
             __html: `#root { min-height: 100vh;}`
@@ -78,7 +79,7 @@ function TouchIcon(
   return (
     <link
       rel="apple-touch-icon"
-      sizes="{{size}}"
+      sizes={props.size}
       href={`${props.baseUrl}/apple-touch-icon-${props.size}.png`}
     ></link>
   );
