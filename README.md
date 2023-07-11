@@ -23,18 +23,37 @@ Pay attention:
 * Never touch the `index.html` file unde project root. This file is generated. Instead you should edit files under `scripts/template` file and then run `npm run html-dev` to update this file.
 * To upgrade bootstrap used in the `index.html`, update it in the `package.json` and then run `npm run html-dev`.
 
-## Deploy
+## Deployment workflow
 
 Run `npm run publish` command, which will generate build bundle.
 
 By default, `vite build` will generate a production bundle for js and css. It will also copy `index.html` file into `dist`. However, the URLs for js and css will probably not what you want in a production envirionment. `scripts/lib/deploy.ts` file provides a `prependAssetsUrl` function to modify these URLs with JSDOM.
 
-After proper html, js and css files are generated, you need to copy these files to the production directories:
+The `npm run publish` performs these steps:
 
-* The CSS and JS files should be put into the `frontend/reader` directory under SVN repository of ftacademy. Then open commit the changed files to your SVN.
+1. Run `vite build` to generate production bundler.
+2. Run `npm run deploy` to
+    1. Add a prefix to each JS and CSS URLs in `dist/index.html` file and save it as `dist/home.html`.
+    2. geenerate a version file based on package.json field, then save it as `dist/client_version_reader`
+    3. Copy `dist/assets/*js,css` files to SVN
+    4. Copy `dist/client_version_reader` to the root of `superyard`
+    5. Copy `dist/home.html` to `ftacademy/web/template/reader` directory.
 
-* The html should be put into `web/template/reader` directory under the backend project `ftacademy`. Then add a new tag to the `ftacademy`, log into Jenkins, find the `ftacademy` and click Build now.
 
+Then you should commit SVN and rebuild Go binary in Jenkins.
+
+Folder layouts on my machine are as follows:
+
+```
+$HOME
+  |-- svn-online
+    |-- ftac (SVN repository)
+  |-- GolandProjects
+    |-- ftacademy (the backend project)
+    |-- reaader-react (thie project)
+```
+
+To copy production files into different folder structure, modiy `scripts/deploy.prod.ts` to suit your needs./
 
 ## Scripts Commands
 
