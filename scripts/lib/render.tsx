@@ -21,6 +21,7 @@ export function render(page: JSX.Element): string {
 export async function renderIndex(
   props: {
     baseHref: string;
+    title: string;
     footerMatrix: boolean;
     stripe: boolean;
     gtag: boolean;
@@ -34,6 +35,7 @@ export async function renderIndex(
   const htmlStr = render(
     <Index
       baseHref={props.baseHref}
+      title={props.title}
       bootstrapVersion={bsv}
       iconBaseUrl={meta.baseUrl}
       iconSizes={meta.iconSizes}
