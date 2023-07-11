@@ -9,8 +9,8 @@
     "test": "jest",
     "watch-test": "jest --watchAll",
     "postversion": "git push && git push --tags",
-    "html-dev": "ts-node --project=script/tsconfig.json ./script/html.dev.tsx",
-    "deploy": "ts-node --project=script/tsconfig.json ./script/deploy.prod.ts",
+    "html-dev": "ts-node --project=scripts/tsconfig.json ./scripts/html.dev.tsx",
+    "deploy": "ts-node --project=scripts/tsconfig.json ./scripts/deploy.prod.ts",
     "publish": "npm run build && npm run deploy"
   },
   "dependencies": {
