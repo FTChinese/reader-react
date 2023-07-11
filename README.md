@@ -54,7 +54,7 @@ $HOME
     |-- reaader-react (thie project)
 ```
 
-To copy production files into different folder structure, modiy `scripts/deploy.prod.ts` to suit your needs./
+To copy production files into different folder structure, modiy `scripts/deploy.prod.ts` to suit your needs.
 
 ## Scripts Commands
 
