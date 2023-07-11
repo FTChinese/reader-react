@@ -6,6 +6,7 @@ async function generateFiles() {
 
   await renderIndex({
     baseHref: 'reader',
+    title: '用户中心 - FT中文网',
     footerMatrix: true,
     stripe: true,
     gtag: true,
